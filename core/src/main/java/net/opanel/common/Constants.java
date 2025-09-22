@@ -13,4 +13,10 @@ public class Constants {
             .append("§r§7License: §cMPL-2.0\n")
             .append("§8===========================================")
             .toString();
+
+    public static final String INITIAL_ACCESS_KEY_TEMPLATE = new StringBuilder()
+            .append("# Remember to DELETE this file for your server security!\n")
+            .append("# 为了您服务器的安全，请记得删除此文件！\n")
+            .append("\n")
+            .toString();
 }
