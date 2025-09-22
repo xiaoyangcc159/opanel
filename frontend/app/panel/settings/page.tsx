@@ -66,6 +66,11 @@ export default function Settings() {
             description="终端内字体显示大小（单位: px）"
             control={<SettingsNumberInput id="terminal.font-size" min={1} max={30}/>}/>
           <SettingsItem
+            id="terminal.max-log-lines"
+            name="日志最大行数"
+            description="终端内显示日志的最大行数（最大为20000）"
+            control={<SettingsNumberInput id="terminal.max-log-lines" min={100} max={20000}/>}/>
+          <SettingsItem
             id="terminal.log-level"
             name="日志等级"
             description="终端所显示的最低日志等级"
