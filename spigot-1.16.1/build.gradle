@@ -24,14 +24,11 @@ archivesBaseName = "${rootProject.name}-spigot"
 dependencies {
     compileOnly "org.spigotmc:spigot-api:${minecraft_version}-R0.1-SNAPSHOT"
     shadowImplementation "de.tr7zw:item-nbt-api:2.15.2"
-    compileOnly "org.apache.logging.log4j:log4j-core:2.24.1"
+    compileOnly "org.apache.logging.log4j:log4j-core:2.11.1"
 
-    shadowImplementation(project(":core")) {
-        // To avoid conflict
-        exclude group: 'com.github.oshi', module: 'oshi-core'
-    }
+    shadowImplementation(project(":core"))
 
-    implementation "com.github.oshi:oshi-core:6.8.2"
+    shadowImplementation "com.github.oshi:oshi-core:6.8.2"
 }
 
 shadowJar {
@@ -45,6 +42,7 @@ shadowJar {
     relocate 'org.objectweb.asm', 'net.opanel.deps.objectweb.asm'
     relocate 'net.kyori', 'net.opanel.deps.kyori'
     relocate 'de.tr7zw.changeme.nbtapi', 'net.opanel.deps.nbtapi'
+    relocate 'oshi', 'net.opanel.deps.oshi'
 
     exclude 'META-INF/*.SF'
     exclude 'META-INF/*.DSA'
@@ -67,4 +65,4 @@ build {
     dependsOn shadowJar
 }
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = JavaLanguageVersion.of(17)
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = JavaLanguageVersion.of(14)
