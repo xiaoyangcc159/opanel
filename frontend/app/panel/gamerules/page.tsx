@@ -22,7 +22,7 @@ import {
   type ServerGamerules
 } from "@/lib/gamerules/gamerule";
 import { sendGetRequest, sendPostRequest, toastError } from "@/lib/api";
-import { objectToMap } from "@/lib/utils";
+import { isNumeric, objectToMap } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -54,7 +54,7 @@ export default function Gamerules() {
     // Transform strings to numbers
     for(const key in data) {
       const value = data[key];
-      if(typeof value === "string") {
+      if(typeof value === "string" && isNumeric(value)) {
         data[key] = parseInt(value);
       }
     }
@@ -82,10 +82,10 @@ export default function Gamerules() {
           {Array.from(gamerulesMap).map(([key, value]) => {
             const preset = gamerulePresets.find(({ id, type }) => (id === key && typeof value === type));
 
-            if(!preset) {
-              toast.error("游戏规则预设错误", { description: "游戏规则预设与实际服务器游戏规则无法匹配："+ key });
-              return <></>;
-            }
+            // if(!preset) {
+            //   toast.error("游戏规则预设错误", { description: "游戏规则预设与实际服务器游戏规则无法匹配："+ key });
+            //   return <></>;
+            // }
 
             return (
               <FormField
@@ -102,33 +102,42 @@ export default function Gamerules() {
                             className="gap-2"
                             /** prevent default here, because if not, clicking on labels will trigger submission */
                             onClick={(e) => e.preventDefault()}>
-                            {preset.icon && <preset.icon size={17}/>}
+                            {(preset && preset.icon) && <preset.icon size={17}/>}
                             {key}
                           </FormLabel>
                         </TooltipTrigger>
-                        <TooltipContent>{preset.name}</TooltipContent>
+                        <TooltipContent>{preset ? preset.name : key}</TooltipContent>
                       </Tooltip>
-                      {preset.description && <FormDescription>{preset.description}</FormDescription>}
+                      {(preset && preset.description) && <FormDescription>{preset.description}</FormDescription>}
                       <FormMessage />
                     </div>
                     <FormControl className="max-sm:self-end">
-                      {
-                        preset.type === "boolean"
-                        ? (
-                          <Switch
-                            {...field}
-                            defaultChecked={value as boolean}
-                            onCheckedChange={field.onChange}
-                            className="cursor-pointer"/>
-                        )
-                        : (
-                          <Input
-                            {...field}
-                            type="number"
-                            className="w-28"
-                            autoComplete="off"/>
-                        )
-                      }
+                      {(() => {
+                        if(typeof value === "boolean") {
+                          return (
+                            <Switch
+                              {...field}
+                              defaultChecked={value as boolean}
+                              onCheckedChange={field.onChange}
+                              className="cursor-pointer"/>
+                          );
+                        } else if(typeof value === "number") {
+                          return (
+                            <Input
+                              {...field}
+                              type="number"
+                              className="w-28"
+                              autoComplete="off"/>
+                          );
+                        } else {
+                          return (
+                            <Input
+                              {...field}
+                              className="w-28"
+                              autoComplete="off"/>
+                          );
+                        }
+                      })()}
                     </FormControl>
                   </FormItem>
                 )}
