@@ -1,4 +1,4 @@
-package net.opanel.fabric_1_20_1;
+package net.opanel.fabric_1_20;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;

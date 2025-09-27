@@ -17,7 +17,7 @@
   "environment": "server",
   "entrypoints": {
     "server": [
-      "net.opanel.fabric_1_20_1.Main"
+      "net.opanel.fabric_1_20.Main"
     ]
   },
   "mixins": [

@@ -1,4 +1,4 @@
-package net.opanel.fabric_1_20_1;
+package net.opanel.fabric_1_20;
 
 import net.opanel.logger.Loggable;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package net.opanel.fabric_1_20_1;
+package net.opanel.fabric_1_20;
 
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -7,9 +7,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 import net.opanel.*;
 import net.opanel.config.OPanelConfiguration;
-import net.opanel.fabric_1_20_1.command.OPanelCommand;
-import net.opanel.fabric_1_20_1.config.ConfigManagerImpl;
-import net.opanel.fabric_1_20_1.terminal.LogListenerManagerImpl;
+import net.opanel.fabric_1_20.command.OPanelCommand;
+import net.opanel.fabric_1_20.config.ConfigManagerImpl;
+import net.opanel.fabric_1_20.terminal.LogListenerManagerImpl;
 import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

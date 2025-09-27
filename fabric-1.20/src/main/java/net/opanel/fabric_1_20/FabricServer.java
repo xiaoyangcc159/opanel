@@ -1,8 +1,7 @@
-package net.opanel.fabric_1_20_1;
+package net.opanel.fabric_1_20;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
-import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerMetadata;
