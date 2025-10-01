@@ -1,4 +1,4 @@
-package net.opanel.fabric_1_20_4;
+package net.opanel.fabric_1_20_3;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.server.BannedPlayerEntry;

@@ -1,9 +1,9 @@
-package net.opanel.fabric_1_20_4;
+package net.opanel.fabric_1_20_3;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtSizeTracker;
+import net.minecraft.nbt.NbtTagSizeTracker;
 import net.minecraft.server.*;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.UserCache;
@@ -81,7 +81,7 @@ public class FabricOfflinePlayer implements OPanelPlayer {
     @Override
     public OPanelGameMode getGameMode() {
         try {
-            NbtCompound nbt = NbtIo.readCompressed(playerDataPath, NbtSizeTracker.of(2097152L)); // 2 MB
+            NbtCompound nbt = NbtIo.readCompressed(playerDataPath, NbtTagSizeTracker.of(2097152L)); // 2 MB
             int gamemodeId = nbt.getInt("playerGameType");
             GameMode gamemode = GameMode.byId(gamemodeId);
             switch(gamemode) {
@@ -99,7 +99,7 @@ public class FabricOfflinePlayer implements OPanelPlayer {
     @Override
     public void setGameMode(OPanelGameMode gamemode) {
         try {
-            NbtCompound nbt = NbtIo.readCompressed(playerDataPath, NbtSizeTracker.of(2097152L)); // 2 MB
+            NbtCompound nbt = NbtIo.readCompressed(playerDataPath, NbtTagSizeTracker.of(2097152L)); // 2 MB
             switch(gamemode) {
                 case ADVENTURE -> nbt.putInt("playerGameType", 2);
                 case SURVIVAL -> nbt.putInt("playerGameType", 0);

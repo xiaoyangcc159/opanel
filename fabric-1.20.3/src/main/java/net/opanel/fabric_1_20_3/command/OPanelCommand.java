@@ -1,4 +1,4 @@
-package net.opanel.fabric_1_20_4.command;
+package net.opanel.fabric_1_20_3.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;

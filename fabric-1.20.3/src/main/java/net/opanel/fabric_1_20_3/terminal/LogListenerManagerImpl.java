@@ -1,4 +1,4 @@
-package net.opanel.fabric_1_20_4.terminal;
+package net.opanel.fabric_1_20_3.terminal;
 
 import net.opanel.terminal.ConsoleLog;
 import net.opanel.terminal.LogListenerManager;

@@ -1,8 +1,8 @@
-package net.opanel.fabric_1_20_4;
+package net.opanel.fabric_1_20_3;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtSizeTracker;
+import net.minecraft.nbt.NbtTagSizeTracker;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.world.GameMode;
@@ -25,7 +25,7 @@ public class FabricSave implements OPanelSave {
         this.server = server;
         savePath = path;
         try {
-            nbt = NbtIo.readCompressed(savePath.resolve("level.dat"), NbtSizeTracker.of(2097152L)) // 2 MB
+            nbt = NbtIo.readCompressed(savePath.resolve("level.dat"), NbtTagSizeTracker.of(2097152L)) // 2 MB
                     .getCompound("Data");
             if(nbt.isEmpty()) {
                 throw new IOException("Cannot find a valid level.dat");

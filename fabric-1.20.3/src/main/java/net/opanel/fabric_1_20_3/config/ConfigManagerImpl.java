@@ -1,4 +1,4 @@
-package net.opanel.fabric_1_20_4.config;
+package net.opanel.fabric_1_20_3.config;
 
 import net.opanel.config.ConfigManager;
 import net.opanel.config.OPanelConfiguration;
