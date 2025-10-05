@@ -124,7 +124,6 @@ public class TerminalEndpoint {
             } catch(IOException e) {
                 // Use System.err to avoid recursive logging through LogListenerAppender
                 System.err.println("[OPanel] Failed to send WebSocket message: " + e.getMessage());
-                sessions.remove(session);
             }
         }
     }
@@ -139,7 +138,11 @@ public class TerminalEndpoint {
             sessions.removeIf(session -> !session.isOpen());
             for(Session session : sessions) {
                 try {
-                    session.getAsyncRemote().sendText(message);
+                    session.getAsyncRemote().sendText(message, result -> {
+                        if(!result.isOK()) {
+                            System.err.println("[OPanel] Failed to broadcast message to session: "+ result.getException().getMessage());
+                        }
+                    });
                 } catch(Exception e) {
                     // Use System.err to avoid recursive logging through LogListenerAppender
                     System.err.println("[OPanel] Failed to broadcast message to session: " + e.getMessage());
