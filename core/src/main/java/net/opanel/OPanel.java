@@ -96,26 +96,31 @@ public class OPanel {
 
     public void initializeAccessKey() { // This method will be called when the web server is ready
         OPanelConfiguration config = getConfig();
-        if(!config.accessKey.isEmpty()) return;
+        if(config.accessKey.isEmpty()) {
+            // Generate access key and then store it into the config
+            final String accessKey = Utils.generateRandomCharSequence(12);
+            config.accessKey = Utils.md5(Utils.md5(accessKey));
+            setConfig(config);
 
-        // Generate access key and store it into the config
-        final String accessKey = Utils.generateRandomCharSequence(12);
-        config.accessKey = Utils.md5(Utils.md5(accessKey));
-        setConfig(config);
+            // Store the plaintext access key into the temp file
+            try {
+                Utils.writeTextFile(INITIAL_ACCESS_KEY_PATH, Constants.INITIAL_ACCESS_KEY_TEMPLATE + accessKey);
+            } catch (IOException e) {
+                logger.error("Failed to write the initial access key into INITIAL_ACCESS_KEY.txt: "+ e.getMessage());
+                throw new RuntimeException("Plaintext initial access key storage failed", e);
+            }
 
-        // Store the plaintext access key into the temp file
-        try {
-            Utils.writeTextFile(INITIAL_ACCESS_KEY_PATH, Constants.INITIAL_ACCESS_KEY_TEMPLATE + accessKey);
-        } catch (IOException e) {
-            logger.error("Failed to write the initial access key into INITIAL_ACCESS_KEY.txt: "+ e.getMessage());
-            throw new RuntimeException("Plaintext initial access key storage failed", e);
+            logger.warn("===========================OPanel===========================");
+            logger.warn("Initial launching detected,");
+            logger.warn("Check .opanel/INITIAL_ACCESS_KEY.txt for the initial access key.");
+            logger.warn("Remember to delete the file for your server security.");
+            logger.warn("============================================================");
         }
-
-        logger.warn("===========================OPanel===========================");
-        logger.warn("Initial launching detected,");
-        logger.warn("Check .opanel/INITIAL_ACCESS_KEY.txt for the initial access key.");
-        logger.warn("Remember to delete the file for your server security.");
-        logger.warn("============================================================");
+        if(config.salt.isEmpty()) {
+            // Generate salt and then store it into the config
+            config.salt = Utils.generateRandomCharSequence(6);
+            setConfig(config);
+        }
     }
 
     public Uptimer getUptimer() {
