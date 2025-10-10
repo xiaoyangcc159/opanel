@@ -98,14 +98,14 @@ export default function Gamerules() {
                 name={key}
                 render={({ field }) => (
                   <Item variant="outline" className="p-3">
-                    <ItemContent>
+                    <ItemContent className="max-w-full">
                       <ItemTitle
-                        className="gap-2"
+                        className="gap-2 max-w-full"
                         /** prevent default here, because if not, clicking on labels will trigger submission */
                         onClick={(e) => e.preventDefault()}>
                         {(preset && preset.icon) && <preset.icon size={17}/>}
                         <Tooltip>
-                          <TooltipTrigger>{key}</TooltipTrigger>
+                          <TooltipTrigger className="text-ellipsis overflow-hidden">{key}</TooltipTrigger>
                           <TooltipContent>{preset ? preset.name : key}</TooltipContent>
                         </Tooltip>
                       </ItemTitle>
