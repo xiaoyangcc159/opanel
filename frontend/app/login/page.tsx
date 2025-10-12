@@ -116,7 +116,7 @@ export default function Login() {
         </CardFooter>
       </Card>
       <div className="flex justify-between items-center mt-2 px-2 text-sm">
-        <span className="text-muted-foreground">Copyright &copy; NriotHrreion 2025</span>
+        <span className="text-muted-foreground">Copyright &copy; OPanel Project 2025</span>
         <Button variant="link" size="sm" asChild>
           <Link href="/about">
             <Info />
