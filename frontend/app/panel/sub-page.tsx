@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -25,6 +28,10 @@ export function SubPage({
   noScrollPage?: boolean
   className?: string
 }>) {
+  useEffect(() => {
+    document.title = `OPanel - ${subTitle ?? title}`;
+  }, [title, subTitle]);
+
   return (
     <div className={cn("px-16 max-md:px-12 max-sm:px-8 flex-1 flex flex-col gap-6 max-md:gap-2", noScrollPage && "max-h-screen")}>
       <div className="pt-10 pb-5 flex flex-col gap-8">
