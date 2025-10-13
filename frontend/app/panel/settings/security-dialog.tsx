@@ -6,9 +6,9 @@ import { setCookie } from "cookies-next/client";
 import md5 from "md5";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { sendPostRequest, toastError } from "@/lib/api";
+import { PasswordInput } from "@/components/password-input";
 
 const formSchema = z.object({
   currentKey: z.string().nonempty("此项不可为空"),
@@ -67,10 +67,8 @@ export function SecurityDialog({
                 <FormItem>
                   <FormLabel>当前密钥</FormLabel>
                   <FormControl>
-                    <Input
+                    <PasswordInput
                       placeholder="请输入当前访问密钥..."
-                      autoComplete="off"
-                      type="password"
                       {...field}/>
                   </FormControl>
                   <FormMessage />
@@ -83,10 +81,8 @@ export function SecurityDialog({
                 <FormItem>
                   <FormLabel>新密钥</FormLabel>
                   <FormControl>
-                    <Input
+                    <PasswordInput
                       placeholder="请输入新访问密钥..."
-                      autoComplete="off"
-                      type="password"
                       {...field}/>
                   </FormControl>
                   <FormMessage />

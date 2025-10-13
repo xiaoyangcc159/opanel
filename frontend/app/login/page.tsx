@@ -26,9 +26,9 @@ import {
   FormLabel,
   FormMessage
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { sendPostRequestWithoutToken } from "@/lib/api";
 import { Brand } from "@/components/logo";
+import { PasswordInput } from "@/components/password-input";
 
 const formSchema = z.object({
   accessKey: z.string().nonempty("此项不可为空"),
@@ -95,8 +95,7 @@ export default function Login() {
                   <FormItem>
                     <FormLabel>访问密钥</FormLabel>
                     <FormControl>
-                      <Input
-                        type="password"
+                      <PasswordInput
                         placeholder="请输入访问密钥..."
                         autoFocus
                         {...field}/>
