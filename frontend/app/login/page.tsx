@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/card";
 import {
   Form,
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -94,12 +93,10 @@ export default function Login() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>访问密钥</FormLabel>
-                    <FormControl>
-                      <PasswordInput
-                        placeholder="请输入访问密钥..."
-                        autoFocus
-                        {...field}/>
-                    </FormControl>
+                    <PasswordInput
+                      placeholder="请输入访问密钥..."
+                      autoFocus
+                      {...field}/>
                     <FormMessage />
                   </FormItem>
                 )}/>
