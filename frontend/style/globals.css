@@ -134,4 +134,11 @@
   .image-pixelated {
     image-rendering: pixelated;
   }
+  [data-slot="alert-dialog-description"] {
+    span {
+      a, b {
+        @apply text-foreground;
+      }
+    }
+  }
 }
