@@ -111,7 +111,7 @@ export function InfoCard({
     <Card className={cn(className, "flex flex-col rounded-md max-lg:gap-3")}>
       <div className="min-lg:flex-1 flex max-md:flex-col gap-6 max-lg:border-b max-lg:pb-3">
         <img
-          className="aspect-square h-full rounded-xs image-pixelated"
+          className="aspect-square h-full max-md:w-32 max-md:h-32 rounded-xs image-pixelated"
           src={(ctx && ctx.favicon) ? (apiUrl + ctx.favicon) : PackIcon.src}
           alt="favicon"/>
         
