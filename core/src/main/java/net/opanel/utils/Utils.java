@@ -173,12 +173,20 @@ public class Utils {
         return sb.toString();
     }
 
+    public static int generateRandomInt(int min, int max) {
+        if(min > max) {
+            throw new IllegalArgumentException("Min number cannot be larger than the max number.");
+        }
+
+        SecureRandom rand = new SecureRandom();
+        return rand.nextInt(max - min + 1) + min;
+    }
+
     public static String generateRandomCharSequence(int length) {
         final String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@$";
         StringBuilder result = new StringBuilder();
-        SecureRandom rand = new SecureRandom();
         while(result.length() < length) {
-            int charIndex = rand.nextInt(chars.length());
+            int charIndex = generateRandomInt(0, chars.length() - 1);
             result.append(chars.charAt(charIndex));
         }
         return result.toString();
