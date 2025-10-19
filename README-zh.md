@@ -49,7 +49,6 @@ OPanel 的功能包括：
 
 ## 友情链接
 
-[<img src="./images/friends/miaocloud.png" width="300"/>](https://cloud.miaostars.com)
 [<img src="./images/friends/rainyun.png" width="300"/>](https://rainyun.com)
 [<img src="./images/friends/chuqiyun.png" width="300"/>](https://chuqiyun.com)
 
