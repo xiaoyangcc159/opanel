@@ -66,7 +66,7 @@ export function ServerSheet({
         </SheetHeader>
         <div className="flex flex-col h-full">
           {value && <MonacoEditor
-            defaultLanguage="ini"
+            defaultLanguage="properties"
             value={value}
             theme={theme === "dark" ? "vs-dark" : "vs"}
             options={{
