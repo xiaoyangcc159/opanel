@@ -26,7 +26,9 @@ export default function Players() {
   const fetchPlayerList = async () => {
     try {
       const res = await sendGetRequest<PlayersResponse>("/api/players");
-      setPlayers(res.players);
+      const sortedPlayers = res.players.sort((a, b) => a.name.localeCompare(b.name));
+
+      setPlayers(sortedPlayers);
       setMaxPlayerCount(res.maxPlayerCount);
       setWhitelistEnabledState(res.whitelist);
     } catch (e: any) {
