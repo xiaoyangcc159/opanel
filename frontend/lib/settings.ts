@@ -24,6 +24,8 @@ export type SettingsStorageType = {
   "monaco.word-wrap": boolean
   "monaco.font-size": number
   "security.access-key"?: never
+  "state.players.tab": "player-list" | "banned-list"
+  "state.terminal.history": string[]
 };
 
 const defaultSettings: SettingsStorageType = {
@@ -39,6 +41,8 @@ const defaultSettings: SettingsStorageType = {
   "terminal.convert-ansi-code": true,
   "monaco.word-wrap": false,
   "monaco.font-size": 14, // px
+  "state.players.tab": "player-list",
+  "state.terminal.history": []
 };
 
 export const monacoSettingsOptions: EditorOptionsType = {

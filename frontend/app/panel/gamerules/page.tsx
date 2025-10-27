@@ -94,6 +94,7 @@ export default function Gamerules() {
           <InputGroupInput
             value={searchString}
             placeholder="搜索游戏规则..."
+            autoFocus
             onChange={(e) => setSearchString(e.target.value)}/>
         </InputGroup>
       </div>

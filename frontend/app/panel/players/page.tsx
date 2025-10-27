@@ -13,6 +13,7 @@ import { WhitelistSheet } from "./whitelist-sheet";
 import { setWhitelistEnabled } from "./player-utils";
 import { emitter } from "@/lib/emitter";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { changeSettings, getSettings } from "@/lib/settings";
 
 export default function Players() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -53,7 +54,12 @@ export default function Players() {
       icon={<Users />}
       className="flex flex-col gap-3">
       <span className="text-sm text-muted-foreground">点击玩家名以进行更多操作。</span>
-      <Tabs defaultValue="player-list" onValueChange={setCurrentTab}>
+      <Tabs
+        defaultValue={getSettings("state.players.tab")}
+        onValueChange={(value) => {
+          setCurrentTab(value);
+          changeSettings("state.players.tab", value as any);
+        }}>
         <div className="flex justify-between items-center max-lg:flex-col-reverse max-lg:items-start max-lg:gap-2">
           <TabsList className="[&>*]:cursor-pointer">
             <TabsTrigger value="player-list">
