@@ -35,6 +35,7 @@ public class InfoServlet extends BaseServlet {
         HashMap<String, Object> obj = new HashMap<>();
         obj.put("favicon", server.getFavicon() != null ? IconServlet.route : null);
         obj.put("motd", Utils.stringToBase64(server.getMotd()));
+        obj.put("serverType", server.getServerType().getName());
         obj.put("version", server.getVersion());
         obj.put("port", server.getPort());
         obj.put("maxPlayerCount", server.getMaxPlayerCount());

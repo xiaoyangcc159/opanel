@@ -60,7 +60,8 @@ public class FoliaServer implements OPanelServer {
 
     @Override
     public String getVersion() {
-        return server.getBukkitVersion();
+        // getBukkitVersion() -> "<MinecraftVersion>-R0.x-SNAPSHOT"
+        return server.getBukkitVersion().split("-")[0];
     }
 
     @Override

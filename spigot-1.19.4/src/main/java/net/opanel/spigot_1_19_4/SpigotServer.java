@@ -5,6 +5,7 @@ import net.opanel.common.OPanelPlayer;
 import net.opanel.common.OPanelSave;
 import net.opanel.common.OPanelServer;
 import net.opanel.common.OPanelWhitelist;
+import net.opanel.utils.Utils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.help.HelpTopic;
@@ -31,6 +32,12 @@ public class SpigotServer implements OPanelServer {
 
     @Override
     public ServerType getServerType() {
+        if(Utils.hasClass("com.destroystokyo.paper.PaperConfig")) {
+            return ServerType.PAPER;
+        }
+        if(Utils.hasClass("org.bukkit.entity.Player$Spigot")) {
+            return ServerType.SPIGOT;
+        }
         return ServerType.BUKKIT;
     }
 
@@ -68,7 +75,8 @@ public class SpigotServer implements OPanelServer {
 
     @Override
     public String getVersion() {
-        return server.getBukkitVersion();
+        // getBukkitVersion() -> "<MinecraftVersion>-R0.x-SNAPSHOT"
+        return server.getBukkitVersion().split("-")[0];
     }
 
     @Override
@@ -227,7 +235,7 @@ public class SpigotServer implements OPanelServer {
 
     @Override
     public void reload() {
-        if(Main.isPaper) {
+        if(getServerType() == ServerType.PAPER) {
             sendServerCommand("reload confirm");
         } else {
             sendServerCommand("reload");

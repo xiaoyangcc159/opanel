@@ -119,7 +119,7 @@ export function InfoCard({
           <div className="flex max-lg:flex-col gap-4 max-lg:gap-1 [&>*]:space-x-2">
             <div>
               <span className="font-semibold text-nowrap">版本:</span>
-              <span>{ctx?.version}</span>
+              <span>{`${ctx?.serverType} ${ctx?.version}`}</span>
             </div>
             <div>
               <span className="font-semibold text-nowrap">端口:</span>

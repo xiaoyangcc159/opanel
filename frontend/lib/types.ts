@@ -6,6 +6,8 @@ export type APIResponse<T> = {
   error: string
 } & T;
 
+export type ServerType = "Bukkit" | "Fabric" | "Forge" | "Neoforge" | "Folia";
+
 export enum GameMode {
   ADVENTURE = "adventure",
   SURVIVAL = "survival",
@@ -46,6 +48,7 @@ export type EditorOptionsType = React.ComponentProps<typeof Editor>["options"];
 export interface InfoResponse {
   favicon: string | null
   motd: string // base64
+  serverType: ServerType
   version: string
   port: number
   maxPlayerCount: number
