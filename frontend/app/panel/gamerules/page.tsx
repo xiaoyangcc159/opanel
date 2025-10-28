@@ -16,7 +16,7 @@ import {
 import {
   generateFormSchema,
   type ServerGamerules
-} from "@/lib/gamerules/gamerule";
+} from "@/lib/gamerules";
 import { sendGetRequest, sendPostRequest, toastError } from "@/lib/api";
 import { isNumeric, objectToMap } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
@@ -109,7 +109,7 @@ export default function Gamerules() {
               //   return <></>;
               // }
               if(searchString && !key.toLowerCase().includes(searchString.toLowerCase())) {
-                return <Fragment key={key}></Fragment>;
+                return <Fragment key={key}/>;
               }
 
               return (
@@ -134,7 +134,7 @@ export default function Gamerules() {
                         {(preset && preset.description) && <ItemDescription>{preset.description}</ItemDescription>}
                         <FormMessage />
                       </ItemContent>
-                      <ItemActions >
+                      <ItemActions>
                         {(() => {
                           if(typeof value === "boolean") {
                             return (

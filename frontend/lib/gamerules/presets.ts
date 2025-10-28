@@ -1,7 +1,8 @@
+import type { Gamerule } from ".";
 import { Axe, BedDouble, Bomb, BookMarked, BowArrow, Boxes, BugOff, Cat, Clock, ClockFading, CloudSunRain, Flame, Gauge, GitBranch, HandCoins, Handshake, HeartMinus, HeartPlus, Hourglass, Link, MapPin, Megaphone, Minimize2, MountainSnow, Pickaxe, Radius, ShieldCheck, Skull, Snowflake, Sprout, Sword, Trophy, Volume2, Waves, WavesLadder } from "lucide-react";
 
 /** @see https://zh.minecraft.wiki/w/%E6%B8%B8%E6%88%8F%E8%A7%84%E5%88%99#%E6%B8%B8%E6%88%8F%E8%A7%84%E5%88%99%E5%88%97%E8%A1%A8 */
-const gamerulePresets = [
+const gamerulePresets: Gamerule[] = [
   {
     id: "allowFireTicksAwayFromPlayer",
     name: "允许火在远离玩家处蔓延",

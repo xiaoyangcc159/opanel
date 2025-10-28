@@ -4,24 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90587dcf-15dc-47d2-9c29-bb98b36eacd0" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/net/opanel/ServerType.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/net/opanel/ServerType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/net/opanel/api/InfoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/net/opanel/api/InfoServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/main/java/net/opanel/utils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/net/opanel/utils/Utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/folia-1.20/src/main/java/net/opanel/folia_1_20/FoliaServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/folia-1.20/src/main/java/net/opanel/folia_1_20/FoliaServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/folia-1.21/src/main/java/net/opanel/folia_1_21/FoliaServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/folia-1.21/src/main/java/net/opanel/folia_1_21/FoliaServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/app/panel/dashboard/info-card.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/panel/dashboard/info-card.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/lib/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/types.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.16.1/src/main/java/net/opanel/spigot_1_16_1/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.16.1/src/main/java/net/opanel/spigot_1_16_1/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.16.1/src/main/java/net/opanel/spigot_1_16_1/SpigotServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.16.1/src/main/java/net/opanel/spigot_1_16_1/SpigotServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.19.4/src/main/java/net/opanel/spigot_1_19_4/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.19.4/src/main/java/net/opanel/spigot_1_19_4/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.19.4/src/main/java/net/opanel/spigot_1_19_4/SpigotServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.19.4/src/main/java/net/opanel/spigot_1_19_4/SpigotServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.20/src/main/java/net/opanel/spigot_1_20/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.20/src/main/java/net/opanel/spigot_1_20/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.20/src/main/java/net/opanel/spigot_1_20/SpigotServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.20/src/main/java/net/opanel/spigot_1_20/SpigotServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.21/src/main/java/net/opanel/spigot_1_21/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.21/src/main/java/net/opanel/spigot_1_21/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.21/src/main/java/net/opanel/spigot_1_21/SpigotServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.21/src/main/java/net/opanel/spigot_1_21/SpigotServer.java" afterDir="false" />
-    </list>
+    <list default="true" id="90587dcf-15dc-47d2-9c29-bb98b36eacd0" name="更改" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
