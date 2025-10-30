@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useCallback, useState, type PropsWithChildren } from "react";
 import { toast } from "sonner";
 import {
@@ -11,7 +12,7 @@ import {
   DialogTrigger
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { validateLocaleCode } from "@/lib/utils";
 
@@ -40,6 +41,7 @@ export function CreateCodeOfConductDialog({
     }
     
     onAction && onAction(formattedLang);
+    setInputtedLang("");
     setOpen(false);
   }, [excludedLocales, inputtedLang, onAction]);
 
@@ -60,6 +62,10 @@ export function CreateCodeOfConductDialog({
               value={inputtedLang}
               placeholder="请输入语言代码...（如：zh_cn）"
               onInput={(e) => setInputtedLang((e.target as HTMLInputElement).value)}/>
+            <FieldDescription>
+              语言代码可参考 <Link href="https://simplelocalize.io/data/locales" target="_blank">https://simplelocalize.io/data/locales</Link><br />
+              遵循<Link href="https://iso.org/iso-639-language-code" target="_blank">ISO-639-1</Link>与<Link href="https://iso.org/iso-3166-country-codes.html" target="_blank">ISO-3166</Link>国际标准。
+            </FieldDescription>
           </Field>
         </div>
         <DialogFooter>
