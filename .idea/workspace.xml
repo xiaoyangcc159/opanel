@@ -4,19 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90587dcf-15dc-47d2-9c29-bb98b36eacd0" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/folia-1.20/src/main/java/net/opanel/folia_1_20/FoliaServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/folia-1.20/src/main/java/net/opanel/folia_1_20/FoliaServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/folia-1.21/src/main/java/net/opanel/folia_1_21/FoliaServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/folia-1.21/src/main/java/net/opanel/folia_1_21/FoliaServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/app/panel/dashboard/info-card.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/panel/dashboard/info-card.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/app/panel/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/panel/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/lib/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/types.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.16.1/src/main/java/net/opanel/spigot_1_16_1/SpigotServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.16.1/src/main/java/net/opanel/spigot_1_16_1/SpigotServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.19.4/src/main/java/net/opanel/spigot_1_19_4/SpigotServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.19.4/src/main/java/net/opanel/spigot_1_19_4/SpigotServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.20/src/main/java/net/opanel/spigot_1_20/SpigotServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.20/src/main/java/net/opanel/spigot_1_20/SpigotServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.21.9/src/main/java/net/opanel/spigot_1_21_9/SpigotServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.21.9/src/main/java/net/opanel/spigot_1_21_9/SpigotServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.21/src/main/java/net/opanel/spigot_1_21/SpigotServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.21/src/main/java/net/opanel/spigot_1_21/SpigotServer.java" afterDir="false" />
-    </list>
+    <list default="true" id="90587dcf-15dc-47d2-9c29-bb98b36eacd0" name="更改" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -90,24 +78,6 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="opanel" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="opanel" type="f1a62948:ProjectNode" />
-                <item name="folia-1.21" type="2d1252cf:ModuleNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="opanel" type="f1a62948:ProjectNode" />
-                <item name="folia-1.21" type="2d1252cf:ModuleNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="opanel" type="f1a62948:ProjectNode" />
-                <item name="folia-1.21" type="2d1252cf:ModuleNode" />
                 <item name="Tasks" type="e4a08cd1:TasksNode" />
                 <item name="build" type="c8890929:TasksNode$1" />
               </path>
