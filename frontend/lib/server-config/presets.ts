@@ -1,5 +1,5 @@
 import type { Property } from ".";
-import { AppWindow, ArrowLeftRight, CirclePause, Contact, Earth, EthernetPort, FileArchive, FileKey, FilePen, HeartHandshake, KeyRound, Link, Link2, ListX, Lock, Megaphone, Package, PackageCheck, PackageOpen, PackageSearch, Plane, Radius, Server, ShieldCheck, Sprout, Square, SquareAsterisk, TentTree, Timer, Users, Waypoints } from "lucide-react";
+import { AppWindow, ArrowLeftRight, Bug, CirclePause, Contact, Earth, EthernetPort, FileArchive, FileKey, FilePen, HeartHandshake, KeyRound, Link, Link2, ListX, Lock, Megaphone, Package, PackageCheck, PackageOpen, PackageSearch, Plane, Radius, Server, Settings, ShieldCheck, Sprout, Square, SquareAsterisk, Swords, TentTree, Timer, Users, Waypoints } from "lucide-react";
 
 /** @see https://zh.minecraft.wiki/w/%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F */
 const serverPropertiesPresets: Property[] = [
@@ -39,6 +39,12 @@ const serverPropertiesPresets: Property[] = [
     icon: Link
   },
   {
+    id: "debug",
+    description: "启用服务器调试模式",
+    type: "boolean",
+    icon: Bug
+  },
+  {
     id: "difficulty",
     description: "定义服务器的游戏难度",
     type: "string"
@@ -52,7 +58,8 @@ const serverPropertiesPresets: Property[] = [
   {
     id: "enable-command-block",
     description: "是否启用指令方块",
-    type: "boolean"
+    type: "boolean",
+    icon: Settings
   },
   {
     id: "enable-jmx-monitoring",
@@ -274,6 +281,12 @@ const serverPropertiesPresets: Property[] = [
     icon: Waypoints
   },
   {
+    id: "pvp",
+    description: "是否允许PvP",
+    type: "boolean",
+    icon: Swords
+  },
+  {
     id: "query.port",
     description: "设置监听服务器的端口号",
     type: "number"
@@ -348,6 +361,21 @@ const serverPropertiesPresets: Property[] = [
     description: "设置服务端可更新实体范围的最大值（模拟距离）",
     type: "number",
     icon: Radius
+  },
+  {
+    id: "spawn-animals",
+    description: "决定动物是否可以生成",
+    type: "boolean"
+  },
+  {
+    id: "spawn-monsters",
+    description: "决定攻击型生物（怪物）是否可以生成",
+    type: "boolean"
+  },
+  {
+    id: "spawn-npcs",
+    description: "决定是否生成村民",
+    type: "boolean"
   },
   {
     id: "spawn-protection",
