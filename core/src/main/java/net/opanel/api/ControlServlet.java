@@ -45,7 +45,6 @@ public class ControlServlet extends BaseServlet {
                     e.printStackTrace();
                     sendResponse(res, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 }
-                return;
             }
             case "code-of-conduct" -> {
                 if(!(server instanceof CodeOfConductFeature)) {
@@ -63,10 +62,9 @@ public class ControlServlet extends BaseServlet {
                     e.printStackTrace();
                     sendResponse(res, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 }
-                return;
             }
+            default -> sendResponse(res, HttpServletResponse.SC_BAD_REQUEST);
         }
-        sendResponse(res, HttpServletResponse.SC_BAD_REQUEST);
     }
 
     @Override
@@ -140,7 +138,6 @@ public class ControlServlet extends BaseServlet {
                     e.printStackTrace();
                     sendResponse(res, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
                 }
-                return;
             }
             default -> {
                 sendResponse(res, HttpServletResponse.SC_BAD_REQUEST);
@@ -183,6 +180,9 @@ public class ControlServlet extends BaseServlet {
                     e.printStackTrace();
                     sendResponse(res, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
                 }
+            }
+            default -> {
+                sendResponse(res, HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
         }

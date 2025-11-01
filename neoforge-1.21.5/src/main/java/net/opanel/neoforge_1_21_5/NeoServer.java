@@ -44,6 +44,9 @@ public class NeoServer implements OPanelServer {
 
     @Override
     public byte[] getFavicon() {
+        byte[] serverIconPNG = OPanelServer.super.getFavicon();
+        if(serverIconPNG != null) return serverIconPNG;
+
         ServerStatus status = server.getStatus();
         if(status == null) return null;
 
@@ -52,6 +55,33 @@ public class NeoServer implements OPanelServer {
 
         ServerStatus.Favicon favicon = faviconOptional.get();
         return favicon.iconBytes();
+    }
+
+    @Override
+    public void setFavicon(byte[] iconBytes) throws IOException {
+        OPanelServer.super.setFavicon(iconBytes);
+        // reload server favicon
+        ServerStatus status = server.getStatus();
+        ServerStatus.Favicon favicon = new ServerStatus.Favicon(iconBytes);
+        ServerStatus newStatus = new ServerStatus(
+                status.description(),
+                status.players(),
+                status.version(),
+                Optional.of(favicon),
+                status.enforcesSecureChat(),
+                status.isModded()
+        );
+        try {
+            Field statusIconField = MinecraftServer.class.getDeclaredField("statusIcon");
+            statusIconField.setAccessible(true);
+            statusIconField.set(server, favicon);
+
+            Field statusField = MinecraftServer.class.getDeclaredField("status");
+            statusField.setAccessible(true);
+            statusField.set(server, newStatus);
+        } catch (Exception e) {
+            Main.LOGGER.warn("Cannot reload server favicon.");
+        }
     }
 
     @Override

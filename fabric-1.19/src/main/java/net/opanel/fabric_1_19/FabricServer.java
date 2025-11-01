@@ -45,6 +45,9 @@ public class FabricServer implements OPanelServer {
 
     @Override
     public byte[] getFavicon() {
+        byte[] serverIconPNG = OPanelServer.super.getFavicon();
+        if(serverIconPNG != null) return serverIconPNG;
+
         ServerMetadata metadata = server.getServerMetadata();
         if(metadata == null) return null;
 
@@ -56,6 +59,14 @@ public class FabricServer implements OPanelServer {
 
         String base64Data = favicon.substring(base64Comma + 1);
         return Base64.getDecoder().decode(base64Data);
+    }
+
+    @Override
+    public void setFavicon(byte[] iconBytes) throws IOException {
+        OPanelServer.super.setFavicon(iconBytes);
+        // reload server favicon
+        String base64Data = Base64.getEncoder().encodeToString(iconBytes);
+        server.getServerMetadata().setFavicon("data:image/png;base64,"+ base64Data);
     }
 
     @Override

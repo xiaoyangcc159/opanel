@@ -11,6 +11,7 @@ import org.bukkit.help.HelpTopic;
 
 import javax.naming.OperationNotSupportedException;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,8 +20,6 @@ import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
 public class FoliaServer implements OPanelServer {
-    private static final Path serverIconPath = Paths.get("").resolve("server-icon.png");
-
     private final Main plugin;
     private final Server server;
 
@@ -35,13 +34,15 @@ public class FoliaServer implements OPanelServer {
     }
 
     @Override
-    public byte[] getFavicon() {
-        if(!Files.exists(serverIconPath)) return null;
+    public void setFavicon(byte[] iconBytes) throws IOException {
+        OPanelServer.super.setFavicon(iconBytes);
+        // reload server favicon
         try {
-            return Files.readAllBytes(serverIconPath);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            Method loadIconMethod = server.getClass().getDeclaredMethod("loadIcon");
+            loadIconMethod.setAccessible(true);
+            loadIconMethod.invoke(server);
+        } catch (Exception e) {
+            plugin.LOGGER.warning("Cannot reload server favicon.");
         }
     }
 

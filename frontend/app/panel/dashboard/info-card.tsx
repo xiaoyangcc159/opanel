@@ -1,7 +1,7 @@
 "use client";
 
-import { useContext, useState } from "react";
-import { PenLine, Power, RotateCw, Settings, UserPen } from "lucide-react";
+import { useContext, useRef, useState } from "react";
+import { Pencil, PenLine, Power, RotateCw, Settings, UserPen } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { base64ToString, cn } from "@/lib/utils";
@@ -15,6 +15,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { WhitelistSheet } from "../players/whitelist-sheet";
 import { ServerSheet } from "./server-sheet";
 import { MotdEditor } from "./motd-editor";
+import { FaviconDialog } from "./favicon-dialog";
 
 import PackIcon from "@/assets/images/pack.png";
 
@@ -116,14 +117,26 @@ export function InfoCard({
 }>) {
   const versionCtx = useContext(VersionContext);
   const ctx = useContext(InfoContext);
+  const faviconRef = useRef<HTMLImageElement>(null);
 
   return (
     <Card className={cn(className, "flex flex-col rounded-md max-lg:gap-3")}>
       <div className="min-lg:flex-1 flex max-md:flex-col gap-6 max-lg:border-b max-lg:pb-3">
-        <img
-          className="aspect-square h-full max-md:w-32 max-md:h-32 rounded-xs image-pixelated"
-          src={(ctx && ctx.favicon) ? (apiUrl + ctx.favicon) : PackIcon.src}
-          alt="favicon"/>
+        <div className="relative group/favicon">
+          <img
+            className="aspect-square h-full max-md:w-32 max-md:h-32 rounded-xs image-pixelated"
+            src={(ctx && ctx.favicon) ? (apiUrl + ctx.favicon) : PackIcon.src}
+            alt="favicon"
+            ref={faviconRef}/>
+          <FaviconDialog asChild>
+            <Button
+              variant="secondary"
+              size="icon-sm"
+              className="absolute bottom-0 ml-2 mb-2 cursor-pointer hidden group-hover/favicon:flex">
+              <Pencil />
+            </Button>
+          </FaviconDialog>
+        </div>
         
         <div className="flex-1 flex flex-col gap-2">
           <div className="flex max-lg:flex-col gap-4 max-lg:gap-1 [&>*]:space-x-2">

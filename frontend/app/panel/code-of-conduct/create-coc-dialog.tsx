@@ -26,7 +26,7 @@ export function CreateCodeOfConductDialog({
   asChild?: boolean,
   onAction?: (lang: string) => void
 }) {
-  const [open, setOpen] = useState<boolean>(false);
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [inputtedLang, setInputtedLang] = useState<string>("");
 
   const handleAction = useCallback(() => {
@@ -42,11 +42,11 @@ export function CreateCodeOfConductDialog({
     
     onAction && onAction(formattedLang);
     setInputtedLang("");
-    setOpen(false);
+    setDialogOpen(false);
   }, [excludedLocales, inputtedLang, onAction]);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild={asChild}>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>

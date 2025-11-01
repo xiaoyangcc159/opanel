@@ -44,6 +44,9 @@ public class ForgeServer implements OPanelServer {
 
     @Override
     public byte[] getFavicon() {
+        byte[] serverIconPNG = OPanelServer.super.getFavicon();
+        if(serverIconPNG != null) return serverIconPNG;
+
         ServerStatus status = server.getStatus();
         if(status == null) return null;
 
@@ -52,6 +55,33 @@ public class ForgeServer implements OPanelServer {
 
         ServerStatus.Favicon favicon = faviconOptional.get();
         return favicon.iconBytes();
+    }
+
+    @Override
+    public void setFavicon(byte[] iconBytes) throws IOException {
+        OPanelServer.super.setFavicon(iconBytes);
+        // reload server favicon
+        ServerStatus status = server.getStatus();
+        ServerStatus.Favicon favicon = new ServerStatus.Favicon(iconBytes);
+        ServerStatus newStatus = new ServerStatus(
+                status.description(),
+                status.players(),
+                status.version(),
+                Optional.of(favicon),
+                status.enforcesSecureChat(),
+                status.forgeData()
+        );
+        try {
+            Field statusIconField = MinecraftServer.class.getDeclaredField("f_271173_"); // f_271173_ -> statusIcon
+            statusIconField.setAccessible(true);
+            statusIconField.set(server, favicon);
+
+            Field statusField = MinecraftServer.class.getDeclaredField("f_129757_"); // f_129757_ -> status
+            statusField.setAccessible(true);
+            statusField.set(server, newStatus);
+        } catch (Exception e) {
+            Main.LOGGER.warn("Cannot reload server favicon.");
+        }
     }
 
     @Override

@@ -44,6 +44,9 @@ public class FabricServer implements OPanelServer {
 
     @Override
     public byte[] getFavicon() {
+        byte[] serverIconPNG = OPanelServer.super.getFavicon();
+        if(serverIconPNG != null) return serverIconPNG;
+
         ServerMetadata metadata = server.getServerMetadata();
         if(metadata == null) return null;
 
@@ -52,6 +55,32 @@ public class FabricServer implements OPanelServer {
 
         ServerMetadata.Favicon favicon = faviconOptional.get();
         return favicon.iconBytes();
+    }
+
+    @Override
+    public void setFavicon(byte[] iconBytes) throws IOException {
+        OPanelServer.super.setFavicon(iconBytes);
+        // reload server favicon
+        ServerMetadata metadata = server.getServerMetadata();
+        ServerMetadata.Favicon favicon = new ServerMetadata.Favicon(iconBytes);
+        ServerMetadata newStatus = new ServerMetadata(
+                metadata.description(),
+                metadata.players(),
+                metadata.version(),
+                Optional.of(favicon),
+                metadata.secureChatEnforced()
+        );
+        try {
+            Field faviconField = MinecraftServer.class.getDeclaredField("field_42958"); // field_42958 -> favicon
+            faviconField.setAccessible(true);
+            faviconField.set(server, favicon);
+
+            Field metadataField = MinecraftServer.class.getDeclaredField("field_4593"); // field_4593 -> metadata
+            metadataField.setAccessible(true);
+            metadataField.set(server, newStatus);
+        } catch (Exception e) {
+            Main.LOGGER.warn("Cannot reload server favicon.");
+        }
     }
 
     @Override

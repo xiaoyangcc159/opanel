@@ -30,7 +30,7 @@ public class InfoServlet extends BaseServlet {
         final OPanelServer server = plugin.getServer();
 
         HashMap<String, Object> obj = new HashMap<>();
-        obj.put("favicon", server.getFavicon() != null ? IconServlet.route : null);
+        obj.put("favicon", server.getFavicon() != null ? (IconServlet.route +"?t="+ System.currentTimeMillis()) : null);
         obj.put("motd", Utils.stringToBase64(server.getMotd()));
         obj.put("port", server.getPort());
         obj.put("maxPlayerCount", server.getMaxPlayerCount());

@@ -122,3 +122,16 @@ export function validateLocaleCode(localeCode: string): boolean {
   if(localeCode === "") return false;
   return locale.getByTag(localeCode.toLowerCase().replaceAll("_", "-")) !== undefined;
 }
+
+export async function fileToDataUrl(file: File): Promise<string> {
+  const reader = new FileReader();
+  return new Promise((resolve, reject) => {
+    reader.addEventListener("load", () => {
+      resolve(reader.result as string);
+    });
+    reader.addEventListener("error", () => {
+      reject(reader.error);
+    });
+    reader.readAsDataURL(file);
+  });
+}
