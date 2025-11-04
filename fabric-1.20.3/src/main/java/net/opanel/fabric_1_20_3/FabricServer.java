@@ -194,6 +194,13 @@ public class FabricServer implements OPanelServer {
     }
 
     @Override
+    public void removePlayerData(String uuid) throws IOException {
+        final Path playerDataFolder = server.getSavePath(WorldSavePath.PLAYERDATA);
+        Files.deleteIfExists(playerDataFolder.resolve(uuid +".dat"));
+        Files.deleteIfExists(playerDataFolder.resolve(uuid +".dat_old"));
+    }
+
+    @Override
     public boolean isWhitelistEnabled() {
         return server.getPlayerManager().isWhitelistEnabled();
     }

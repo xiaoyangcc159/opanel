@@ -39,6 +39,7 @@ public interface OPanelServer {
     List<OPanelPlayer> getPlayers();
     int getMaxPlayerCount();
     OPanelPlayer getPlayer(String uuid);
+    void removePlayerData(String uuid) throws IOException;
     boolean isWhitelistEnabled();
     void setWhitelistEnabled(boolean enabled);
     OPanelWhitelist getWhitelist();

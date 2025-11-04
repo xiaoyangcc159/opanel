@@ -4,7 +4,7 @@ import locale from "locale-codes";
 import { GameMode } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function gameModeToString(gameMode: GameMode) {
@@ -143,4 +143,10 @@ export function purifyUnsafeText(text: string): string {
     .replaceAll(">", "&gt;")
     .replaceAll("\"", "&quot;")
     .replaceAll("'", "&apos;");
+}
+
+export async function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }

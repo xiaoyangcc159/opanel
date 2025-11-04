@@ -166,6 +166,13 @@ public class SpigotServer implements OPanelServer {
     }
 
     @Override
+    public void removePlayerData(String uuid) throws IOException {
+        final Path playerDataFolder = server.getWorlds().getFirst().getWorldFolder().toPath().resolve("playerdata");
+        Files.deleteIfExists(playerDataFolder.resolve(uuid +".dat"));
+        Files.deleteIfExists(playerDataFolder.resolve(uuid +".dat_old"));
+    }
+
+    @Override
     public boolean isWhitelistEnabled() {
         return server.hasWhitelist();
     }

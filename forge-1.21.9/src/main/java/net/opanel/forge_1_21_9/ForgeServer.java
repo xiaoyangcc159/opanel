@@ -194,6 +194,13 @@ public class ForgeServer implements OPanelServer, CodeOfConductFeature {
     }
 
     @Override
+    public void removePlayerData(String uuid) throws IOException {
+        final Path playerDataFolder = server.getWorldPath(LevelResource.PLAYER_DATA_DIR);
+        Files.deleteIfExists(playerDataFolder.resolve(uuid +".dat"));
+        Files.deleteIfExists(playerDataFolder.resolve(uuid +".dat_old"));
+    }
+
+    @Override
     public boolean isWhitelistEnabled() {
         return server.getPlayerList().isUsingWhitelist();
     }
