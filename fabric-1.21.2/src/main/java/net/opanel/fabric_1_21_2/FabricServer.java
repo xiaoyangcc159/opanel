@@ -2,6 +2,7 @@ package net.opanel.fabric_1_21_2;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
+import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerMetadata;
@@ -266,14 +267,15 @@ public class FabricServer implements OPanelServer {
                 final Object currentValue = currentGamerules.get(ruleName);
                 if(value.equals(currentValue)) return;
 
-                if(value instanceof Boolean) {
-                    gameRulesObj.get(key).setValue((T) new GameRules.BooleanRule((GameRules.Type<GameRules.BooleanRule>) type, (boolean) value), server);
-                } else if(value instanceof Number) {
-                    int n = (int) ((double) value);
-                    if(n == (int) currentValue) return;
-                    gameRulesObj.get(key).setValue((T) new GameRules.IntRule((GameRules.Type<GameRules.IntRule>) type, n), server);
-                } else if(value instanceof String) {
-                    // Use command to set gamerule
+                T rule = type.createRule();
+                if(rule instanceof GameRules.BooleanRule) { // boolean
+                    ((GameRules.BooleanRule) rule).set((boolean) value, server);
+                    gameRulesObj.get(key).setValue(rule, server);
+                } else if(rule instanceof GameRules.IntRule) { // integer
+                    int n = ((Number) value).intValue();
+                    ((GameRules.IntRule) rule).set(n, server);
+                    gameRulesObj.get(key).setValue(rule, server);
+                } else if(rule instanceof DoubleRule || value instanceof String) { // double, enum, string
                     sendServerCommand("gamerule "+ ruleName +" "+ value);
                 }
             }

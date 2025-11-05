@@ -268,14 +268,15 @@ public class ForgeServer implements OPanelServer {
                 final Object currentValue = currentGamerules.get(ruleName);
                 if(value.equals(currentValue)) return;
 
-                if(value instanceof Boolean) {
-                    gameRulesObj.getRule(key).setFrom((T) new GameRules.BooleanValue((GameRules.Type<GameRules.BooleanValue>) type, (boolean) value), server);
-                } else if(value instanceof Number) {
-                    int n = (int) ((double) value);
-                    if(n == (int) currentValue) return;
-                    gameRulesObj.getRule(key).setFrom((T) new GameRules.IntegerValue((GameRules.Type<GameRules.IntegerValue>) type, n), server);
-                } else if(value instanceof String) {
-                    // Use command to set gamerule
+                T rule = type.createRule();
+                if(rule instanceof GameRules.BooleanValue) { // boolean
+                    ((GameRules.BooleanValue) rule).set((boolean) value, server);
+                    gameRulesObj.getRule(key).setFrom(rule, server);
+                } else if(rule instanceof GameRules.IntegerValue) { // integer
+                    int n = ((Number) value).intValue();
+                    ((GameRules.IntegerValue) rule).set(n, server);
+                    gameRulesObj.getRule(key).setFrom(rule, server);
+                } else { // string
                     sendServerCommand("gamerule "+ ruleName +" "+ value);
                 }
             }
