@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.BannedIpEntry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerMetadata;
 import net.minecraft.server.command.CommandManager;
@@ -186,6 +187,26 @@ public class FabricServer implements OPanelServer {
         final Path playerDataFolder = server.getSavePath(WorldSavePath.PLAYERDATA);
         Files.deleteIfExists(playerDataFolder.resolve(uuid +".dat"));
         Files.deleteIfExists(playerDataFolder.resolve(uuid +".dat_old"));
+    }
+
+    @Override
+    public List<String> getBannedIps() {
+        Collection<BannedIpEntry> entries = server.getPlayerManager().getIpBanList().values();
+        List<String> list = new ArrayList<>();
+        entries.forEach(entry -> list.add(entry.toText().getString()));
+        return list;
+    }
+
+    @Override
+    public void banIp(String ip) {
+        if(getBannedIps().contains(ip)) return;
+        server.getPlayerManager().getIpBanList().add(new BannedIpEntry(ip));
+    }
+
+    @Override
+    public void pardonIp(String ip) {
+        if(!getBannedIps().contains(ip)) return;
+        server.getPlayerManager().getIpBanList().remove(ip);
     }
 
     @Override

@@ -123,6 +123,11 @@ export function validateLocaleCode(localeCode: string): boolean {
   return locale.getByTag(localeCode.toLowerCase().replaceAll("_", "-")) !== undefined;
 }
 
+/** @see https://stackoverflow.com/questions/5284147/validating-ipv4-addresses-with-regexp */
+export function validateIpv4Address(ip: string): boolean {
+  return /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/.test(ip);
+}
+
 export async function fileToDataUrl(file: File): Promise<string> {
   const reader = new FileReader();
   return new Promise((resolve, reject) => {

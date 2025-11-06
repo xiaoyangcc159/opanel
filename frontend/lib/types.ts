@@ -115,3 +115,8 @@ export interface PlayersResponse {
 export interface WhitelistResponse {
   whitelist: Whitelist
 }
+
+/** `/api/banned-ips` */
+export interface BannedIpsResponse {
+  bannedIps: string[]
+}

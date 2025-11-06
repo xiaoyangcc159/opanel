@@ -9,6 +9,7 @@ import net.minecraft.network.protocol.status.ServerStatus;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.IpBanListEntry;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.storage.LevelResource;
 import net.opanel.ServerType;
@@ -199,6 +200,26 @@ public class ForgeServer implements OPanelServer {
         final Path playerDataFolder = server.getWorldPath(LevelResource.PLAYER_DATA_DIR);
         Files.deleteIfExists(playerDataFolder.resolve(uuid +".dat"));
         Files.deleteIfExists(playerDataFolder.resolve(uuid +".dat_old"));
+    }
+
+    @Override
+    public List<String> getBannedIps() {
+        Collection<IpBanListEntry> entries = server.getPlayerList().getIpBans().getEntries();
+        List<String> list = new ArrayList<>();
+        entries.forEach(entry -> list.add(entry.getDisplayName().getString()));
+        return list;
+    }
+
+    @Override
+    public void banIp(String ip) {
+        if(getBannedIps().contains(ip)) return;
+        server.getPlayerList().getIpBans().add(new IpBanListEntry(ip));
+    }
+
+    @Override
+    public void pardonIp(String ip) {
+        if(!getBannedIps().contains(ip)) return;
+        server.getPlayerList().getIpBans().remove(ip);
     }
 
     @Override

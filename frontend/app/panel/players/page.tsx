@@ -2,7 +2,7 @@
 
 import type { Player, PlayersResponse } from "@/lib/types";
 import { useEffect, useMemo, useState } from "react";
-import { Contact, Search, UserPen, Users } from "lucide-react";
+import { Ban, Contact, Search, UserPen, Users } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DataTable } from "@/components/data-table";
 import { sendGetRequest, toastError } from "@/lib/api";
@@ -14,6 +14,7 @@ import { setWhitelistEnabled } from "./player-utils";
 import { emitter } from "@/lib/emitter";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { changeSettings, getSettings } from "@/lib/settings";
+import { BannedIpsDialog } from "./banned-ips-dialog";
 
 export default function Players() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -79,6 +80,14 @@ export default function Players() {
                 placeholder="搜索玩家..."
                 onChange={(e) => setSearchString(e.target.value)}/>
             </InputGroup>
+            <BannedIpsDialog asChild>
+              <Button
+                variant="outline"
+                className="cursor-pointer">
+                <Ban />
+                管理封禁IP
+              </Button>
+            </BannedIpsDialog>
             {
               isWhitelistEnabled
               ? (

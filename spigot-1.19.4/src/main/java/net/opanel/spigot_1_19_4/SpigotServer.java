@@ -181,6 +181,23 @@ public class SpigotServer implements OPanelServer {
     }
 
     @Override
+    public List<String> getBannedIps() {
+        return new ArrayList<>(server.getIPBans());
+    }
+
+    @Override
+    public void banIp(String ip) {
+        if(server.getIPBans().contains(ip)) return;
+        server.banIP(ip);
+    }
+
+    @Override
+    public void pardonIp(String ip) {
+        if(!server.getIPBans().contains(ip)) return;
+        server.unbanIP(ip);
+    }
+
+    @Override
     public boolean isWhitelistEnabled() {
         return server.hasWhitelist();
     }

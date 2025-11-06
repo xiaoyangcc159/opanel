@@ -69,6 +69,7 @@ public class WebServer {
         ctx.addServlet(new ServletHolder(new SavesServlet(plugin)), SavesServlet.route);
         ctx.addServlet(new ServletHolder(new PlayersServlet(plugin)), PlayersServlet.route);
         ctx.addServlet(new ServletHolder(new WhitelistServlet(plugin)), WhitelistServlet.route);
+        ctx.addServlet(new ServletHolder(new BannedIpsServlet(plugin)), BannedIpsServlet.route);
         ctx.addServlet(new ServletHolder(new MonitorServlet(plugin)), MonitorServlet.route);
         ctx.addServlet(new ServletHolder(new GamerulesServlet(plugin)), GamerulesServlet.route);
         ctx.addServlet(new ServletHolder(new LogsServlet(plugin)), LogsServlet.route);

@@ -11,6 +11,8 @@ import org.bukkit.help.HelpTopic;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -163,6 +165,23 @@ public class FoliaServer implements OPanelServer {
         final Path playerDataFolder = server.getWorlds().get(0).getWorldFolder().toPath().resolve("playerdata");
         Files.deleteIfExists(playerDataFolder.resolve(uuid +".dat"));
         Files.deleteIfExists(playerDataFolder.resolve(uuid +".dat_old"));
+    }
+
+    @Override
+    public List<String> getBannedIps() {
+        return new ArrayList<>(server.getIPBans());
+    }
+
+    @Override
+    public void banIp(String ip) {
+        if(server.getIPBans().contains(ip)) return;
+        server.banIP(ip);
+    }
+
+    @Override
+    public void pardonIp(String ip) {
+        if(!server.getIPBans().contains(ip)) return;
+        server.unbanIP(ip);
     }
 
     @Override
