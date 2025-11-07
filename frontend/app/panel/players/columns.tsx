@@ -23,10 +23,16 @@ export const playerColumns: ColumnDef<Player>[] = [
         <Tooltip>
           <TooltipTrigger>
             <PlayerSheet player={row.original} asChild>
-              <div className="flex items-center gap-2 cursor-pointer">
-                <img src={avatarUrl + uuid} alt={name} width={17} height={17}/>
-                <span className="font-semibold">{name}</span>
-              </div>
+              {
+                name
+                ? (
+                  <div className="flex items-center gap-2 cursor-pointer">
+                    <img src={avatarUrl + uuid} alt={name} width={17} height={17}/>
+                    <span className="font-semibold">{name}</span>
+                  </div>
+                )
+                : <span className="text-muted-foreground italic cursor-pointer">&lt;无名玩家&gt;</span>
+              }
             </PlayerSheet>
           </TooltipTrigger>
           <TooltipContent>{uuid}</TooltipContent>

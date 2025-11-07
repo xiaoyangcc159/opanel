@@ -36,6 +36,11 @@ export interface Player {
   isWhitelisted?: boolean
 }
 
+/** Bot player may not have a name */
+export interface UnnamedPlayer extends Player {
+  name: never
+}
+
 export type Whitelist = {
   name: string
   uuid: string

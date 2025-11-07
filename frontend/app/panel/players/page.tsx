@@ -1,6 +1,6 @@
 "use client";
 
-import type { Player, PlayersResponse } from "@/lib/types";
+import type { Player, PlayersResponse, UnnamedPlayer } from "@/lib/types";
 import { useEffect, useMemo, useState } from "react";
 import { Ban, Contact, Search, UserPen, Users } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -18,6 +18,7 @@ import { BannedIpsDialog } from "./banned-ips-dialog";
 
 export default function Players() {
   const [players, setPlayers] = useState<Player[]>([]);
+  const [unnamedPlayers, setUnnamedPlayers] = useState<UnnamedPlayer[]>([]);
   const [maxPlayerCount, setMaxPlayerCount] = useState<number>(0);
   const [isWhitelistEnabled, setWhitelistEnabledState] = useState(false);
   const [currentTab, setCurrentTab] = useState<string>("player-list");
@@ -28,9 +29,11 @@ export default function Players() {
   const fetchPlayerList = async () => {
     try {
       const res = await sendGetRequest<PlayersResponse>("/api/players");
-      const sortedPlayers = res.players.sort((a, b) => a.name.localeCompare(b.name));
+      const namedPlayers = res.players.filter(({ name }) => name !== undefined);
+      const sortedPlayers = namedPlayers.sort((a, b) => a.name.localeCompare(b.name));
 
       setPlayers(sortedPlayers);
+      setUnnamedPlayers(res.players.filter(({ name }) => name === undefined) as UnnamedPlayer[]);
       setMaxPlayerCount(res.maxPlayerCount);
       setWhitelistEnabledState(res.whitelist);
     } catch (e: any) {
@@ -128,7 +131,8 @@ export default function Players() {
             data={[
               ...nonBannedPlayers.filter(({ name, isOnline }) => name.toLowerCase().includes(searchString.toLowerCase()) && isOnline),
               ...nonBannedPlayers.filter(({ name, isOnline, isOp }) => name.toLowerCase().includes(searchString.toLowerCase()) && !isOnline && isOp),
-              ...nonBannedPlayers.filter(({ name, isOnline, isOp }) => name.toLowerCase().includes(searchString.toLowerCase()) && !isOnline && !isOp)
+              ...nonBannedPlayers.filter(({ name, isOnline, isOp }) => name.toLowerCase().includes(searchString.toLowerCase()) && !isOnline && !isOp),
+              ...unnamedPlayers
             ]}
             pagination
             fallbackMessage="暂无玩家"/>
