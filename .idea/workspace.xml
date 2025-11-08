@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90587dcf-15dc-47d2-9c29-bb98b36eacd0" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.16.1/src/main/java/net/opanel/spigot_1_16_1/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.16.1/src/main/java/net/opanel/spigot_1_16_1/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.19.4/src/main/java/net/opanel/spigot_1_19_4/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.19.4/src/main/java/net/opanel/spigot_1_19_4/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.20/src/main/java/net/opanel/spigot_1_20/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.20/src/main/java/net/opanel/spigot_1_20/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.20/src/main/java/net/opanel/spigot_1_20/SpigotPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.20/src/main/java/net/opanel/spigot_1_20/SpigotPlayer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.21.9/src/main/java/net/opanel/spigot_1_21_9/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.21.9/src/main/java/net/opanel/spigot_1_21_9/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spigot-1.21/src/main/java/net/opanel/spigot_1_21/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/spigot-1.21/src/main/java/net/opanel/spigot_1_21/Main.java" afterDir="false" />
-    </list>
+    <list default="true" id="90587dcf-15dc-47d2-9c29-bb98b36eacd0" name="更改" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

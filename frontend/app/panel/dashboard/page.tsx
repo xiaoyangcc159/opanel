@@ -35,9 +35,9 @@ export default function Dashboard() {
   };
 
   const requestMonitor = async () => {
+    const { mem, cpu, tps } = await sendGetRequest<MonitorResponse>("/api/monitor");
     const currentData = await getCurrentState(setMonitorData);
     const newData = [...currentData];
-    const { mem, cpu, tps } = await sendGetRequest<MonitorResponse>("/api/monitor");
     newData.shift();
     newData.push({ memory: mem, cpu, tps });
     setMonitorData(newData);
