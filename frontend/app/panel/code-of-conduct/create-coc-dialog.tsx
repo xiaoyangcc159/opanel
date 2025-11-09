@@ -36,7 +36,7 @@ export function CreateCodeOfConductDialog({
       return;
     }
     if(excludedLocales.includes(formattedLang)) {
-      toast.error("你所要创建的语言版本已存在");
+      toast.warning("你所要创建的语言版本已存在");
       return;
     }
     

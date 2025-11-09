@@ -1,5 +1,6 @@
 package net.opanel.forge_1_21_9;
 
+import com.google.gson.Gson;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 import net.minecraft.commands.CommandSourceStack;
@@ -10,6 +11,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.dedicated.DedicatedServerProperties;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.IpBanList;
+import net.minecraft.server.players.IpBanListEntry;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.storage.LevelResource;
 import net.opanel.ServerType;
@@ -19,6 +22,7 @@ import net.opanel.utils.Utils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -201,6 +205,26 @@ public class ForgeServer implements OPanelServer, CodeOfConductFeature {
     }
 
     @Override
+    public List<String> getBannedIps() {
+        Collection<IpBanListEntry> entries = server.getPlayerList().getIpBans().getEntries();
+        List<String> list = new ArrayList<>();
+        entries.forEach(entry -> list.add(entry.getUser()));
+        return list;
+    }
+
+    @Override
+    public void banIp(String ip) {
+        if(getBannedIps().contains(ip)) return;
+        server.getPlayerList().getIpBans().add(new IpBanListEntry(ip));
+    }
+
+    @Override
+    public void pardonIp(String ip) {
+        if(!getBannedIps().contains(ip)) return;
+        server.getPlayerList().getIpBans().remove(ip);
+    }
+
+    @Override
     public boolean isWhitelistEnabled() {
         return server.getPlayerList().isUsingWhitelist();
     }
@@ -265,14 +289,15 @@ public class ForgeServer implements OPanelServer, CodeOfConductFeature {
                 final Object currentValue = currentGamerules.get(ruleName);
                 if(value.equals(currentValue)) return;
 
-                if(value instanceof Boolean) {
-                    gameRulesObj.getRule(key).setFrom((T) new GameRules.BooleanValue((GameRules.Type<GameRules.BooleanValue>) type, (boolean) value), server);
-                } else if(value instanceof Number) {
-                    int n = (int) ((double) value);
-                    if(n == (int) currentValue) return;
-                    gameRulesObj.getRule(key).setFrom((T) new GameRules.IntegerValue((GameRules.Type<GameRules.IntegerValue>) type, n), server);
-                } else if(value instanceof String) {
-                    // Use command to set gamerule
+                T rule = type.createRule();
+                if(rule instanceof GameRules.BooleanValue) { // boolean
+                    ((GameRules.BooleanValue) rule).set((boolean) value, server);
+                    gameRulesObj.getRule(key).setFrom(rule, server);
+                } else if(rule instanceof GameRules.IntegerValue) { // integer
+                    int n = ((Number) value).intValue();
+                    ((GameRules.IntegerValue) rule).set(n, server);
+                    gameRulesObj.getRule(key).setFrom(rule, server);
+                } else { // string
                     sendServerCommand("gamerule "+ ruleName +" "+ value);
                 }
             }

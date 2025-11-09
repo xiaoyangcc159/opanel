@@ -1,4 +1,4 @@
 /**
  * Version of OPanel
  */
-export const version = "1.1.0-pre1";
+export const version = "1.1.0";

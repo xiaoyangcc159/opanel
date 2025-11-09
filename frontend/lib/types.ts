@@ -32,8 +32,13 @@ export interface Player {
   isOp: boolean
   isBanned: boolean
   gamemode?: GameMode
-  banReason?: string
+  banReason?: string // base64
   isWhitelisted?: boolean
+}
+
+/** Bot player may not have a name */
+export interface UnnamedPlayer extends Player {
+  name: never
 }
 
 export type Whitelist = {
@@ -114,4 +119,9 @@ export interface PlayersResponse {
 /** `/api/whitelist` */
 export interface WhitelistResponse {
   whitelist: Whitelist
+}
+
+/** `/api/banned-ips` */
+export interface BannedIpsResponse {
+  bannedIps: string[]
 }

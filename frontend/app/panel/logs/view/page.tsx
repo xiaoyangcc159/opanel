@@ -69,6 +69,7 @@ export default function LogView() {
             variant="ghost"
             size="icon"
             title="删除日志"
+            disabled={log?.endsWith(".log")}
             onClick={async () => {
               await deleteLog(log ?? "");
               push("/panel/logs");

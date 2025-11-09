@@ -11,6 +11,8 @@ import org.bukkit.help.HelpTopic;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -166,6 +168,23 @@ public class FoliaServer implements OPanelServer {
     }
 
     @Override
+    public List<String> getBannedIps() {
+        return new ArrayList<>(server.getIPBans());
+    }
+
+    @Override
+    public void banIp(String ip) {
+        if(server.getIPBans().contains(ip)) return;
+        server.banIP(ip);
+    }
+
+    @Override
+    public void pardonIp(String ip) {
+        if(!server.getIPBans().contains(ip)) return;
+        server.unbanIP(ip);
+    }
+
+    @Override
     public boolean isWhitelistEnabled() {
         return server.hasWhitelist();
     }
@@ -219,14 +238,13 @@ public class FoliaServer implements OPanelServer {
                 GameRule<?> rule = GameRule.getByName(key);
                 if(rule == null) return;
 
-                if(value instanceof Boolean) {
+                if(rule.getType().equals(Boolean.class)) { // boolean
                     world.setGameRule((GameRule<Boolean>) rule, (Boolean) value);
-                } else if(value instanceof Number) {
-                    int n = (int) ((double) value);
-                    if(n == (int) currentValue) return;
+                } else if(rule.getType().equals(Integer.class)) { // integer
+                    int n = ((Number) value).intValue();
                     world.setGameRule((GameRule<Integer>) rule, n);
-                } else if(value instanceof String) {
-                    world.setGameRule((GameRule<String>) rule, (String) value);
+                } else { // string
+                    sendServerCommand("gamerule "+ key +" "+ value);
                 }
             });
         });

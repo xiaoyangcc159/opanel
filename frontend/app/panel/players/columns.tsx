@@ -2,7 +2,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { Player } from "@/lib/types";
 import { useEffect } from "react";
 import { Ban, BrushCleaning, Check, ShieldOff, Trash, UserMinus, UserPlus } from "lucide-react";
-import { gameModeToString, sleep } from "@/lib/utils";
+import { base64ToString, gameModeToString, sleep } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Prompt } from "@/components/prompt";
@@ -23,10 +23,16 @@ export const playerColumns: ColumnDef<Player>[] = [
         <Tooltip>
           <TooltipTrigger>
             <PlayerSheet player={row.original} asChild>
-              <div className="flex items-center gap-2 cursor-pointer">
-                <img src={avatarUrl + uuid} alt={name} width={17} height={17}/>
-                <span className="font-semibold">{name}</span>
-              </div>
+              {
+                name
+                ? (
+                  <div className="flex items-center gap-2 cursor-pointer">
+                    <img src={avatarUrl + uuid} alt={name} width={17} height={17}/>
+                    <span className="font-semibold">{name}</span>
+                  </div>
+                )
+                : <span className="text-muted-foreground italic cursor-pointer">&lt;无名玩家&gt;</span>
+              }
             </PlayerSheet>
           </TooltipTrigger>
           <TooltipContent>{uuid}</TooltipContent>
@@ -212,7 +218,11 @@ export const bannedColumns: ColumnDef<Player>[] = [
   },
   {
     accessorKey: "banReason",
-    header: "封禁原因"
+    header: "封禁原因",
+    cell: ({ row }) => {
+      const { banReason } = row.original;
+      return banReason && <span>{base64ToString(banReason)}</span>;
+    }
   },
   {
     accessorKey: "uuid",

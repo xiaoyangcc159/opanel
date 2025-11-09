@@ -4,6 +4,7 @@ import net.opanel.ServerType;
 import net.opanel.utils.Utils;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,6 +41,9 @@ public interface OPanelServer {
     int getMaxPlayerCount();
     OPanelPlayer getPlayer(String uuid);
     void removePlayerData(String uuid) throws IOException;
+    List<String> getBannedIps();
+    void banIp(String ip) throws UnknownHostException;
+    void pardonIp(String ip) throws UnknownHostException;
     boolean isWhitelistEnabled();
     void setWhitelistEnabled(boolean enabled);
     OPanelWhitelist getWhitelist();

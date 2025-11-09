@@ -61,7 +61,7 @@ export default function Gamerules() {
     for(const key in data) {
       const value = data[key];
       if(typeof value === "string" && isNumeric(value)) {
-        data[key] = parseInt(value);
+        data[key] = parseFloat(value);
       }
     }
     

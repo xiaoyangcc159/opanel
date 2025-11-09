@@ -102,6 +102,19 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     public void runTask(Runnable task) {
-        Bukkit.getScheduler().runTask(this, task);
+        Object lock = new Object();
+        synchronized(lock) {
+            Bukkit.getScheduler().runTask(this, () -> {
+                task.run();
+                synchronized(lock) {
+                    lock.notify();
+                }
+            });
+            try {
+                lock.wait();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 }

@@ -11,6 +11,7 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Locale;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 
@@ -243,6 +244,14 @@ public class Utils {
         Locale locale = Locale.forLanguageTag(standardCode);
         String language = locale.getLanguage();
         return !language.isEmpty() && !language.equals("und");
+    }
+
+    /**
+     * @see <a href="https://stackoverflow.com/questions/5284147/validating-ipv4-addresses-with-regexp">https://stackoverflow.com/questions/5284147/validating-ipv4-addresses-with-regexp</a>
+     */
+    public static boolean validateIpv4Address(String ip) {
+        final Pattern regex = Pattern.compile("^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$");
+        return regex.matcher(ip).matches();
     }
 
     public static int[] getImageDimensions(byte[] imageBytes) throws IOException {

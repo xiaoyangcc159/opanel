@@ -2,7 +2,10 @@ package net.opanel.fabric_1_21_9;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
+import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
+import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.BannedIpEntry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerMetadata;
 import net.minecraft.server.command.CommandManager;
@@ -202,6 +205,26 @@ public class FabricServer implements OPanelServer, CodeOfConductFeature {
     }
 
     @Override
+    public List<String> getBannedIps() {
+        Collection<BannedIpEntry> entries = server.getPlayerManager().getIpBanList().values();
+        List<String> list = new ArrayList<>();
+        entries.forEach(entry -> list.add(entry.getKey()));
+        return list;
+    }
+
+    @Override
+    public void banIp(String ip) {
+        if(getBannedIps().contains(ip)) return;
+        server.getPlayerManager().getIpBanList().add(new BannedIpEntry(ip));
+    }
+
+    @Override
+    public void pardonIp(String ip) {
+        if(!getBannedIps().contains(ip)) return;
+        server.getPlayerManager().getIpBanList().remove(ip);
+    }
+
+    @Override
     public boolean isWhitelistEnabled() {
         return server.getPlayerManager().isWhitelistEnabled();
     }
@@ -266,14 +289,22 @@ public class FabricServer implements OPanelServer, CodeOfConductFeature {
                 final Object currentValue = currentGamerules.get(ruleName);
                 if(value.equals(currentValue)) return;
 
-                if(value instanceof Boolean) {
-                    gameRulesObj.get(key).setValue((T) new GameRules.BooleanRule((GameRules.Type<GameRules.BooleanRule>) type, (boolean) value), server);
-                } else if(value instanceof Number) {
-                    int n = (int) ((double) value);
-                    if(n == (int) currentValue) return;
-                    gameRulesObj.get(key).setValue((T) new GameRules.IntRule((GameRules.Type<GameRules.IntRule>) type, n), server);
-                } else if(value instanceof String) {
-                    // Use command to set gamerule
+                T rule = type.createRule();
+                if(rule instanceof GameRules.BooleanRule) { // boolean
+                    ((GameRules.BooleanRule) rule).set((boolean) value, server);
+                    gameRulesObj.get(key).setValue(rule, server);
+                } else if(rule instanceof GameRules.IntRule) { // integer
+                    int n = ((Number) value).intValue();
+                    ((GameRules.IntRule) rule).set(n, server);
+                    gameRulesObj.get(key).setValue(rule, server);
+                } else if(rule instanceof DoubleRule) { // double
+                    double n = ((Number) value).doubleValue();
+                    ((DoubleRule) rule).set(n, server);
+                    gameRulesObj.get(key).setValue(rule, server);
+                } else if(rule instanceof EnumRule<?>) { // enum
+                    ((EnumRule<?>) rule).set((String) value, server);
+                    gameRulesObj.get(key).setValue(rule, server);
+                } else if(value instanceof String) { // string
                     sendServerCommand("gamerule "+ ruleName +" "+ value);
                 }
             }
