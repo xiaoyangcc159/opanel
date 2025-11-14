@@ -1,109 +1,175 @@
 package net.opanel.web;
 
-import jakarta.servlet.DispatcherType;
-import jakarta.websocket.DeploymentException;
-import jakarta.websocket.server.ServerEndpointConfig;
+import com.google.gson.Gson;
+import io.javalin.Javalin;
+import io.javalin.config.SizeUnit;
+import io.javalin.jetty.JettyServer;
+import io.javalin.json.JavalinGson;
+import io.javalin.util.JavalinLogger;
 import net.opanel.OPanel;
 import net.opanel.api.*;
 import net.opanel.terminal.TerminalEndpoint;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.servlets.CrossOriginFilter;
-import org.eclipse.jetty.util.Jetty;
-import org.eclipse.jetty.util.component.LifeCycle;
-import org.eclipse.jetty.websocket.jakarta.server.config.JakartaWebSocketServletContainerInitializer;
 
 import java.io.IOException;
-import java.util.EnumSet;
+import java.util.Map;
+
+import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class WebServer {
     public final int PORT;
 
     private final OPanel plugin;
-    private Server server;
+    private Javalin app;
 
     public WebServer(OPanel plugin) {
         this.plugin = plugin;
         PORT = plugin.getConfig().webServerPort;
+
+        JavalinLogger.enabled = false;
     }
 
     public void start() throws Exception {
-        server = new Server(PORT);
-        ServletContextHandler ctx = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        ctx.setContextPath("/");
-        server.setHandler(ctx);
+        app = Javalin.create(config -> {
+            config.showJavalinBanner = false;
 
-        // CORS configuration
-        FilterHolder cors = new FilterHolder(new CrossOriginFilter());
-        cors.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "http://localhost:3001"); // for dev
-        cors.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,POST,DELETE,HEAD,OPTIONS");
-        cors.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "X-Requested-With,Content-Type,X-Credential-Token");
-        ctx.addFilter(cors, "/*", EnumSet.of(DispatcherType.REQUEST));
+            // Gson configuration
+            config.jsonMapper(new JavalinGson(new Gson()));
 
-        // WebSocket
-        TerminalEndpoint.Configurator.setPlugin(plugin);
-        JakartaWebSocketServletContainerInitializer.configure(ctx, (servletContext, serverContainer) -> {
-            serverContainer.setDefaultMaxSessionIdleTimeout(-1); // infinity idle timeout
-            try {
-                serverContainer.addEndpoint(
-                        ServerEndpointConfig.Builder
-                                .create(TerminalEndpoint.class, TerminalEndpoint.route)
-                                .configurator(new TerminalEndpoint.Configurator())
-                                .build()
-                );
-            } catch (DeploymentException e) {
-                    plugin.logger.error("Failed to deploy WebSocket endpoint: " + e.getMessage());
-                    throw new RuntimeException("WebSocket deployment failed", e);
-            }
+            // CORS configuration
+            config.plugins.enableCors(cors -> {
+                cors.add(it -> {
+                    it.allowHost("http://localhost:3001"); // for dev
+                });
+            });
+
+            // Multipart configuration
+            config.jetty.multipartConfig.cacheDirectory(OPanel.TMP_DIR_PATH.toString());
+            config.jetty.multipartConfig.maxInMemoryFileSize(10, SizeUnit.MB);
+
+            // Frontend
+            config.staticFiles.add(staticFiles -> {
+                staticFiles.hostedPath = "/";
+                staticFiles.directory = "/web";
+            });
         });
 
-        // API
-        ctx.addServlet(new ServletHolder(new AuthServlet(plugin)), AuthServlet.route);
-        ctx.addServlet(new ServletHolder(new SecurityServlet(plugin)), SecurityServlet.route);
-        ctx.addServlet(new ServletHolder(new VersionServlet(plugin)), VersionServlet.route);
-        ctx.addServlet(new ServletHolder(new InfoServlet(plugin)), InfoServlet.route);
-        ctx.addServlet(new ServletHolder(new ControlServlet(plugin)), ControlServlet.route);
-        ctx.addServlet(new ServletHolder(new IconServlet(plugin)), IconServlet.route);
-        ctx.addServlet(new ServletHolder(new SavesServlet(plugin)), SavesServlet.route);
-        ctx.addServlet(new ServletHolder(new PlayersServlet(plugin)), PlayersServlet.route);
-        ctx.addServlet(new ServletHolder(new WhitelistServlet(plugin)), WhitelistServlet.route);
-        ctx.addServlet(new ServletHolder(new BannedIpsServlet(plugin)), BannedIpsServlet.route);
-        ctx.addServlet(new ServletHolder(new MonitorServlet(plugin)), MonitorServlet.route);
-        ctx.addServlet(new ServletHolder(new GamerulesServlet(plugin)), GamerulesServlet.route);
-        ctx.addServlet(new ServletHolder(new LogsServlet(plugin)), LogsServlet.route);
-        // Frontend
-        ctx.addServlet(new ServletHolder(new StaticFileServlet(plugin)), StaticFileServlet.route);
+        // Websocket
+        app.ws("/terminal", ws -> new TerminalEndpoint(ws, plugin));
 
-        server.start();
+        // Controllers
+        BeforeController beforeController = new BeforeController(plugin);
+        AuthController authController = new AuthController(plugin);
+        BannedIpsController bannedIpsController = new BannedIpsController(plugin);
+        ControlController controlController = new ControlController(plugin);
+        GamerulesController gamerulesController = new GamerulesController(plugin);
+        IconController iconController = new IconController(plugin);
+        InfoController infoController = new InfoController(plugin);
+        LogsController logsController = new LogsController(plugin);
+        MonitorController monitorController = new MonitorController(plugin);
+        PlayersController playersController = new PlayersController(plugin);
+        SavesController savesController = new SavesController(plugin);
+        SecurityController securityController = new SecurityController(plugin);
+        VersionController versionController = new VersionController(plugin);
+        WhitelistController whitelistController = new WhitelistController(plugin);
+
+        // API Routes
+        app.before("/*", beforeController.beforeAll);
+        app.before("/*", beforeController.handleRsc);
+        app.before("/*", beforeController.handleFonts);
+        app.routes(() -> path("api", () -> {
+            before("/*", beforeController.authCookie);
+
+            path("auth", () -> {
+                get("/", authController.getCram);
+                post("/", authController.validateCram);
+            });
+            path("banned-ips", () -> {
+                get("/", bannedIpsController.getBannedIps);
+                post("add", bannedIpsController.banIp);
+                post("remove", bannedIpsController.pardonIp);
+            });
+            path("control", () -> {
+                get("properties", controlController.getServerProperties);
+                post("properties", controlController.setServerProperties);
+                get("code-of-conduct", controlController.getCodeOfConducts);
+                post("code-of-conduct", controlController.changeCodeOfConduct);
+                delete("code-of-conduct", controlController.removeCodeOfConduct);
+                post("stop", controlController.stopServer);
+                post("reload", controlController.reloadServer);
+                post("world", controlController.switchSave);
+            });
+            path("gamerules", () -> {
+                get("/", gamerulesController.getGamerules);
+                post("/", gamerulesController.changeGamerule);
+            });
+            path("icon", () -> {
+                get("/", iconController.getFavicon);
+                post("/", iconController.uploadFavicon);
+            });
+            path("info", () -> {
+                get("/", infoController.getServerInfo);
+                post("motd", infoController.setMotd);
+            });
+            path("logs", () -> {
+                get("/", logsController.getLogFileList);
+                get("{fileName}", logsController.getLogContent);
+                delete("/", logsController.clearLogs);
+                delete("{fileName}", logsController.deleteLog);
+            });
+            get("monitor", monitorController.getMonitor);
+            path("players", () -> {
+                get("/", playersController.getPlayers);
+                delete("/", playersController.deletePlayerData);
+                post("op", playersController.giveOp);
+                post("deop", playersController.depriveOp);
+                post("kick", playersController.kickPlayer);
+                post("ban", playersController.banPlayer);
+                post("pardon", playersController.pardonPlayer);
+                post("gamemode", playersController.setGamemode);
+            });
+            path("saves", () -> {
+                get("/", savesController.getSaves);
+                post("/", savesController.uploadSave);
+                get("{saveName}", savesController.downloadSave);
+                post("{saveName}", savesController.editSave);
+                delete("{saveName}", savesController.deleteSave);
+            });
+            post("security", securityController.updateAccessKey);
+            get("version", versionController.getVersionInfo);
+            path("whitelist", () -> {
+                get("/", whitelistController.getWhitelist);
+                post("enable", whitelistController.enableWhitelist);
+                post("disable", whitelistController.disableWhitelist);
+                post("write", whitelistController.writeWhitelist);
+                post("add", whitelistController.addWhitelistEntry);
+                post("remove", whitelistController.removeWhitelistEntry);
+            });
+        }));
+
+        app.start(PORT);
         plugin.logger.info("OPanel web server is ready on port "+ PORT);
         plugin.initializeAccessKey();
 
-        server.addEventListener(new LifeCycle.Listener() {
-            @Override
-            public void lifeCycleStopping(LifeCycle event) {
+        app.events(event -> {
+            event.serverStopping(() -> {
                 try {
                     TerminalEndpoint.closeAllSessions();
                 } catch (IOException e) {
                     plugin.logger.error("Failed to close WebSocket sessions: " + e.getMessage());
                 }
-            }
+            });
         });
     }
 
     public void stop() throws Exception {
-        if(server != null && server.isRunning()) {
-            server.stop();
+        if(isRunning()) {
+            app.stop();
             plugin.logger.info("Web server is stopped.");
         }
     }
 
     public boolean isRunning() {
-        return server != null && server.isRunning();
-    }
-
-    public String getJettyVersion() {
-        return Jetty.VERSION;
+        JettyServer jettyServer = app.jettyServer();
+        return app != null && jettyServer != null && jettyServer.started;
     }
 }
