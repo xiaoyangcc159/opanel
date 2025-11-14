@@ -7,6 +7,14 @@ export const notoSansSC = localFont({
   ]
 });
 
+export const googleSansCode = localFont({
+  src: [
+    { path: "../assets/fonts/GoogleSansCode-VariableFont_wght.ttf", style: "normal" },
+    { path: "../assets/fonts/GoogleSansCode-Italic-VariableFont_wght.ttf", style: "italic" },
+  ],
+  variable: "--font-google-sans-code"
+});
+
 /**
  * GNU Unifont
  * 

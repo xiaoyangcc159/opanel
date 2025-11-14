@@ -16,6 +16,7 @@ import { controlWidth, SettingsNumberInput, SettingsSwitch } from "./settings-co
 import { Button } from "@/components/ui/button";
 import { SecurityDialog } from "./security-dialog";
 import { cn } from "@/lib/utils";
+import { googleSansCode } from "@/lib/fonts";
 
 function SettingsItem<K extends keyof SettingsStorageType>({
   name,
@@ -78,10 +79,10 @@ export default function Settings() {
               <Select
                 defaultValue={getSettings("terminal.log-level")}
                 onValueChange={(value) => changeSettings("terminal.log-level", value as ConsoleLogLevel)}>
-                <SelectTrigger className={cn(controlWidth, "font-[Consolas]")}>
+                <SelectTrigger className={cn(controlWidth, googleSansCode.className)}>
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="font-[Consolas]">
+                <SelectContent className={googleSansCode.className}>
                   <SelectItem value="INFO">INFO</SelectItem>
                   <SelectItem value="WARN">WARN</SelectItem>
                   <SelectItem value="ERROR">ERROR</SelectItem>

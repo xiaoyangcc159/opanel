@@ -126,10 +126,10 @@
       @apply underline underline-offset-2;
     }
     code {
-      @apply text-xs bg-muted rounded-sm px-1;
+      @apply text-xs bg-muted rounded-sm px-1 font-(family-name:--font-google-sans-code);
     }
     kbd {
-      @apply border border-b-2 rounded-sm mx-1 px-1 text-xs text-foreground;
+      @apply border border-b-2 rounded-sm mx-1 px-1 text-xs text-foreground font-(family-name:--font-google-sans-code);
     }
   }
 }

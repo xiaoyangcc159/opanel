@@ -5,6 +5,7 @@ import AnsiConverter from "ansi-to-html";
 import { cn, purifyUnsafeText } from "@/lib/utils";
 import { defaultLogLevel, getLogLevelId, type ConsoleLogLevel } from "@/lib/terminal/log-levels";
 import { getSettings } from "@/lib/settings";
+import { googleSansCode } from "@/lib/fonts";
 
 const MAX_LOG_LINES = getSettings("terminal.max-log-lines");
 
@@ -40,9 +41,10 @@ function Log({
   return (
     <p
       className={cn(
-        "leading-[133%] font-[Consolas] space-x-1",
+        "leading-[133%] space-x-1",
         getSettings("terminal.word-wrap") ? "text-wrap wrap-break-word whitespace-pre-wrap" : "whitespace-pre",
-        !visible ? "hidden" : ""
+        !visible ? "hidden" : "",
+        googleSansCode.className
       )}
       style={{ fontSize: getSettings("terminal.font-size") +"px" }}>
       {getSettings("terminal.log-time") && (

@@ -13,7 +13,7 @@ import { useTerminal } from "@/hooks/use-terminal";
 import { TerminalConnector } from "@/components/terminal-connector";
 import { Button } from "@/components/ui/button";
 import { AutocompleteInput } from "@/components/autocomplete-input";
-import { getCurrentArgumentNumber } from "@/lib/utils";
+import { cn, getCurrentArgumentNumber } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import {
   Select,
@@ -25,6 +25,7 @@ import {
 import { defaultLogLevel, type ConsoleLogLevel } from "@/lib/terminal/log-levels";
 import { SubPage } from "../sub-page";
 import { changeSettings, getSettings } from "@/lib/settings";
+import { googleSansCode } from "@/lib/fonts";
 
 export default function Terminal() {
   const client = useTerminal();
@@ -101,17 +102,17 @@ export default function Terminal() {
           <Select
             defaultValue={defaultLogLevel}
             onValueChange={(value) => setLogLevel(value as ConsoleLogLevel)}>
-            <SelectTrigger className="w-24 max-sm:w-20 font-[Consolas]" title="日志等级">
+            <SelectTrigger className={cn("w-24 max-sm:w-20", googleSansCode.className)} title="日志等级">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="font-[Consolas]">
+            <SelectContent className={googleSansCode.className}>
               <SelectItem value="INFO">INFO</SelectItem>
               <SelectItem value="WARN">WARN</SelectItem>
               <SelectItem value="ERROR">ERROR</SelectItem>
             </SelectContent>
           </Select>
           <AutocompleteInput
-            className="flex-1 w-full rounded-sm font-[Consolas]"
+            className={cn("flex-1 w-full rounded-sm", googleSansCode.className)}
             placeholder="发送消息 / 指令..."
             autoFocus
             itemList={autocompleteList}
@@ -153,7 +154,7 @@ export default function Terminal() {
             <Button
               variant="ghost"
               size="sm"
-              className="block px-2 py-0 rounded-xs text-left font-[Consolas] text-nowrap text-ellipsis overflow-hidden cursor-pointer"
+              className={cn("block px-2 py-0 rounded-xs text-left text-nowrap text-ellipsis overflow-hidden cursor-pointer", googleSansCode.className)}
               onClick={() => {
                 if(inputRef.current) inputRef.current.value = command;
               }}

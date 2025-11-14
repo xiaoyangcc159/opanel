@@ -12,6 +12,7 @@ import { InputContext } from "@/contexts/input-context";
 import { cn, getCurrentState, getInputtedArgumentStr } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { googleSansCode } from "@/lib/fonts";
 
 function AutocompleteItem({
   name,
@@ -28,7 +29,7 @@ function AutocompleteItem({
     <Button
       variant="ghost"
       size="sm"
-      className="block h-5 p-1 rounded-xs text-xs text-left font-[Consolas] cursor-pointer hover:bg-transparent active:bg-muted data-[selected=true]:!bg-muted"
+      className={cn("block h-5 p-1 rounded-xs text-xs text-left cursor-pointer transition-none hover:bg-transparent active:bg-muted data-[selected=true]:text-yellow-6a00 dark:data-[selected=true]:text-yellow-300", googleSansCode.className)}
       data-selected={selected}
       onClick={() => setSelected(index)}
       onDoubleClick={() => complete()}>

@@ -16,6 +16,7 @@ import { WhitelistSheet } from "../players/whitelist-sheet";
 import { ServerSheet } from "./server-sheet";
 import { MotdEditor } from "./motd-editor";
 import { FaviconDialog } from "./favicon-dialog";
+import { googleSansCode } from "@/lib/fonts";
 
 import PackIcon from "@/assets/images/pack.png";
 
@@ -148,7 +149,7 @@ export function InfoCard({
             </div>
             <div>
               <span className="font-semibold text-nowrap">端口:</span>
-              <span className="text-emerald-500 font-[Consolas]">{ctx ? ctx.port : ""}</span>
+              <span className={cn("text-emerald-500", googleSansCode.className)}>{ctx ? ctx.port : ""}</span>
             </div>
           </div>
           <div className="h-fit text-sm">
