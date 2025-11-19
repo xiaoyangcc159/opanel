@@ -12,6 +12,7 @@ import { sendDeleteRequest, sendGetBlobRequest, sendPostRequest, toastError } fr
 import { Alert } from "@/components/alert";
 import { SaveSheet } from "./save-sheet";
 import { emitter } from "@/lib/emitter";
+import { googleSansCode } from "@/lib/fonts";
 
 export function SaveCard({
   save,
@@ -86,7 +87,7 @@ export function SaveCard({
               正在运行
             </Badge>
           )}
-          <span className="mr-2 text-sm text-muted-foreground font-[Consolas]">{formatDataSize(size)}</span>
+          <span className={cn("mr-2 text-xs text-muted-foreground", googleSansCode.className)}>{formatDataSize(size)}</span>
         </div>
         <div className="flex self-end [&_button]:cursor-pointer">
           {

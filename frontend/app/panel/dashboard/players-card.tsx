@@ -16,6 +16,7 @@ import {
   TooltipTrigger
 } from "@/components/ui/tooltip";
 import { cn, gameModeToString } from "@/lib/utils";
+import { googleSansCode } from "@/lib/fonts";
 
 export function PlayersCard({
   className,
@@ -49,7 +50,7 @@ export function PlayersCard({
                 </Tooltip>
               </TableCell>
               <TableCell className="text-center">{gameModeToString(gamemode)}</TableCell>
-              <TableCell className={cn("font-[Consolas] text-right", (
+              <TableCell className={cn("text-right", googleSansCode.className, (
                 ping < 100
                 ? "text-green-600"
                 : (

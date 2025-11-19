@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90587dcf-15dc-47d2-9c29-bb98b36eacd0" name="更改" comment="" />
+    <list default="true" id="90587dcf-15dc-47d2-9c29-bb98b36eacd0" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -255,10 +257,10 @@
         <option name="Gradle.BeforeRunTask" enabled="true" tasks="ideBeforeRun" externalProjectPath="$PROJECT_DIR$/neoforge-1.21.5" />
       </method>
     </configuration>
-    <configuration name="opanel:fabric-1.21.5 [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="opanel [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/fabric-1.21.5" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
         <option name="scriptParameters" />
         <option name="taskDescriptions">
@@ -267,6 +269,28 @@
         <option name="taskNames">
           <list>
             <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="opanel [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -299,32 +323,10 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="opanel:forge-1.21.8 [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="opanel:spigot-1.16.1 [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/forge-1.21.8" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="opanel:spigot-1.20 [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/spigot-1.20" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/spigot-1.16.1" />
         <option name="externalSystemIdString" value="GRADLE" />
         <option name="scriptParameters" />
         <option name="taskDescriptions">
@@ -385,10 +387,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.opanel:spigot-1.21.9 [build]" />
-        <item itemvalue="Gradle.opanel:spigot-1.20 [build]" />
-        <item itemvalue="Gradle.opanel:fabric-1.21.5 [build]" />
         <item itemvalue="Gradle.opanel:fabric-1.21.9 [build]" />
-        <item itemvalue="Gradle.opanel:forge-1.21.8 [build]" />
+        <item itemvalue="Gradle.opanel [build]" />
+        <item itemvalue="Gradle.opanel [clean]" />
+        <item itemvalue="Gradle.opanel:spigot-1.16.1 [build]" />
       </list>
     </recent_temporary>
   </component>
