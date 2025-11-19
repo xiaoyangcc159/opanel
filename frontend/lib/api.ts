@@ -15,13 +15,6 @@ export const wsUrl = (
   : `${window.location.protocol === "http:" ? "ws" : "wss"}://${window.location.host}` // prod
 );
 
-/** @see https://crafatar.com */
-export const avatarUrl = "https://crafatar.com/avatars/";
-/** @see https://crafatar.com */
-export const skinUrl = "https://crafatar.com/skins/";
-/** @see https://crafatar.com */
-export const capeUrl = "https://crafatar.com/capes/";
-
 /**
  * Toast error message with specific descriptions based on http status codes.
  * 

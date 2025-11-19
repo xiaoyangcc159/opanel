@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { SecurityDialog } from "./security-dialog";
 import { cn } from "@/lib/utils";
 import { googleSansCode } from "@/lib/fonts";
+import { AvatarProvider, CapeProvider, SkinProvider } from "@/lib/types";
 
 function SettingsItem<K extends keyof SettingsStorageType>({
   name,
@@ -31,9 +32,9 @@ function SettingsItem<K extends keyof SettingsStorageType>({
 }) {
   return (
     <div id={id} className="flex justify-between items-center px-4 py-3 border-b last:border-b-0">
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-1">
         <span className="text-sm">{name}</span>
-        <span className="text-sm text-muted-foreground">{description}</span>
+        <span className="text-xs text-muted-foreground">{description}</span>
       </div>
       {control}
     </div>
@@ -51,6 +52,66 @@ export default function Settings() {
             name="资源监控刷新间隔"
             description="刷新监控数据时间间隔（单位: ms）"
             control={<SettingsNumberInput id="dashboard.monitor-interval" min={1}/>}/>
+        </Section>
+        <Section title="玩家">
+          <SettingsItem
+            id="players.avatar-provider"
+            name="头像贴图提供方"
+            description="头像贴图API提供方的URL地址"
+            control={
+              <Select
+                defaultValue={getSettings("players.avatar-provider")}
+                onValueChange={(value) => {
+                  value !== "$custom" && changeSettings("players.avatar-provider", value);
+                }}>
+                <SelectTrigger className={controlWidth}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={AvatarProvider.CRAFATAR} title={AvatarProvider.CRAFATAR}>Crafatar</SelectItem>
+                  <SelectItem value={AvatarProvider.MINEATAR} title={AvatarProvider.MINEATAR}>Mineatar</SelectItem>
+                  <SelectItem value={AvatarProvider.MCHEADS} title={AvatarProvider.MCHEADS}>MCHeads</SelectItem>
+                </SelectContent>
+              </Select>
+            }/>
+          <SettingsItem
+            id="players.skin-provider"
+            name="皮肤贴图提供方"
+            description="皮肤贴图API提供方的URL地址"
+            control={
+              <Select
+                defaultValue={getSettings("players.skin-provider")}
+                onValueChange={(value) => {
+                  value !== "$custom" && changeSettings("players.skin-provider", value);
+                }}>
+                <SelectTrigger className={controlWidth}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={SkinProvider.CRAFATAR} title={SkinProvider.CRAFATAR}>Crafatar</SelectItem>
+                  <SelectItem value={SkinProvider.MINEATAR} title={SkinProvider.MINEATAR}>Mineatar</SelectItem>
+                  <SelectItem value={SkinProvider.MCHEADS} title={SkinProvider.MCHEADS}>MCHeads</SelectItem>
+                </SelectContent>
+              </Select>
+            }/>
+          <SettingsItem
+            id="players.cape-provider"
+            name="披风贴图提供方"
+            description="披风贴图API提供方的URL地址"
+            control={
+              <Select
+                defaultValue={getSettings("players.cape-provider")}
+                onValueChange={(value) => {
+                  value !== "$custom" && changeSettings("players.cape-provider", value);
+                }}>
+                <SelectTrigger className={controlWidth}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={CapeProvider.CRAFATAR} title={CapeProvider.CRAFATAR}>Crafatar</SelectItem>
+                </SelectContent>
+              </Select>
+            }/>
         </Section>
         <Section title="后台终端">
           <SettingsItem

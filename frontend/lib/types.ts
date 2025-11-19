@@ -49,6 +49,22 @@ export type Whitelist = {
 export type EditorRefType = Parameters<OnMount>[0];
 export type EditorOptionsType = React.ComponentProps<typeof Editor>["options"];
 
+export enum AvatarProvider {
+  CRAFATAR = "https://crafatar.com/avatars/",
+  MINEATAR = "https://api.mineatar.io/face/",
+  MCHEADS = "https://mc-heads.net/avatar/"
+}
+
+export enum SkinProvider {
+  CRAFATAR = "https://crafatar.com/skins/",
+  MINEATAR = "https://api.mineatar.io/skin/",
+  MCHEADS = "https://mc-heads.net/skin/"
+}
+
+export enum CapeProvider {
+  CRAFATAR = "https://crafatar.com/capes/"
+}
+
 /** `/api/version` */
 export interface VersionResponse {
   serverType: ServerType

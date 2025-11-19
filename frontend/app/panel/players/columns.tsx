@@ -6,12 +6,12 @@ import { base64ToString, gameModeToString, sleep } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Prompt } from "@/components/prompt";
-import { avatarUrl } from "@/lib/api";
 import { OnlineBadge } from "@/components/online-badge";
 import { addToWhitelist, ban, kick, pardon, removeFromWhitelist, removePlayerData } from "./player-utils";
 import { PlayerSheet } from "./player-sheet";
 import { emitter } from "@/lib/emitter";
 import { Alert } from "@/components/alert";
+import { getSettings } from "@/lib/settings";
 
 export const playerColumns: ColumnDef<Player>[] = [
   {
@@ -27,7 +27,7 @@ export const playerColumns: ColumnDef<Player>[] = [
                 name
                 ? (
                   <div className="flex items-center gap-2 cursor-pointer">
-                    <img src={avatarUrl + uuid} alt={name} width={17} height={17}/>
+                    <img src={getSettings("players.avatar-provider") + uuid} alt={name} width={17} height={17}/>
                     <span className="font-semibold">{name}</span>
                   </div>
                 )
@@ -206,7 +206,7 @@ export const bannedColumns: ColumnDef<Player>[] = [
           <TooltipTrigger>
             <PlayerSheet player={row.original} asChild>
               <div className="flex items-center gap-2 cursor-pointer">
-                <img src={avatarUrl + uuid} alt={name} width={17} height={17}/>
+                <img src={getSettings("players.avatar-provider") + uuid} alt={name} width={17} height={17}/>
                 <span className="font-semibold">{name}</span>
               </div>
             </PlayerSheet>

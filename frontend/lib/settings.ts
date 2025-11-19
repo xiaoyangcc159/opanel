@@ -1,5 +1,10 @@
 import type { ConsoleLogLevel } from "./terminal/log-levels";
-import type { EditorOptionsType } from "./types";
+import {
+  AvatarProvider,
+  CapeProvider,
+  SkinProvider,
+  type EditorOptionsType
+} from "./types";
 
 const storageKey = "opanel.settings";
 
@@ -12,6 +17,9 @@ function getLocalStorage() {
 
 export type SettingsStorageType = {
   "dashboard.monitor-interval": number
+  "players.avatar-provider": AvatarProvider | string
+  "players.skin-provider": SkinProvider | string
+  "players.cape-provider": CapeProvider | string
   "terminal.autocomplete": boolean
   "terminal.word-wrap": boolean
   "terminal.font-size": number
@@ -32,6 +40,9 @@ export type SettingsStorageType = {
 
 const defaultSettings: SettingsStorageType = {
   "dashboard.monitor-interval": 2000, // ms
+  "players.avatar-provider": AvatarProvider.CRAFATAR,
+  "players.skin-provider": SkinProvider.CRAFATAR,
+  "players.cape-provider": CapeProvider.CRAFATAR,
   "terminal.autocomplete": true,
   "terminal.word-wrap": false,
   "terminal.font-size": 12, // px
