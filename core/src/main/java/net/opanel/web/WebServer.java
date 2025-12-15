@@ -168,12 +168,15 @@ public class WebServer {
     public void stop() throws Exception {
         if(isRunning()) {
             app.stop();
+            app = null;
             plugin.logger.info("Web server is stopped.");
         }
     }
 
     public boolean isRunning() {
+        if(app == null) return false;
+
         JettyServer jettyServer = app.jettyServer();
-        return app != null && jettyServer != null && jettyServer.started;
+        return jettyServer != null && jettyServer.started;
     }
 }
