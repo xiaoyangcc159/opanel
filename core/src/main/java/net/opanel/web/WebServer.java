@@ -16,6 +16,7 @@ import java.io.IOException;
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class WebServer {
+    public static final String ROOT_PATH = "web";
     public final int PORT;
 
     private final OPanel plugin;
@@ -50,7 +51,7 @@ public class WebServer {
             // Frontend
             config.staticFiles.add(staticFiles -> {
                 staticFiles.hostedPath = "/";
-                staticFiles.directory = "/web";
+                staticFiles.directory = "/"+ ROOT_PATH;
             });
         });
 
@@ -165,6 +166,7 @@ public class WebServer {
             event.serverStopping(() -> {
                 try {
                     TerminalEndpoint.closeAllSessions();
+                    BaseController.unregisterAllControllerInstances();
                 } catch (IOException e) {
                     plugin.logger.error("Failed to close WebSocket sessions: " + e.getMessage());
                 }

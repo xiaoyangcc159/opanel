@@ -75,4 +75,8 @@ public abstract class BaseController {
     protected <C extends BaseController> C getControllerInstance(Class<C> controllerClass) {
         return (C) instances.get(controllerClass);
     }
+
+    public static void unregisterAllControllerInstances() {
+        instances.clear();
+    }
 }
