@@ -220,6 +220,7 @@
   "players.edit.form.gamemode.label": "游戏模式",
   "players.edit.form.op.label": "OP权限",
   "players.edit.form.manage": "管理",
+  "players.action.refresh": "刷新",
   "players.action.op.success": "成功给予该玩家OP权限",
   "players.action.op.error": "无法给予该玩家OP权限",
   "players.action.op.error.404": "找不到该玩家",

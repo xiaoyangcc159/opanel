@@ -2,7 +2,7 @@
 
 import type { Player, PlayersResponse, UnnamedPlayer } from "@/lib/types";
 import { useEffect, useMemo, useState } from "react";
-import { Ban, Contact, Search, UserPen, Users } from "lucide-react";
+import { Ban, Contact, RotateCw, Search, UserPen, Users } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DataTable } from "@/components/data-table";
 import { sendGetRequest, toastError } from "@/lib/api";
@@ -78,7 +78,7 @@ export default function Players() {
           changeSettings("state.players.tab", value as TabValueType);
         }}>
         <div className="flex justify-between items-center max-lg:flex-col-reverse max-lg:items-start max-lg:gap-2">
-          <TabsList className="[&>*]:cursor-pointer">
+          <TabsList className="*:cursor-pointer">
             <TabsTrigger value="player-list">
               {`${$("players.player-list.title")} (${players.filter(({ isOnline }) => isOnline).length} / ${maxPlayerCount})`}
             </TabsTrigger>
@@ -86,7 +86,13 @@ export default function Players() {
               {`${$("players.banned-list.title")} (${players.filter(({ isBanned }) => isBanned).length})`}
             </TabsTrigger>
           </TabsList>
-          <div className="flex gap-2 max-sm:flex-col max-sm:items-start">
+          <div className="flex gap-2 max-sm:flex-col max-sm:items-start *:cursor-pointer">
+            <Button
+              variant="ghost"
+              title={$("players.action.refresh")}
+              onClick={() => fetchPlayerList()}>
+              <RotateCw />
+            </Button>
             <InputGroup>
               <InputGroupAddon>
                 <Search />
@@ -97,9 +103,7 @@ export default function Players() {
                 onChange={(e) => setSearchString(e.target.value)}/>
             </InputGroup>
             <BannedIpsDialog asChild>
-              <Button
-                variant="outline"
-                className="cursor-pointer">
+              <Button variant="outline">
                 <Ban />
                 {$("players.banned-ips")}
               </Button>
@@ -110,9 +114,7 @@ export default function Players() {
                 <WhitelistSheet
                   onDisableWhitelist={() => setWhitelistEnabledState(false)}
                   asChild>
-                  <Button
-                    variant="outline"
-                    className="cursor-pointer">
+                  <Button variant="outline">
                     <UserPen />
                     {$("players.edit-whitelist")}
                   </Button>
@@ -121,7 +123,6 @@ export default function Players() {
               : (
                 <Button
                   variant="outline"
-                  className="cursor-pointer"
                   onClick={async () => {
                     await setWhitelistEnabled(true);
                     await fetchPlayerList();
