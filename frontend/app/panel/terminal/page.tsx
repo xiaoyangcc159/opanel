@@ -13,7 +13,7 @@ import { useWebSocket } from "@/hooks/use-websocket";
 import { TerminalConnector } from "@/components/terminal-connector";
 import { Button } from "@/components/ui/button";
 import { AutocompleteInput } from "@/components/autocomplete-input";
-import { cn, getCurrentArgumentNumber } from "@/lib/utils";
+import { cn, getCurrentArgumentIndex } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import {
   Select,
@@ -31,6 +31,7 @@ import { type ConsoleLogLevel, defaultLogLevel, TerminalClient } from "@/lib/ws/
 export default function Terminal() {
   const client = useWebSocket(TerminalClient);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [argIndex, setArgIndex] = useState(0);
   const [autocompleteList, setAutocompleteList] = useState<string[]>([]);
   const [historyList, setHistoryList] = useState<string[]>(getSettings("state.terminal.history"));
   const [logLevel, setLogLevel] = useState(defaultLogLevel);
@@ -72,9 +73,12 @@ export default function Terminal() {
   const handleInput = useCallback(() => {
     if(!inputRef.current || !client) return;
     const elem = inputRef.current;
-
-    client.send("autocomplete", getCurrentArgumentNumber(elem.value, elem.selectionStart ?? 0));
-  }, [client]);
+    const currentArgIndex = getCurrentArgumentIndex(elem.value, elem.selectionStart ?? 0);
+    if(currentArgIndex !== argIndex) {
+      client.send("autocomplete", getCurrentArgumentIndex(elem.value, elem.selectionStart ?? 0));
+      setArgIndex(currentArgIndex);
+    }
+  }, [client, argIndex]);
 
   useEffect(() => {
     client?.subscribe("autocomplete", (data: string[]) => {

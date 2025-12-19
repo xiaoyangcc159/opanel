@@ -53,6 +53,7 @@ public class TerminalEndpoint extends BaseEndpoint {
         });
 
         subscribe(session, TerminalPacket.AUTOCOMPLETE, (WsMessageContext msgCtx, Number arg) -> {
+            /** @todo */
             if(arg.equals(1.0)) {
                 ctx.send(new TerminalPacket<>(TerminalPacket.AUTOCOMPLETE, plugin.getServer().getCommands()));
                 return;

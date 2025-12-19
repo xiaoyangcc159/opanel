@@ -57,11 +57,11 @@ export function getInputtedArgumentStr(str: string, cursor: number): string {
 /**
  * @example
  * ```ts
- * getCurrentArgumentNumber("do hello world", 5); // 2
- * getCurrentArgumentNumber("do hello world", 13); // 3
+ * getCurrentArgumentIndex("do hello world", 5); // 2
+ * getCurrentArgumentIndex("do hello world", 13); // 3
  * ```
  */
-export function getCurrentArgumentNumber(str: string, cursor: number): number {
+export function getCurrentArgumentIndex(str: string, cursor: number): number {
   if(cursor > str.length) throw new Error("Cursor position is out of the length of the string.");
 
   const trimmed = str.substring(0, cursor);
