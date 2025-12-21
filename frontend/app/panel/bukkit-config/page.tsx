@@ -54,12 +54,13 @@ export default function BukkitConfig() {
       }
       setConfigs(parsedMap);
       setCurrentEditing(getSettings("state.bukkit-config.current-editing"));
+      setSaved(true);
     } catch (e: any) {
-      toastError(e, "无法获取Bukkit服务器配置文件", [
+      toastError(e, $("bukkit-config.fetch.error"), [
         [400, $("common.error.400")],
         [401, $("common.error.401")],
         [500, $("common.error.500")],
-        [503, "该服务端不是Bukkit系服务端"]
+        [503, $("bukkit-config.error.503")]
       ]);
     }
   }, [push, versionCtx]);
@@ -72,17 +73,18 @@ export default function BukkitConfig() {
       setIsSaving(false);
       setSaved(true);
     } catch (e: any) {
-      toastError(e, `无法保存 ${currentEditing} 配置文件`, [
+      toastError(e, $("bukkit-config.save.error", currentEditing), [
         [400, $("common.error.400")],
         [401, $("common.error.401")],
         [500, $("common.error.500")],
-        [503, "该服务端不是Bukkit系服务端"]
+        [503, $("bukkit-config.error.503")]
       ]);
     }
   }, [currentEditing, editorValue]);
 
   const handleSwitchFile = (file: ConfigFile) => {
     setCurrentEditing(file);
+    setSaved(true);
     changeSettings("state.bukkit-config.current-editing", file);
   };
 
@@ -103,7 +105,7 @@ export default function BukkitConfig() {
 
   return (
     <SubPage
-      title="Bukkit 配置"
+      title={$("bukkit-config.title")}
       icon={<PaintBucket />}
       outerClassName="max-h-screen overflow-y-hidden max-lg:max-h-none max-lg:overflow-y-auto"
       className="flex-1 min-h-0">
@@ -111,14 +113,12 @@ export default function BukkitConfig() {
         <FilesEditorSidebar className="h-full justify-between">
           <FilesEditorSidebarList>
             <ConfigItem
-              file="bukkit"
               name="bukkit.yml"
               isActive={currentEditing === "bukkit"}
               isSaved={saved}
               onClick={() => handleSwitchFile("bukkit")}/>
             {["Spigot", "Paper", "Folia"].includes(versionCtx?.serverType ?? "") && (
               <ConfigItem
-                file="spigot"
                 name="spigot.yml"
                 isActive={currentEditing === "spigot"}
                 isSaved={saved}
@@ -126,7 +126,6 @@ export default function BukkitConfig() {
             )}
             {["Paper", "Folia"].includes(versionCtx?.serverType ?? "") && (
               <ConfigItem
-                file="paper"
                 name="paper-global.yml"
                 isActive={currentEditing === "paper"}
                 isSaved={saved}
@@ -171,13 +170,13 @@ export default function BukkitConfig() {
                 ? (
                   <>
                     <Spinner />
-                    <span>正在保存...</span>
+                    <span>{$("bukkit-config.editor.status-bar.saving")}</span>
                   </>
                 )
                 : (
                   saved
-                  ? "已保存"
-                  : "*已编辑"
+                  ? $("bukkit-config.editor.status-bar.saved")
+                  : $("bukkit-config.editor.status-bar.edited")
                 )
               }
             </FilesEditorStatusBarItem>

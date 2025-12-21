@@ -76,7 +76,7 @@ const managementGroupItems = [
 
 const configurationGroupItems = [
   {
-    name: "Bukkit 配置",
+    name: $("sidebar.config.bukkit-config"),
     url: "/panel/bukkit-config",
     icon: PaintBucket
   }
@@ -161,7 +161,7 @@ export function AppSidebar() {
         </SidebarGroup>
         {isBukkit(versionCtx.serverType) && (
           <SidebarGroup>
-            <SidebarGroupLabel>配置</SidebarGroupLabel>
+            <SidebarGroupLabel>{$("sidebar.config")}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {configurationGroupItems.map((item, i) => (

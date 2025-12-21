@@ -71,7 +71,9 @@ export const monacoSettingsOptions: EditorOptionsType = {
   fontSize: getSettings("monaco.font-size"),
   unicodeHighlight: {
     ambiguousCharacters: false
-  }
+  },
+  quickSuggestions: true,
+  wordBasedSuggestions: "currentDocument"
 };
 
 function getSettingsStorage(): SettingsStorageType {

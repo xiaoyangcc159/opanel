@@ -1,15 +1,12 @@
-import type { ConfigFile } from "./page";
 import { FileCog } from "lucide-react";
 import { FilesEditorSidebarListItem } from "@/components/ui/files-editor";
 
 export function ConfigItem({
-  file,
   name,
   isActive,
   isSaved = true,
   onClick
 }: {
-  file: ConfigFile
   name: string
   isActive: boolean
   isSaved?: boolean

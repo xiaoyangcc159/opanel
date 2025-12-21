@@ -56,6 +56,8 @@
   "sidebar.management.terminal": "后台",
   "sidebar.management.logs": "日志",
   "sidebar.management.code-of-conduct": "行为准则",
+  "sidebar.config": "配置",
+  "sidebar.config.bukkit-config": "Bukkit 配置",
   "sidebar.help": "帮助",
   "sidebar.help.settings": "设置",
   "sidebar.help.about": "关于",
@@ -334,6 +336,14 @@
   "coc.create.input.label": "语言",
   "coc.create.input.placeholder": "请输入语言代码...（如：zh_cn）",
   "coc.create.input.description": "语言代码可参考 {0}\n遵循{1}与{2}国际标准。",
+
+  "bukkit-config.title": "Bukkit 配置",
+  "bukkit-config.error.503": "该服务端不是Bukkit系服务端",
+  "bukkit-config.fetch.error": "无法获取Bukkit服务器配置文件",
+  "bukkit-config.save.error": "无法保存 {0} 配置文件",
+  "bukkit-config.editor.status-bar.saving": "正在保存",
+  "bukkit-config.editor.status-bar.saved": "已保存",
+  "bukkit-config.editor.status-bar.edited": "*已编辑",
 
   "settings.title": "设置",
   "settings.hint": "所有设置选项将保存于本地，不会同步至服务端。",

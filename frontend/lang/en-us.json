@@ -56,6 +56,8 @@
   "sidebar.management.terminal": "Terminal",
   "sidebar.management.logs": "Logs",
   "sidebar.management.code-of-conduct": "Code of Conduct",
+  "sidebar.config": "Configurations",
+  "sidebar.config.bukkit-config": "Bukkit Config",
   "sidebar.help": "Help",
   "sidebar.help.settings": "Settings",
   "sidebar.help.about": "About",
@@ -334,6 +336,14 @@
   "coc.create.input.label": "Language",
   "coc.create.input.placeholder": "Please enter the language code... (e.g., zh_cn)",
   "coc.create.input.description": "Language codes can refer to {0}\nFollow the {1} and {2} international standards.",
+
+  "bukkit-config.title": "Bukkit Configurations",
+  "bukkit-config.error.503": "This server is not a bukkit-series server.",
+  "bukkit-config.fetch.error": "Unable to retrieve the configuration files",
+  "bukkit-config.save.error": "Cannot save the configuration file {0}",
+  "bukkit-config.editor.status-bar.saving": "Saving...",
+  "bukkit-config.editor.status-bar.saved": "Saved",
+  "bukkit-config.editor.status-bar.edited": "*Edited",
 
   "settings.title": "Settings",
   "settings.hint": "All settings will be saved locally and will not be synced to the server.",
