@@ -102,12 +102,20 @@ export interface InfoResponse {
     paused: boolean
     mspt: number
   }
+  system: {
+    os: string
+    arch: number
+    cpuName: string
+    cpuCore: number
+    memory: number
+    gpus: string[]
+  }
 }
 
 /** `/api/monitor` */
 export interface MonitorResponse {
-  mem: number
   cpu: number
+  memory: number
   tps: number
 }
 
