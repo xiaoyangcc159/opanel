@@ -122,6 +122,9 @@ export default function CodeOfConduct() {
     fetchCodeOfConducts();
 
     emitter.on("refresh-data", () => fetchCodeOfConducts());
+    return () => {
+      emitter.removeAllListeners("refresh-data");
+    };
   }, [fetchCodeOfConducts]);
 
   // Update the editor value when the current editing file is changed

@@ -63,7 +63,10 @@ export abstract class WebSocketClient<M extends string> {
   }
 
   public subscribe<D>(type: MessageType<M>, cb: (data: D) => void) {
-    if(!this.socket) throw new Error("WebSocket not initialized.");
+    if(!this.socket) {
+      toast.error("WebSocket not initialized.");
+      return;
+    }
     this.socket.addEventListener("message", (e) => {
       const packet: Packet<M, D> = JSON.parse(e.data);
       if(packet.type === type) {
@@ -77,7 +80,10 @@ export abstract class WebSocketClient<M extends string> {
   protected abstract onError(err: any): void;
 
   public send<D>(type: MessageType<M>, data: D) {
-    if(!this.socket) throw new Error("WebSocket not initialized.");
+    if(!this.socket) {
+      toast.error("WebSocket not initialized.");
+      return;
+    }
     this.socket.send(JSON.stringify({ type, data }));
   }
 

@@ -72,7 +72,7 @@ export default function Dashboard() {
           <PlayersCard className="row-span-3 row-start-2"/>
           <MonitorCard className="row-span-3 row-start-2"/>
           <TPSCard className="row-start-5"/>
-          <TerminalCard className="row-span-5 max-xl:col-span-2"></TerminalCard>
+          <TerminalCard className="row-span-5 max-xl:col-span-2"/>
         </MonitorContext.Provider>
       </InfoContext.Provider>
     </SubPage>

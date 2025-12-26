@@ -92,6 +92,9 @@ export default function BukkitConfig() {
     fetchServerConfigs();
 
     emitter.on("refresh-data", () => fetchServerConfigs());
+    return () => {
+      emitter.removeAllListeners("refresh-data");
+    };
   }, [fetchServerConfigs]);
 
   // Update the editor value when the current editing file is changed

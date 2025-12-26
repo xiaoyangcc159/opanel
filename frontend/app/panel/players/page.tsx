@@ -51,6 +51,9 @@ export default function Players() {
     fetchPlayerList();
 
     emitter.on("refresh-data", () => fetchPlayerList());
+    return () => {
+      emitter.removeAllListeners("refresh-data");
+    };
   }, []);
 
   useEffect(() => {
@@ -82,6 +85,10 @@ export default function Players() {
     });
 
     emitter.on("refresh-data", () => client.send("fetch", null));
+
+    return () => {
+      emitter.removeAllListeners("refresh-data");
+    };
   }, [client]);
 
   useKeydown("ArrowRight", { ctrl: true }, () => setCurrentTab("banned-list"));
