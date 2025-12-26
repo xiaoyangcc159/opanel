@@ -6,6 +6,7 @@ import { FunctionalCard } from "@/components/functional-card";
 import { InfoContext } from "@/contexts/api-context";
 import { cn, formatDataSize } from "@/lib/utils";
 import { googleSansCode } from "@/lib/fonts";
+import { $ } from "@/lib/i18n";
 
 function SystemInfoItem({
   name,
@@ -18,7 +19,7 @@ function SystemInfoItem({
   className?: string
 }) {
   return (
-    <div className={cn("col-span-2 flex items-center gap-4", className)}>
+    <div className={cn("col-span-2 min-w-fit flex items-center gap-4", className)}>
       <div className="min-w-20 flex items-center gap-2">
         <props.icon size={18}/>
         <span>{name}:</span>
@@ -40,7 +41,7 @@ export function SystemCard({
   return (
     <FunctionalCard
       icon={Cpu}
-      title="系统信息"
+      title={$("dashboard.system.title")}
       className={className}
       innerClassName="h-full mt-2 pb-4 px-6 grid grid-rows-subgrid grid-cols-2 gap-2 overflow-x-auto">
       <SystemInfoItem
@@ -50,7 +51,7 @@ export function SystemCard({
       </SystemInfoItem>
       <SystemInfoItem
         icon={Computer}
-        name="架构">
+        name={$("dashboard.system.item.arch")}>
         {ctx?.system.arch ?? ""}
       </SystemInfoItem>
       <SystemInfoItem
@@ -65,13 +66,13 @@ export function SystemCard({
       </SystemInfoItem>
       <SystemInfoItem
         icon={Cpu}
-        name="核心数"
+        name={$("dashboard.system.item.core")}
         className="col-span-1 *:text-foreground">
         {ctx?.system.cpuCore ?? 0}
       </SystemInfoItem>
       <SystemInfoItem
         icon={MemoryStick}
-        name="内存"
+        name={$("dashboard.system.item.memory")}
         className="ml-10 col-start-2 col-span-1 *:text-foreground">
         {formatDataSize(ctx?.system.memory ?? 0)}
       </SystemInfoItem>
