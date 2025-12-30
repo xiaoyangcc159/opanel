@@ -61,7 +61,7 @@ export function AutocompleteInput({
   const hasPrefix = prefix && value.startsWith(prefix);
   const [top, setTop] = useState(0);
   const [left, setLeft] = useState(0);
-  const [advisedList, setAdvisedList] = useState(itemList);
+  const [advisedList, setAdvisedList] = useState<string[]>([]);
   const [selected, setSelected] = useState<number | null>(null); // index
   const listContainerRef = useRef<HTMLDivElement>(null);
   const isInvisible = value.length === 0 || advisedList.length === 0;
@@ -140,22 +140,20 @@ export function AutocompleteInput({
   };
 
   useEffect(() => {
-    setAdvisedList(itemList);
-  }, [itemList]);
-
-  useEffect(() => {
     if(!inputRef.current) return;
     const input = inputRef.current;
+    // To prevent meaningless expensive re-rendering
+    if(value.length === 0) {
+      setAdvisedList([]);
+      setSelected(null);
+      return;
+    }
     const inputtedCommand = hasPrefix ? value.substring(prefix.length) : value;
 
     // Update advised item list
-    const advised = [];
     const cursorPos = input.selectionStart;
-    for(const item of itemList) {
-      if(item.startsWith(getInputtedArgumentStr(inputtedCommand, (cursorPos ?? 0) - (hasPrefix ? 1 : 0)))) {
-        advised.push(item);
-      }
-    }
+    const inputtedArgStr = getInputtedArgumentStr(inputtedCommand, (cursorPos ?? 0) - (hasPrefix ? 1 : 0));
+    const advised = itemList.filter((item) => item.startsWith(inputtedArgStr));
     setAdvisedList(advised);
     
     // Select the first item by default
