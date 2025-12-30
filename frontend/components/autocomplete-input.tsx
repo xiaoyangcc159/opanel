@@ -64,6 +64,7 @@ export function AutocompleteInput({
   const [left, setLeft] = useState(0);
   const [advisedList, setAdvisedList] = useState<string[]>([]);
   const [selected, setSelected] = useState<number | null>(null); // index
+  const [positionReady, setPositionReady] = useState(false);
   const prevItemList = usePrevious(itemList);
   const listContainerRef = useRef<HTMLDivElement>(null);
   const isInvisible = value.length === 0 || advisedList.length === 0;
@@ -93,6 +94,7 @@ export function AutocompleteInput({
   const handleKeydown = async (e: KeyboardEvent<HTMLInputElement>) => {
     if(!listContainerRef.current) return;
     const listContainer = listContainerRef.current;
+    const listRect = listContainer.getBoundingClientRect();
     const advised = await getCurrentState(setAdvisedList);
     const cSelected = await getCurrentState(setSelected);
 
@@ -117,8 +119,13 @@ export function AutocompleteInput({
       case "ArrowUp":
         if(cSelected === null) return;
         e.preventDefault();
-        setSelected((cSelected > 0) ? (cSelected - 1) : (advised.length - 1));
-        if(listContainer.scrollTop > 0 && cSelected <= advised.length - 6) {
+        const nextSelectedUp = (cSelected > 0) ? (cSelected - 1) : (advised.length - 1);
+        setSelected(nextSelectedUp);
+
+        const nextItemUp = listContainer.children[nextSelectedUp] as HTMLButtonElement;
+        const itemUpRect = nextItemUp.getBoundingClientRect();
+
+        if(itemUpRect.top < listRect.top) {
           listContainer.scrollTop -= (listContainer.firstChild as HTMLButtonElement).clientHeight;
         }
         if(cSelected === 0) {
@@ -128,8 +135,13 @@ export function AutocompleteInput({
       case "ArrowDown":
         if(cSelected === null) return;
         e.preventDefault();
-        setSelected((cSelected < advised.length - 1) ? (cSelected + 1) : 0);
-        if(listContainer.scrollTop < listContainer.scrollHeight && cSelected >= 5) {
+        const nextSelectedDown = (cSelected < advised.length - 1) ? (cSelected + 1) : 0;
+        setSelected(nextSelectedDown);
+
+        const nextItemDown = listContainer.children[nextSelectedDown] as HTMLButtonElement;
+        const itemDownRect = nextItemDown.getBoundingClientRect();
+
+        if(itemDownRect.bottom > listRect.bottom) {
           listContainer.scrollTop += (listContainer.firstChild as HTMLButtonElement).clientHeight;
         }
         if(cSelected === advised.length - 1) {
@@ -166,6 +178,8 @@ export function AutocompleteInput({
   // Set the position of autocomplete container when `advisedList` being updated
   useEffect(() => {
     if(!inputRef.current || !listContainerRef.current) return;
+    setPositionReady(false);
+
     const input = inputRef.current;
     const inputRect = input.getBoundingClientRect();
     const listRect = listContainerRef.current.getBoundingClientRect();
@@ -174,6 +188,7 @@ export function AutocompleteInput({
 
     setTop(inputRect.top - listRect.height - 2); // y offset 2px
     setLeft(input.offsetLeft + getCaretCoordinates(input, input.selectionStart ?? 0).left);
+    setPositionReady(true);
   }, [advisedList, inputRef, listContainerRef]);
 
   return (
@@ -195,8 +210,9 @@ export function AutocompleteInput({
         ref={inputRef}/>
       <div
         className={cn(
-          "absolute flex flex-col bg-popover min-w-40 w-fit max-h-32 p-1 border rounded-sm overflow-y-auto",
-          (!enabled || isInvisible) ? "hidden" : ""
+          "absolute flex flex-col bg-popover min-w-40 w-fit max-h-32 p-1 border rounded-sm overflow-x-hidden overflow-y-auto",
+          (!enabled || isInvisible) ? "hidden" : "",
+          positionReady ? "visible" : "invisible"
         )}
         style={{ top, left }}
         ref={listContainerRef}>
