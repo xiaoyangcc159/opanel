@@ -34,7 +34,10 @@ function AutocompleteItem({
     <Button
       variant="ghost"
       size="sm"
-      className={cn("block h-5 p-1 rounded-xs text-xs text-left cursor-pointer transition-none hover:bg-transparent active:bg-muted data-[selected=true]:text-yellow-6a00 dark:data-[selected=true]:text-yellow-300", googleSansCode.className)}
+      className={cn(
+        "block h-5 p-1 rounded-xs text-xs text-left cursor-pointer transition-none hover:bg-transparent active:bg-muted data-[selected=true]:text-yellow-700 dark:data-[selected=true]:text-yellow-300",
+        googleSansCode.className
+      )}
       data-selected={selected}
       onClick={() => setSelected(index)}
       onDoubleClick={() => complete()}>
@@ -210,7 +213,8 @@ export function AutocompleteInput({
         ref={inputRef}/>
       <div
         className={cn(
-          "absolute flex flex-col bg-popover min-w-40 w-fit max-h-32 p-1 border rounded-sm overflow-x-hidden overflow-y-auto",
+          "absolute flex flex-col bg-popover min-w-40 w-fit max-h-32 p-1 border rounded-sm overflow-hidden overflow-y-auto",
+          "o-scrollbar",
           (!enabled || isInvisible) ? "hidden" : "",
           positionReady ? "visible" : "invisible"
         )}
