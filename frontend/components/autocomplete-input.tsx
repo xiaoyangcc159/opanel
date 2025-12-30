@@ -13,6 +13,7 @@ import { cn, getCurrentArgumentIndex, getCurrentState, getInputtedArgumentStr } 
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { googleSansCode } from "@/lib/fonts";
+import { usePrevious } from "@/hooks/use-previous";
 
 function AutocompleteItem({
   name,
@@ -63,6 +64,7 @@ export function AutocompleteInput({
   const [left, setLeft] = useState(0);
   const [advisedList, setAdvisedList] = useState<string[]>([]);
   const [selected, setSelected] = useState<number | null>(null); // index
+  const prevItemList = usePrevious(itemList);
   const listContainerRef = useRef<HTMLDivElement>(null);
   const isInvisible = value.length === 0 || advisedList.length === 0;
 
@@ -143,7 +145,7 @@ export function AutocompleteInput({
     if(!inputRef.current) return;
     const input = inputRef.current;
     // To prevent meaningless expensive re-rendering
-    if(value.length === 0) {
+    if(value.length === 0 || (value.endsWith(" ") && prevItemList === itemList)) {
       setAdvisedList([]);
       setSelected(null);
       return;
@@ -158,6 +160,7 @@ export function AutocompleteInput({
     
     // Select the first item by default
     setSelected(advised.length > 0 ? 0 : null);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, hasPrefix, itemList, prefix, inputRef]);
 
   // Set the position of autocomplete container when `advisedList` being updated
@@ -191,7 +194,10 @@ export function AutocompleteInput({
         data-current-selected={selected ?? 0}
         ref={inputRef}/>
       <div
-        className={cn("absolute flex flex-col bg-popover min-w-40 w-fit max-h-32 p-1 border rounded-sm overflow-y-auto", (!enabled || isInvisible) ? "hidden" : "")}
+        className={cn(
+          "absolute flex flex-col bg-popover min-w-40 w-fit max-h-32 p-1 border rounded-sm overflow-y-auto",
+          (!enabled || isInvisible) ? "hidden" : ""
+        )}
         style={{ top, left }}
         ref={listContainerRef}>
         {advisedList.map((item, i) => (
