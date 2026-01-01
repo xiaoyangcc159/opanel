@@ -32,7 +32,7 @@ public class ForgeSave extends BaseForgeSave implements OPanelSave {
         super(server, path);
 
         try {
-            Optional<CompoundTag> optionalNbt = NbtIo.readCompressed(savePath.resolve("level.dat"), NbtAccounter.create(NBT_TRACKER_SIZE))
+            Optional<CompoundTag> optionalNbt = NbtIo.readCompressed(savePath.resolve("level.dat"), NbtAccounter.unlimitedHeap())
                     .get("Data").asCompound();
             if(optionalNbt.isEmpty()) {
                 throw new IOException("Cannot find a valid level.dat");

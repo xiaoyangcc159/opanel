@@ -33,7 +33,7 @@ public class NeoSave implements OPanelSave {
         this.server = server;
         savePath = path;
         try {
-            nbt = NbtIo.readCompressed(savePath.resolve("level.dat"), NbtAccounter.create(2097152L)) // 2 MB
+            nbt = NbtIo.readCompressed(savePath.resolve("level.dat"), NbtAccounter.unlimitedHeap())
                     .getCompound("Data");
             if(nbt.isEmpty()) {
                 throw new IOException("Cannot find a valid level.dat");

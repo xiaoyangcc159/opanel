@@ -53,7 +53,7 @@ public class FabricOfflinePlayer extends BaseFabricOfflinePlayer implements OPan
     @Override
     public OPanelGameMode getGameMode() {
         try {
-            NbtCompound nbt = NbtIo.readCompressed(playerDataPath, NbtSizeTracker.of(NBT_TRACKER_SIZE));
+            NbtCompound nbt = NbtIo.readCompressed(playerDataPath, NbtSizeTracker.ofUnlimitedBytes());
             int gamemodeId = nbt.getInt("playerGameType", 0);
             return OPanelGameMode.fromId(gamemodeId);
         } catch (IOException e) {
@@ -65,7 +65,7 @@ public class FabricOfflinePlayer extends BaseFabricOfflinePlayer implements OPan
     @Override
     public void setGameMode(OPanelGameMode gamemode) {
         try {
-            NbtCompound nbt = NbtIo.readCompressed(playerDataPath, NbtSizeTracker.of(NBT_TRACKER_SIZE));
+            NbtCompound nbt = NbtIo.readCompressed(playerDataPath, NbtSizeTracker.ofUnlimitedBytes());
             nbt.putInt("playerGameType", gamemode.getId());
             NbtIo.writeCompressed(nbt, playerDataPath);
         } catch (IOException e) {

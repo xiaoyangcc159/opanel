@@ -30,7 +30,7 @@ public class FabricSave extends BaseFabricSave implements OPanelSave {
         super(server, path);
 
         try {
-            nbt = NbtIo.readCompressed(savePath.resolve("level.dat"), NbtTagSizeTracker.of(NBT_TRACKER_SIZE))
+            nbt = NbtIo.readCompressed(savePath.resolve("level.dat"), NbtTagSizeTracker.ofUnlimitedBytes())
                     .getCompound("Data");
             if(nbt.isEmpty()) {
                 throw new IOException("Cannot find a valid level.dat");

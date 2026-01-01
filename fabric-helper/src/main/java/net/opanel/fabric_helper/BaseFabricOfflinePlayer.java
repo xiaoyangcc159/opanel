@@ -11,8 +11,6 @@ import java.nio.file.Path;
 import java.util.UUID;
 
 public abstract class BaseFabricOfflinePlayer implements OPanelPlayer {
-    protected static final long NBT_TRACKER_SIZE = 2097152; // 2 MB
-
     protected final PlayerManager playerManager;
     protected final Path playerDataPath;
     protected final UUID uuid;
