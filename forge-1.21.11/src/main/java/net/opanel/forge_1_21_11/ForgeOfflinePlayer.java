@@ -48,7 +48,7 @@ public class ForgeOfflinePlayer extends BaseForgeOfflinePlayer implements OPanel
     @Override
     public OPanelGameMode getGameMode() {
         try {
-            CompoundTag nbt = NbtIo.readCompressed(playerDataPath, NbtAccounter.create(NBT_TRACKER_SIZE));
+            CompoundTag nbt = NbtIo.readCompressed(playerDataPath, NbtAccounter.unlimitedHeap());
             int gamemodeId = nbt.getIntOr("playerGameType", 0);
             return OPanelGameMode.fromId(gamemodeId);
         } catch (IOException e) {
@@ -60,7 +60,7 @@ public class ForgeOfflinePlayer extends BaseForgeOfflinePlayer implements OPanel
     @Override
     public void setGameMode(OPanelGameMode gamemode) {
         try {
-            CompoundTag nbt = NbtIo.readCompressed(playerDataPath, NbtAccounter.create(NBT_TRACKER_SIZE));
+            CompoundTag nbt = NbtIo.readCompressed(playerDataPath, NbtAccounter.unlimitedHeap());
             nbt.putInt("playerGameType", gamemode.getId());
             NbtIo.writeCompressed(nbt, playerDataPath);
         } catch (IOException e) {

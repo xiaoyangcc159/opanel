@@ -13,8 +13,6 @@ import java.nio.file.Path;
 import java.util.Properties;
 
 public abstract class BaseFabricSave implements OPanelSave {
-    protected static final long NBT_TRACKER_SIZE = 2097152; // 2 MB
-
     protected final MinecraftServer server;
     protected final Path savePath;
 
