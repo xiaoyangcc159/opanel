@@ -41,13 +41,12 @@ public class BeforeController extends BaseController {
         // Maybe a next.js bug, which will lead user to <page_name>.txt file without _rsc param
         // just redirect it to the correct page
         if(ctx.queryParam("_rsc") == null) {
-            ctx.redirect(ctx.fullUrl().replaceAll("\\.txt/?$", ""));
+            ctx.redirect(reqPath.replaceAll("\\.txt/?$", "") +"?"+ ctx.queryString());
             return;
         }
 
         // Rsc file request
-        String transformedPath = ctx.fullUrl().replaceAll("\\.txt(?=\\?_rsc=.+$)", "/"+ DEFAULT_RSC_FILE);
-        ctx.redirect(transformedPath);
+        ctx.redirect(reqPath.replaceAll("\\.txt$", "/"+ DEFAULT_RSC_FILE) +"?"+ ctx.queryString());
     };
 
     public Handler handleFonts = ctx -> {
