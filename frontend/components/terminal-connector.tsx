@@ -129,7 +129,7 @@ export function TerminalConnector({
   
   return (
     <div
-      className={cn(className, "border rounded-sm bg-background overflow-auto p-2")}
+      className={cn(className, "border rounded-sm bg-background overflow-auto o-scrollbar p-2")}
       ref={terminalRef}>
       {logs.map((log, i) => (
         <Log
