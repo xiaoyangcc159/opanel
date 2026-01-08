@@ -140,10 +140,6 @@
 }
 
 @layer components {
-  .image-pixelated {
-    image-rendering: pixelated;
-  }
-
   [data-slot="alert-dialog-description"] {
     span {
       a, b {
@@ -154,6 +150,9 @@
 }
 
 @layer utilities {
+  .image-pixelated {
+    image-rendering: pixelated;
+  }
   .o-scrollbar {
     @apply scrollbar scrollbar-w-1 scrollbar-thumb-muted-foreground scrollbar-thumb-rounded-full scrollbar-track-transparent;
   }
