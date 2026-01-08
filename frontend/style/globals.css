@@ -154,6 +154,6 @@
     image-rendering: pixelated;
   }
   .o-scrollbar {
-    @apply scrollbar scrollbar-w-1 scrollbar-thumb-muted-foreground scrollbar-thumb-rounded-full scrollbar-track-transparent;
+    @apply scrollbar scrollbar-w-1 scrollbar-h-1 scrollbar-thumb-muted-foreground scrollbar-thumb-rounded-full scrollbar-track-transparent;
   }
 }
