@@ -33,7 +33,7 @@ function SettingsItem<K extends keyof SettingsStorageType>({
   control: React.ReactNode
 }) {
   return (
-    <div id={id} className="flex justify-between items-center px-4 py-3 border-b last:border-b-0">
+    <div id={id} className="flex justify-between items-center flex-wrap gap-2 px-4 py-3 border-b last:border-b-0">
       <div className="flex flex-col gap-1">
         <span className="text-sm">{name}</span>
         <span className="text-xs text-muted-foreground">{description}</span>
@@ -199,7 +199,7 @@ export default function Settings() {
                   changeSettings("system.language", value as LanguageCode);
                   window.location.reload();
                 }}>
-                <SelectTrigger className={controlWidth}>
+                <SelectTrigger className="w-40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

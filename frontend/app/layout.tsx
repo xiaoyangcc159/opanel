@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { googleSansCode, notoColorEmoji, notoSansSC } from "@/lib/fonts";
+import { BrowserInit } from "./browser-init";
 
 import LogoIcon from "@/assets/images/logo.png";
 
@@ -33,6 +34,7 @@ export default function RootLayout({
             richColors/>
           {children}
         </ThemeProvider>
+        <BrowserInit />
       </body>
     </html>
   );
