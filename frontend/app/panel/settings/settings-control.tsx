@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { changeSettings, getSettings, type SettingsStorageType } from "@/lib/settings";
 
-export const controlWidth = "w-36 max-sm:w-24";
+export const controlWidth = "w-36";
 
 export function SettingsInput<K extends keyof SettingsStorageType>({
   id,
