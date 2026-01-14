@@ -199,7 +199,7 @@ export default function Settings() {
                   changeSettings("system.language", value as LanguageCode);
                   window.location.reload();
                 }}>
-                <SelectTrigger className={controlWidth}>
+                <SelectTrigger className="w-40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

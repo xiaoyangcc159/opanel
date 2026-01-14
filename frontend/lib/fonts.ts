@@ -5,6 +5,11 @@ export const notoSansSC = localFont({
   fallback: ["notoColorEmoji"]
 });
 
+export const notoSansTC = localFont({
+  src: [{ path: "../assets/fonts/NotoSansTC-VariableFont_wght.ttf", style: "normal" }],
+  fallback: ["notoColorEmoji"]
+});
+
 export const notoColorEmoji = localFont({
   src: [{ path: "../assets/fonts/NotoColorEmoji-Regular.ttf", style: "normal" }],
   variable: "--font-noto-color-emoji"
