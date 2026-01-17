@@ -52,6 +52,10 @@ See [Contributing Guidelines](https://opanel.cn/docs/contributing.html) for more
 [<img src="./images/friends/rainyun.png" width="300"/>](https://rainyun.com/opanel_)
 [<img src="./images/friends/chuqiyun.png" width="300"/>](https://chuqiyun.com)
 
+## Star History
+
+[![Star History](https://api.star-history.com/svg?repos=opanel-mc/opanel&type=date&legend=top-left)](https://star-history.com/#opanel-mc/opanel&type=date&legend=top-left)
+
 ## License
 
 [MPL-2.0](./LICENSE)

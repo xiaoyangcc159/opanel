@@ -52,6 +52,10 @@ OPanel 的功能包括：
 [<img src="./images/friends/rainyun.png" width="300"/>](https://rainyun.com/opanel_)
 [<img src="./images/friends/chuqiyun.png" width="300"/>](https://chuqiyun.com)
 
+## Star 历史曲线
+
+[![Star History](https://api.star-history.com/svg?repos=opanel-mc/opanel&type=date&legend=top-left)](https://star-history.com/#opanel-mc/opanel&type=date&legend=top-left)
+
 ## License
 
 [MPL-2.0](./LICENSE)
