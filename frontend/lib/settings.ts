@@ -7,6 +7,8 @@ import {
   SkinProvider,
   type EditorOptionsType
 } from "./types";
+import { isPreviewVersion } from "./utils";
+import { version } from "./global";
 
 const storageKey = "opanel.settings";
 
@@ -35,7 +37,9 @@ export type SettingsStorageType = {
   "monaco.word-wrap": boolean
   "monaco.font-size": number
   "system.language": LanguageCode
+  "system.preview-channel": boolean
   "system.access-key"?: never
+  "system.check-update"?: never
   "state.players.tab": "player-list" | "banned-list"
   "state.terminal.history": string[]
   "state.code-of-conduct.current-editing"?: string
@@ -60,6 +64,7 @@ const defaultSettings: SettingsStorageType = {
   "monaco.word-wrap": false,
   "monaco.font-size": 13, // px
   "system.language": "zh-cn",
+  "system.preview-channel": isPreviewVersion(version),
   "state.players.tab": "player-list",
   "state.terminal.history": [],
   "state.code-of-conduct.current-editing": undefined,

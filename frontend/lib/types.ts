@@ -1,6 +1,8 @@
 import type { Editor, OnMount } from "@monaco-editor/react";
 import type { ServerGamerules } from "./gamerules";
 
+export type ArrayItem<A> = A extends (infer T)[] ? T : never;
+
 export type APIResponse<T> = {
   code: number
   error: string
@@ -172,3 +174,13 @@ export interface WhitelistResponse {
 export interface BannedIpsResponse {
   bannedIps: string[]
 }
+
+/** `https://api.github.com/repos/opanel-mc/opanel/releases` */
+export type GithubReleaseResponse = {
+  id: number
+  tag_name: string
+  name: string
+  prerelease: boolean
+  published_at: string
+  body: string
+}[]

@@ -1,0 +1,55 @@
+@layer components {
+  article {
+    p, pre {
+      @apply my-4;
+    }
+    p, li {
+      @apply font-light;
+    }
+    p {
+      @apply leading-[1.75rem];
+    }
+    b, strong {
+      @apply font-bold;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      @apply my-2 font-bold;
+    }
+    h1 {
+      @apply text-xl mb-4 pb-1 border-b;
+    }
+    h2 {
+      @apply text-lg mb-4 pb-1 border-b;
+    }
+    b {
+      @apply font-semibold;
+    }
+    a {
+      @apply text-theme underline hover:text-theme-hovered;
+    }
+    hr {
+      @apply border-2;
+    }
+    code {
+      @apply px-[6px] py-[3px];
+    }
+    pre {
+      @apply w-full px-5 py-4 text-wrap bg-card rounded-sm relative not-dark:bg-muted;
+      code {
+        @apply !p-0 !bg-transparent;
+      }
+    }
+    ul, ol {
+      @apply px-5;
+      li {
+        @apply my-2;
+      }
+    }
+    ul li {
+      @apply list-disc marker:text-muted-foreground;
+    }
+    ol li {
+      @apply list-decimal marker:text-secondary-foreground;
+    }
+  }
+}

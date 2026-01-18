@@ -402,6 +402,8 @@
   "settings.system.language": "Language",
   "settings.system.access-key": "Access Key",
   "settings.system.access-key.modify": "Modify",
+  "settings.system.check-update": "Check for Updates",
+  "settings.system.check-update.check": "Check",
   "settings.security.title": "Change Access Key",
   "settings.security.description": "Change the access key for the OPanel panel here.",
   "settings.security.error.400": "Incorrect access key.",
@@ -412,5 +414,15 @@
   "settings.security.form.new-key.min": "The access key length should not be less than 6",
   "settings.security.form.new-key.label": "New key",
   "settings.security.form.new-key.placeholder": "Please enter the new access key...",
-  "settings.reset": "Reset to default"
+  "settings.update.title": "Check for Updates",
+  "settings.update.description": "View if there are new OPanel updates available here.",
+  "settings.update.error": "Failed to check for updates",
+  "settings.update.error.403": "Github API rate limit exceeded",
+  "settings.update.error.500": "Github API internal error",
+  "settings.update.status.checking": "Checking for updates...",
+  "settings.update.status.has-new-update": "New update available",
+  "settings.update.status.latest": "Already the latest version",
+  "settings.update.release-note.title": "{0} Release Notes",
+  "settings.update.preview-channel": "Preview Channel",
+  "settings.reset": "Reset Settings"
 }
