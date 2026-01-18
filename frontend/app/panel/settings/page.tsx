@@ -220,10 +220,10 @@ export default function Settings() {
             }/>
           <SettingsItem
             id="system.check-update"
-            name="检查更新"
+            name={$("settings.system.check-update")}
             control={
               <UpdateDialog asChild>
-                <Button className="cursor-pointer" size="sm">检查</Button>
+                <Button className="cursor-pointer" size="sm">{$("settings.system.check-update.check")}</Button>
               </UpdateDialog>
             }/>
         </Section>

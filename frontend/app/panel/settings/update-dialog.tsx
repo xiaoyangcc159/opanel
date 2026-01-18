@@ -24,6 +24,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toastError } from "@/lib/api";
 import { changeSettings, getSettings } from "@/lib/settings";
+import { $ } from "@/lib/i18n";
 
 function preprocessMarkdown(markdown: string): string {
   // Github username
@@ -65,9 +66,9 @@ export function UpdateDialog({
       setHasNewUpdate(false);
       setLoading(false);
     } catch (e: any) {
-      toastError(e, "检查更新失败", [
-        [403, "Github API 请求频率超限"],
-        [500, "Github API 内部错误"]
+      toastError(e, $("settings.update.error"), [
+        [403, $("settings.update.error.403")],
+        [500, $("settings.update.error.500")]
       ]);
       setLoading(false);
       setError(true);
@@ -83,9 +84,9 @@ export function UpdateDialog({
       <DialogTrigger asChild={asChild}>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>检查更新</DialogTitle>
+          <DialogTitle>{$("settings.update.title")}</DialogTitle>
           <DialogDescription>
-            在此查看是否有新的OPanel更新可用
+            {$("settings.update.description")}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-6">
@@ -95,14 +96,14 @@ export function UpdateDialog({
               <span className="font-semibold whitespace-nowrap">
                 {
                   loading
-                  ? "检查中..."
+                  ? $("settings.update.status.checking")
                   : (
                     error
-                    ? "检查更新失败"
+                    ? $("settings.update.error")
                     : (
                       hasNewUpdate
-                      ? "有新更新可用"
-                      : "当前已是最新版本"
+                      ? $("settings.update.status.has-new-update")
+                      : $("settings.update.status.latest")
                     )
                   )
                 }
@@ -120,7 +121,7 @@ export function UpdateDialog({
           </div>
           {(hasNewUpdate && releaseInfo) && (
             <div className="max-h-64 px-3 space-y-3 overflow-y-auto o-scrollbar">
-              <h2 className="font-semibold text-xl">{releaseInfo.tag_name} 更新日志</h2>
+              <h2 className="font-semibold text-xl">{$("settings.update.release-note.title", releaseInfo.tag_name)}</h2>
               <MarkdownJSX.default
                 options={{
                   wrapper: "article",
@@ -137,11 +138,11 @@ export function UpdateDialog({
             <Switch
               checked={previewEnabled}
               onCheckedChange={setPreviewEnabled}/>
-            <Label>预览版</Label>
+            <Label>{$("settings.update.preview-channel")}</Label>
           </div>
           <DialogClose asChild>
             <Button variant="outline">
-              关闭
+              {$("dialog.close")}
             </Button>
           </DialogClose>
         </DialogFooter>
