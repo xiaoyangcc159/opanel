@@ -154,3 +154,7 @@ export function isBukkit(serverType: ServerType): boolean {
     || serverType === "Folia"
   );
 }
+
+export function isPreviewVersion(version: string): boolean {
+  return version.includes("pre") || version.includes("rc");
+}

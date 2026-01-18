@@ -15,6 +15,7 @@ import {
 import { controlWidth, SettingsNumberInput, SettingsSwitch } from "./settings-control";
 import { Button } from "@/components/ui/button";
 import { SecurityDialog } from "./security-dialog";
+import { UpdateDialog } from "./update-dialog";
 import { cn } from "@/lib/utils";
 import { googleSansCode } from "@/lib/fonts";
 import { AvatarProvider, CapeProvider, SkinProvider } from "@/lib/types";
@@ -216,6 +217,14 @@ export default function Settings() {
               <SecurityDialog asChild>
                 <Button className="cursor-pointer" size="sm">{$("settings.system.access-key.modify")}</Button>
               </SecurityDialog>
+            }/>
+          <SettingsItem
+            id="system.check-update"
+            name="检查更新"
+            control={
+              <UpdateDialog asChild>
+                <Button className="cursor-pointer" size="sm">检查</Button>
+              </UpdateDialog>
             }/>
         </Section>
         <div>
