@@ -103,7 +103,7 @@ export default function Terminal() {
       icon={<SquareTerminal />}
       outerClassName="max-h-screen overflow-y-hidden"
       className="flex-1 min-h-0 flex gap-3">
-      <div className="flex-4/5 max-lg:flex-3/4 max-md:flex-2/3 min-w-0 flex flex-col border rounded-sm">
+      <div className="bg-background flex-4/5 max-lg:flex-3/4 max-md:flex-2/3 min-w-0 flex flex-col border rounded-sm">
         <TerminalConnector client={client} level={logLevel} className="flex-1 border-none"/>
         <div className="p-3 flex gap-2">
           <Select
@@ -157,7 +157,7 @@ export default function Terminal() {
             <Trash2 />
           </Button>
         </div>
-        <Card className="flex-1 rounded-sm p-1 flex flex-col gap-0 overflow-y-auto">
+        <Card className="dark:bg-transparent flex-1 rounded-sm p-1 flex flex-col gap-0 overflow-y-auto">
           {historyList.map((command, i) => (
             <Button
               variant="ghost"

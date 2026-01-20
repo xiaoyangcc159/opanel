@@ -25,7 +25,7 @@
   "about.footer.donate": "打賞",
   "about.footer.github": "Github 主頁",
   "about.footer.website": "OPanel 官方網站",
-  "about.footer.docs": "OPanel文件",
+  "about.footer.docs": "OPanel 文檔",
 
   "login": "登入",
   "login.title": "Minecraft 伺服器管理面板",
@@ -62,10 +62,9 @@
   "sidebar.management.code-of-conduct": "行為準則",
   "sidebar.config": "配置",
   "sidebar.config.bukkit-config": "Bukkit 配置",
-  "sidebar.help": "幫助",
-  "sidebar.help.settings": "設定",
-  "sidebar.help.about": "關於",
-  "sidebar.help.docs": "文件",
+
+  "nav.settings": "設定",
+  "nav.docs": "文檔",
   
   "functional-card.more": "更多",
 

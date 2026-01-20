@@ -62,10 +62,9 @@
   "sidebar.management.code-of-conduct": "Code of Conduct",
   "sidebar.config": "Configurations",
   "sidebar.config.bukkit-config": "Bukkit Config",
-  "sidebar.help": "Help",
-  "sidebar.help.settings": "Settings",
-  "sidebar.help.about": "About",
-  "sidebar.help.docs": "Docs",
+
+  "nav.settings": "Settings",
+  "nav.docs": "Docs",
   
   "functional-card.more": "More",
 

@@ -189,7 +189,7 @@ export default function CodeOfConduct() {
                 <MonacoEditor
                   defaultLanguage="txt"
                   value={editorValue}
-                  theme={theme === "dark" ? "server-log-theme-dark" : "server-log-theme"}
+                  theme={theme === "dark" ? "opanel-theme-dark" : "opanel-theme"}
                   options={{
                     minimap: {
                       enabled: false

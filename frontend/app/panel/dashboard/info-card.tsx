@@ -125,7 +125,7 @@ export function InfoCard({
   const warningState = monitorCtx[monitorCtx.length - 1].cpu >= 80 || monitorCtx[monitorCtx.length - 1].tps <= 16;
 
   return (
-    <Card className={cn(className, "flex flex-col rounded-md max-lg:gap-3")}>
+    <Card className={cn(className, "flex flex-col rounded-sm shadow-none max-lg:gap-3")}>
       <div className="min-lg:flex-1 flex max-md:flex-col gap-6 max-lg:border-b max-lg:pb-3">
         <div className="aspect-square max-md:aspect-auto relative group/favicon">
           <img

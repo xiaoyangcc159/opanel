@@ -49,7 +49,7 @@ export function DataTable<D, V>({
 
   return (
     <div className="flex flex-col gap-5">
-      <div className={cn(className, "border rounded-md")}>
+      <div className={cn(className, "border rounded-md bg-background dark:bg-transparent")}>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

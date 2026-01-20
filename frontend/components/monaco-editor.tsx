@@ -5,6 +5,21 @@ import { Editor, type EditorProps } from "@monaco-editor/react";
 import { loader } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
 
+monaco.editor.defineTheme("opanel-theme", {
+  base: "vs",
+  inherit: true,
+  rules: [],
+  colors: {
+    "editor.background": "#FFFFFF"
+  }
+});
+monaco.editor.defineTheme("opanel-theme-dark", {
+  base: "vs-dark",
+  inherit: true,
+  rules: [],
+  colors: {}
+});
+
 // server-log language support
 monaco.languages.register({ id: "server-log" });
 monaco.languages.setMonarchTokensProvider("server-log", {
@@ -40,7 +55,9 @@ monaco.editor.defineTheme("server-log-theme", {
     { token: "log.stacktrace", foreground: "E00000" },
     { token: "log.stacktrace.cause", foreground: "E00000", fontStyle: "bold" },
   ],
-  colors: {}
+  colors: {
+    "editor.background": "#FFFFFF"
+  }
 });
 monaco.editor.defineTheme("server-log-theme-dark", {
   base: "vs-dark",
@@ -54,7 +71,9 @@ monaco.editor.defineTheme("server-log-theme-dark", {
     { token: "log.stacktrace", foreground: "DD6A6F" },
     { token: "log.stacktrace.cause", foreground: "DD6A6F", fontStyle: "bold" },
   ],
-  colors: {}
+  colors: {
+    "editor.background": "#000000"
+  }
 });
 
 export default function MonacoEditor(props: EditorProps) {

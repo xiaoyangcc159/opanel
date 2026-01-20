@@ -100,7 +100,7 @@ export default function Gamerules() {
       title={$("gamerules.title")}
       icon={<PencilRuler />}
       outerClassName="max-h-screen overflow-y-hidden"
-      className="flex-1 min-h-0 px-64 max-xl:px-0 flex flex-col gap-3"
+      className="flex-1 min-h-0 px-64! max-xl:px-0! flex flex-col gap-3"
       onKeyDown={(e) => (e.ctrlKey && e.key === "s") && form.handleSubmit(handleSubmit)()}>
       <div className="flex justify-between items-center gap-6 max-sm:flex-col-reverse max-sm:items-start">
         <InputGroup className="flex-1">
@@ -136,7 +136,7 @@ export default function Gamerules() {
                   control={form.control}
                   name={key}
                   render={({ field }) => (
-                    <Item variant="outline" className="p-3">
+                    <Item variant="outline" className="p-3 bg-background dark:bg-transparent">
                       <ItemContent className="max-w-full">
                         <ItemTitle
                           className="gap-2 max-w-full"

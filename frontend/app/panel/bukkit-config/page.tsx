@@ -155,7 +155,7 @@ export default function BukkitConfig() {
           <MonacoEditor
             defaultLanguage="yaml"
             value={editorValue}
-            theme={theme === "dark" ? "server-log-theme-dark" : "server-log-theme"}
+            theme={theme === "dark" ? "opanel-theme-dark" : "opanel-theme"}
             options={{
               minimap: {
                 enabled: false

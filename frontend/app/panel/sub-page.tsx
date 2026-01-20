@@ -1,16 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { Navbar } from "@/components/navbar";
 
 export function SubPage({
   children,
@@ -33,33 +25,13 @@ export function SubPage({
   }, [title, subTitle]);
 
   return (
-    <div className={cn("group px-16 max-md:px-12 max-sm:px-8 flex-1 flex flex-col gap-6 max-md:gap-2", outerClassName)}>
-      <div className="pt-10 pb-5 flex flex-col gap-8">
-        <div className="flex items-center gap-4">
-          <SidebarTrigger className="cursor-pointer"/>
-          <Separator orientation="vertical"/>
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>OPanel</BreadcrumbItem>
-              <BreadcrumbSeparator />
-              {subTitle && (
-                <>
-                  <BreadcrumbItem>{title}</BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                </>
-              )}
-              <BreadcrumbItem>
-                <BreadcrumbPage>{subTitle ?? title}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-        <div className="flex items-center gap-5">
-          {icon}
-          <h1 className="text-3xl font-bold">{subTitle ?? title}</h1>
-        </div>
+    <div className={cn("group bg-sidebar flex-1 flex flex-col gap-8", outerClassName)}>
+      <Navbar className="px-16 max-md:px-12 max-sm:px-2"/>
+      <div className="pt-4 px-16 max-md:px-12 max-sm:px-8 flex items-center gap-5">
+        {icon}
+        <h1 className="text-3xl font-bold">{subTitle ?? title}</h1>
       </div>
-      <div className={cn(className, "pb-14")} {...props}>
+      <div className={cn(className, "mx-16 max-md:mx-12 max-sm:mx-8 pb-14")} {...props}>
         {children}
       </div>
     </div>
