@@ -94,7 +94,7 @@ export default function About() {
           size="icon"
           title={$("about.footer.donate")}
           asChild>
-          <Link href="https://afdian.com/a/opanel" target="_blank">
+          <Link href="https://nocp.space/donate" target="_blank">
             <HandCoins />
           </Link>
         </Button>

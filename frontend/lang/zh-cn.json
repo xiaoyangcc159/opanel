@@ -403,7 +403,6 @@
   "settings.monaco.word-wrap": "自动换行",
   "settings.monaco.font-size": "字体大小",
   "settings.monaco.font-size.description": "编辑器内字体显示大小（单位: px）",
-  "settings.system.title": "系统",
   "settings.system.language": "语言",
   "settings.system.access-key": "访问密钥",
   "settings.system.access-key.modify": "修改",

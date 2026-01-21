@@ -403,7 +403,6 @@
   "settings.monaco.word-wrap": "Word wrap",
   "settings.monaco.font-size": "Font size",
   "settings.monaco.font-size.description": "Font display size in the editor (unit: px)",
-  "settings.system.title": "System",
   "settings.system.language": "Language",
   "settings.system.access-key": "Access Key",
   "settings.system.access-key.modify": "Modify",

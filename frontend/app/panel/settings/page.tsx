@@ -192,7 +192,7 @@ export default function Settings() {
             description={$("settings.monaco.font-size.description")}
             control={<SettingsNumberInput id="monaco.font-size" min={1} max={30}/>}/>
         </Section>
-        <Section title={$("settings.system.title")}>
+        <Section title="OPanel">
           <SettingsItem
             id="system.language"
             name="🇨🇳 🇩🇪 🇺🇸 🇫🇷 🇰🇷 🇰🇵 🇯🇵"
