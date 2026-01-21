@@ -82,6 +82,8 @@ export default function Saves() {
   return (
     <SubPage
       title={$("saves.title")}
+      description="管理和上传服务端文件夹下的存档文件"
+      category="服务器"
       icon={<Earth />}
       className="relative h-full z-20"
       onDragEnter={() => setUploadVisible(true)}>

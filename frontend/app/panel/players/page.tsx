@@ -98,6 +98,8 @@ export default function Players() {
     <SubPage
       title={$("players.title")}
       subTitle={currentTab === "player-list" ? $("players.player-list.title") : $("players.banned-list.title")}
+      description="管理服务器内的所有在线和离线玩家，设置白名单和黑名单"
+      category="服务器"
       icon={<Users />}
       className="flex flex-col gap-3">
       <span className="text-sm text-muted-foreground">{$("players.hint")}</span>
@@ -116,7 +118,7 @@ export default function Players() {
               {`${$("players.banned-list.title")} (${players.filter(({ isBanned }) => isBanned).length})`}
             </TabsTrigger>
           </TabsList>
-          <div className="min-w-fit border-b border-b-sidebar-border pb-1 flex gap-2 max-sm:flex-col max-sm:items-start *:cursor-pointer">
+          <div className="min-w-fit border-b border-b-sidebar-border max-lg:border-b-transparent pb-1 flex gap-2 max-sm:flex-col max-sm:items-start *:cursor-pointer">
             <Button
               variant="ghost"
               title={$("players.action.refresh")}

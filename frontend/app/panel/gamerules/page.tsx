@@ -98,9 +98,12 @@ export default function Gamerules() {
   return (
     <SubPage
       title={$("gamerules.title")}
+      description="设置服务器当前世界的游戏规则"
+      category="管理"
       icon={<PencilRuler />}
       outerClassName="max-h-screen overflow-y-hidden"
-      className="flex-1 min-h-0 px-64! max-xl:px-0! flex flex-col gap-3"
+      pageClassName="min-xl:px-64!"
+      className="flex-1 min-h-0 flex flex-col gap-3"
       onKeyDown={(e) => (e.ctrlKey && e.key === "s") && form.handleSubmit(handleSubmit)()}>
       <div className="flex justify-between items-center gap-6 max-sm:flex-col-reverse max-sm:items-start">
         <InputGroup className="flex-1">

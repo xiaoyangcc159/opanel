@@ -3,21 +3,34 @@
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/navbar";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator
+} from "@/components/ui/breadcrumb";
 
 export function SubPage({
   children,
   title,
   subTitle,
+  description,
+  category,
   icon,
   outerClassName,
+  pageClassName,
   className,
   ...props
 }: Readonly<React.ComponentProps<"div"> & {
   children?: React.ReactNode
   title: string
   subTitle?: string
+  description?: string
+  category: string
   icon?: React.ReactNode
   outerClassName?: string
+  pageClassName?: string
   className?: string
 }>) {
   useEffect(() => {
@@ -25,14 +38,32 @@ export function SubPage({
   }, [title, subTitle]);
 
   return (
-    <div className={cn("group bg-sidebar flex-1 flex flex-col gap-8", outerClassName)}>
-      <Navbar className="px-16 max-md:px-12 max-sm:px-2"/>
-      <div className="pt-4 px-16 max-md:px-12 max-sm:px-8 flex items-center gap-5">
-        {icon}
-        <h1 className="text-3xl font-bold">{subTitle ?? title}</h1>
-      </div>
-      <div className={cn(className, "mx-16 max-md:mx-12 max-sm:mx-8 pb-14")} {...props}>
-        {children}
+    <div className={cn("group max-h-screen bg-sidebar flex-1 flex flex-col", outerClassName)}>
+      <Navbar className="px-8 max-sm:px-2"/>
+      <div className={cn("flex-1 p-8 flex flex-col gap-4 overflow-y-auto", !description && "gap-8", pageClassName)}>
+        <div className="space-y-4">
+          <Breadcrumb className="mb-3">
+            <BreadcrumbList>
+              <BreadcrumbItem>{category}</BreadcrumbItem>
+              {subTitle && (
+                <>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>{title}</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </>
+              )}
+            </BreadcrumbList>
+          </Breadcrumb>
+          <div className="flex items-center gap-5">
+            {icon}
+            <h1 className="text-3xl font-bold">{subTitle ?? title}</h1>
+          </div>
+          {description && <span className="text-muted-foreground">{description}</span>}
+        </div>
+        <div className={className} {...props}>
+          {children}
+        </div>
       </div>
     </div>
   );

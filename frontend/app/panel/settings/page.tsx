@@ -46,7 +46,10 @@ function SettingsItem<K extends keyof SettingsStorageType>({
 
 export default function Settings() {
   return (
-    <SubPage title={$("settings.title")} icon={<SettingsIcon />} className="px-64 max-xl:px-0">
+    <SubPage
+      title={$("settings.title")}
+      icon={<SettingsIcon />}
+      pageClassName="min-xl:px-64!">
       <span className="text-sm text-muted-foreground">{$("settings.hint")}</span>
       <div className="flex flex-col gap-7 mt-4">
         <Section title={$("settings.dashboard.title")}>
