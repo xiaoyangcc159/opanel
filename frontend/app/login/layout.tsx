@@ -12,8 +12,10 @@ export default function LoginLayout({
 }>) {
   return (
     <div className="w-[100vw] h-[100vh] flex">
-      <div className="flex-2/5 h-full bg-cover bg-center max-lg:hidden" style={{ backgroundImage: `url(${DefaultBanner.src})` }}/>
-      <div className="flex-3/5 border-l shadow-2xl z-10 flex justify-center items-center">
+      <div
+        className="flex-2/5 h-full bg-cover bg-center shadow-[inset_0px_0px_35px_-13px_rgba(0,0,0,0.85)] max-lg:hidden"
+        style={{ backgroundImage: `url(${DefaultBanner.src})` }}/>
+      <div className="flex-3/5 border-l z-10 flex justify-center items-center">
         {children}
       </div>
     </div>

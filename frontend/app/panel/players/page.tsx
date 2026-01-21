@@ -98,8 +98,8 @@ export default function Players() {
     <SubPage
       title={$("players.title")}
       subTitle={currentTab === "player-list" ? $("players.player-list.title") : $("players.banned-list.title")}
-      description="管理服务器内的所有在线和离线玩家，设置白名单和黑名单"
-      category="服务器"
+      description={$("players.description")}
+      category={$("sidebar.server")}
       icon={<Users />}
       className="flex flex-col gap-3">
       <span className="text-sm text-muted-foreground">{$("players.hint")}</span>

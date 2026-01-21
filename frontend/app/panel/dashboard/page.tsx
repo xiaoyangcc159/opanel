@@ -64,7 +64,7 @@ export default function Dashboard() {
   return (
     <SubPage
       title={$("dashboard.title")}
-      category="服务器"
+      category={$("sidebar.server")}
       icon={<Gauge />}
       /*             | window maximized                         | height not enough    | for mobile layout */
       outerClassName="min-xl:max-h-screen min-xl:overflow-y-auto max-xl-h:max-h-[850px] max-xl:!max-h-none"

@@ -148,8 +148,9 @@
   "dashboard.properties.hint2": "服务器配置属性描述信息均来自{0}与{1}。",
 
   "saves.title": "存档",
-  "saves.description.line1": "将存档压缩包 (zip格式) 拖入页面以进行导入。若存档压缩包内包含单个存档文件夹，则压缩包名称需与文件夹名称一致，否则拒绝导入。",
-  "saves.description.line2": "点击存档名以切换当前存档，切换后需重启服务器使改动生效。",
+  "saves.description": "管理和上传服务端文件夹下的存档文件",
+  "saves.hint.line1": "将存档压缩包 (zip格式) 拖入页面以进行导入。若存档压缩包内包含单个存档文件夹，则压缩包名称需与文件夹名称一致，否则拒绝导入。",
+  "saves.hint.line2": "点击存档名以切换当前存档，切换后需重启服务器使改动生效。",
   "saves.fetch.error": "无法获取存档列表",
   "saves.upload.error": "无法上传存档",
   "saves.upload.error.description": "存档格式不正确，请上传一个zip文件",
@@ -198,6 +199,7 @@
   "saves.datapacks.toggle.error.404": "找不到数据包 {0}",
 
   "players.title": "玩家",
+  "players.description": "管理服务器内的所有在线和离线玩家，设置白名单和黑名单",
   "players.hint": "点击玩家名以进行更多操作。",
   "players.error": "无法获取玩家列表",
   "players.ws.error": "无法连接到玩家列表WebSocket",
@@ -289,6 +291,7 @@
   "players.action.set-gamemode.error.404": "找不到该玩家",
 
   "gamerules.title": "游戏规则",
+  "gamerules.description": "设置服务器当前世界的游戏规则",
   "gamerules.fetch.error": "无法获取服务器游戏规则信息",
   "gamerules.save.success": "保存成功",
   "gamerules.save.error": "无法保存游戏规则",
@@ -310,6 +313,7 @@
   "terminal.history": "历史记录",
 
   "logs.title": "日志",
+  "logs.description": "管理和查看服务器的所有日志文件",
   "logs.fetch.error": "无法获取日志列表",
   "logs.clear": "清空日志",
   "logs.clear.success": "已清空除当前日志外的所有日志",
@@ -334,6 +338,7 @@
   "logs.view.monaco.readonly": "日志不可编辑",
 
   "coc.title": "行为准则",
+  "coc.description": "管理和编辑服务器的行为准则文件，以规范玩家在服务器内的行为",
   "coc.error.503": "该服务端版本不支持行为准则",
   "coc.fetch.error": "无法获取行为准则信息",
   "coc.save.error": "无法保存行为准则",
@@ -357,6 +362,7 @@
   "coc.create.input.description": "语言代码可参考 {0}\n遵循{1}与{2}国际标准。",
 
   "bukkit-config.title": "Bukkit 配置",
+  "bukkit-config.description": "编辑Bukkit的服务端配置文件",
   "bukkit-config.error.503": "该服务端不是Bukkit系服务端",
   "bukkit-config.fetch.error": "无法获取Bukkit服务器配置文件",
   "bukkit-config.save.error": "无法保存 {0} 配置文件",

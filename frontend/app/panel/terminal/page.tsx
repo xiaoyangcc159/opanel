@@ -100,7 +100,7 @@ export default function Terminal() {
   return (
     <SubPage
       title={$("terminal.title")}
-      category="管理"
+      category={$("sidebar.management")}
       icon={<SquareTerminal />}
       outerClassName="max-h-screen overflow-y-hidden"
       className="flex-1 min-h-0 flex gap-3">

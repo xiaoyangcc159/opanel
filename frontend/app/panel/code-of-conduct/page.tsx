@@ -153,8 +153,8 @@ export default function CodeOfConduct() {
   return (
     <SubPage
       title={$("coc.title")}
-      description="管理和编辑服务器的行为准则文件，以规范玩家在服务器内的行为"
-      category="管理"
+      description={$("coc.description")}
+      category={$("sidebar.management")}
       icon={<HeartHandshake />}
       outerClassName="max-h-screen overflow-y-hidden max-lg:max-h-none max-lg:overflow-y-auto"
       className="flex-1 min-h-0">

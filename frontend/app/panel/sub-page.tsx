@@ -27,7 +27,7 @@ export function SubPage({
   title: string
   subTitle?: string
   description?: string
-  category: string
+  category?: string
   icon?: React.ReactNode
   outerClassName?: string
   pageClassName?: string
@@ -42,19 +42,21 @@ export function SubPage({
       <Navbar className="px-8 max-sm:px-2"/>
       <div className={cn("flex-1 p-8 flex flex-col gap-4 overflow-y-auto", !description && "gap-8", pageClassName)}>
         <div className="space-y-4">
-          <Breadcrumb className="mb-3">
-            <BreadcrumbList>
-              <BreadcrumbItem>{category}</BreadcrumbItem>
-              {subTitle && (
-                <>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>{title}</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </>
-              )}
-            </BreadcrumbList>
-          </Breadcrumb>
+          {category && (
+            <Breadcrumb className="mb-3">
+              <BreadcrumbList>
+                <BreadcrumbItem>{category}</BreadcrumbItem>
+                {subTitle && (
+                  <>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>{title}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </>
+                )}
+              </BreadcrumbList>
+            </Breadcrumb>
+          )}
           <div className="flex items-center gap-5">
             {icon}
             <h1 className="text-3xl font-bold">{subTitle ?? title}</h1>

@@ -98,8 +98,8 @@ export default function Gamerules() {
   return (
     <SubPage
       title={$("gamerules.title")}
-      description="设置服务器当前世界的游戏规则"
-      category="管理"
+      description={$("gamerules.description")}
+      category={$("sidebar.management")}
       icon={<PencilRuler />}
       outerClassName="max-h-screen overflow-y-hidden"
       pageClassName="min-xl:px-64!"

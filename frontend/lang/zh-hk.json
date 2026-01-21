@@ -148,8 +148,9 @@
   "dashboard.properties.hint2": "伺服器配置屬性描述資料均來自{0}同{1}。",
 
   "saves.title": "存檔",
-  "saves.description.line1": "將存檔壓縮包（zip格式）拖入頁面進行導入。如果存檔壓縮包內包含單一存檔資料夾，壓縮包名稱需與資料夾名稱一致，否則會拒絕導入。",
-  "saves.description.line2": "撳存檔名稱以切換而家嘅存檔，切換之後需要重新啟動伺服器先會生效。",
+  "saves.description": "管理和上傳伺服器文件夾下的存檔文件",
+  "saves.hint.line1": "將存檔壓縮包（zip格式）拖入頁面進行導入。如果存檔壓縮包內包含單一存檔資料夾，壓縮包名稱需與資料夾名稱一致，否則會拒絕導入。",
+  "saves.hint.line2": "撳存檔名稱以切換而家嘅存檔，切換之後需要重新啟動伺服器先會生效。",
   "saves.fetch.error": "無法取得存檔列表",
   "saves.upload.error": "無法上傳存檔",
   "saves.upload.error.description": "存檔格式唔啱，請上載一個zip檔案",
@@ -198,7 +199,8 @@
   "saves.datapacks.toggle.error.404": "搵唔到數據包 {0}",
 
   "players.title": "玩家",
-  "players.hint": "点击玩家名以點擊玩家名以進行更多操作。",
+  "players.description": "管理伺服器內的所有在線和離線玩家，設置白名單和黑名單",
+  "players.hint": "點擊玩家名以進行更多操作。",
   "players.error": "無法獲取玩家名單",
   "players.ws.error": "無法連接到玩家列表WebSocket",
   "players.search.placeholder": "搜尋玩家...",
@@ -289,6 +291,7 @@
   "players.action.set-gamemode.error.404": "搵唔到呢個玩家",
 
   "gamerules.title": "遊戲規則",
+  "gamerules.description": "設置伺服器當前世界的遊戲規則",
   "gamerules.fetch.error": "無法獲取伺服器遊戲規則資訊",
   "gamerules.save.success": "儲存成功",
   "gamerules.save.error": "無法儲存遊戲規則",
@@ -310,6 +313,7 @@
   "terminal.history": "歷史紀錄",
 
   "logs.title": "日誌",
+  "logs.description": "管理和查看伺服器的所有日誌文件",
   "logs.fetch.error": "無法獲取日誌列表",
   "logs.clear": "清空日誌",
   "logs.clear.success": "已清空除而家嘅日誌之外嘅所有日誌",
@@ -334,6 +338,7 @@
   "logs.view.monaco.readonly": "日誌唔可以編輯",
 
   "coc.title": "行為準則",
+  "coc.description": "管理和編輯伺服器的行為準則文件，以規範玩家在伺服器內的行為",
   "coc.error.503": "呢個服務器版本唔支援行為準則",
   "coc.fetch.error": "無法獲取行為準則資料",
   "coc.save.error": "無法儲存行為準則",
@@ -357,6 +362,7 @@
   "coc.create.input.description": "語言代碼可參考 {0}\n遵循{1}與{2}國際標準。",
 
   "bukkit-config.title": "Bukkit 設定",
+  "bukkit-config.description": "編輯Bukkit的服務端配置文件",
   "bukkit-config.error.503": "呢個服務器唔係Bukkit系列服務器",
   "bukkit-config.fetch.error": "無法獲取Bukkit伺服器設定檔",
   "bukkit-config.save.error": "無法儲存 {0} 配置檔",

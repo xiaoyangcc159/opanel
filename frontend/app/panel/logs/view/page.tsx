@@ -54,7 +54,7 @@ export default function LogView() {
   }, [fetchLogContent]);
 
   return (
-    <SubPage title={$("logs.title")} subTitle={log ?? ""} category="管理">
+    <SubPage title={$("logs.title")} subTitle={log ?? ""} category={$("sidebar.management")}>
       <div className="mb-3 flex justify-between items-center">
         <Text
           id="logs.view.hint"

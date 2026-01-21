@@ -109,8 +109,8 @@ export default function BukkitConfig() {
   return (
     <SubPage
       title={$("bukkit-config.title")}
-      description="编辑Bukkit的服务端配置文件"
-      category="配置"
+      description={$("bukkit-config.description")}
+      category={$("sidebar.config")}
       icon={<PaintBucket />}
       outerClassName="max-h-screen overflow-y-hidden max-lg:max-h-none max-lg:overflow-y-auto"
       className="flex-1 min-h-0">

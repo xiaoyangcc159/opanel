@@ -8,7 +8,7 @@ export default function Plugins() {
   return (
     <SubPage
       title={$("plugins.title")}
-      category="管理"
+      category={$("sidebar.management")}
       icon={<Blocks />}>
       <div className="flex justify-center">
         <span className="text-muted-foreground">{$("plugins.wip")}</span>
