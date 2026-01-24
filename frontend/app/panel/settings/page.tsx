@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { controlWidth, SettingsNumberInput, SettingsSwitch } from "./settings-control";
 import { Button } from "@/components/ui/button";
+import { LoginBannerDialog } from "./login-banner-dialog";
 import { SecurityDialog } from "./security-dialog";
 import { UpdateDialog } from "./update-dialog";
 import { cn } from "@/lib/utils";
@@ -21,6 +22,7 @@ import { googleSansCode } from "@/lib/fonts";
 import { AvatarProvider, CapeProvider, SkinProvider } from "@/lib/types";
 import { type LanguageCode, languages } from "@/lang";
 import { $ } from "@/lib/i18n";
+import { sendDeleteRequest } from "@/lib/api";
 
 function SettingsItem<K extends keyof SettingsStorageType>({
   name,
@@ -50,7 +52,6 @@ export default function Settings() {
       title={$("settings.title")}
       icon={<SettingsIcon />}
       pageClassName="min-xl:px-64!">
-      <span className="text-sm text-muted-foreground">{$("settings.hint")}</span>
       <div className="flex flex-col gap-7 mt-4">
         <Section title={$("settings.dashboard.title")}>
           <SettingsItem
@@ -192,6 +193,17 @@ export default function Settings() {
             description={$("settings.monaco.font-size.description")}
             control={<SettingsNumberInput id="monaco.font-size" min={1} max={30}/>}/>
         </Section>
+        <Section title={$("settings.appearance.title")}>
+          <SettingsItem
+            id="appearance.login-banner"
+            name={$("settings.login-banner.title")}
+            description={$("settings.login-banner.description")}
+            control={
+              <LoginBannerDialog asChild>
+                <Button className="cursor-pointer" size="sm">{$("settings.appearance.login-banner.modify")}</Button>
+              </LoginBannerDialog>
+            }/>
+        </Section>
         <Section title="OPanel">
           <SettingsItem
             id="system.language"
@@ -234,8 +246,9 @@ export default function Settings() {
           <Button
             variant="outline"
             className="cursor-pointer"
-            onClick={() => {
+            onClick={async () => {
               resetSettings();
+              await sendDeleteRequest("/assets/reset/login-banner");
               window.location.reload();
             }}>
             {$("settings.reset")}

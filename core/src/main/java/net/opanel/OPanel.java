@@ -43,7 +43,7 @@ public class OPanel {
         this.logger = logger;
         uptimer = new Uptimer();
 
-        // Initialize
+        // Initialize OPanel directory
         try {
             init();
         } catch (IOException e) {
@@ -56,10 +56,12 @@ public class OPanel {
     }
 
     private void init() throws IOException {
+        // Create OPanel directory
         File opanelDir = OPANEL_DIR_PATH.toFile();
         if(!opanelDir.exists() && !opanelDir.mkdir()) {
             throw new IOException("Cannot initialize opanel directory.");
         }
+        // Create .tmp directory
         File tmpDir = TMP_DIR_PATH.toFile();
         if(!tmpDir.exists() && !tmpDir.mkdir()) {
             throw new IOException("Cannot initialize opanel/.tmp directory.");
@@ -67,6 +69,7 @@ public class OPanel {
         if(tmpDir.list().length > 0) {
             Utils.clearDirectoryRecursively(tmpDir.toPath());
         }
+        // Remove access key txt file if exists
         File initialAccessKeyFile = INITIAL_ACCESS_KEY_PATH.toFile();
         if(initialAccessKeyFile.exists() && !initialAccessKeyFile.delete()) {
             throw new IOException("Cannot delete opanel/INITIAL_ACCESS_KEY.txt file, please delete it manually for your server security.");

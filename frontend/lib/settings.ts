@@ -36,6 +36,7 @@ export type SettingsStorageType = {
   "code-of-conduct.auto-saving-interval": number
   "monaco.word-wrap": boolean
   "monaco.font-size": number
+  "appearance.login-banner"?: never
   "system.language": LanguageCode
   "system.preview-channel": boolean
   "system.access-key"?: never
