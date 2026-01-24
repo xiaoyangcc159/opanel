@@ -9,7 +9,7 @@ export function Section({
   return (
     <section>
       <h2 className="text-lg font-semibold mb-3">{title}</h2>
-      <div className="border rounded-md flex flex-col">{children}</div>
+      <div className="bg-background dark:bg-transparent border rounded-md flex flex-col">{children}</div>
     </section>
   );
 }

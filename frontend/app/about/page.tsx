@@ -81,54 +81,50 @@ export default function About() {
         <p className="text-center text-lg font-bold">{$("about.thanks")}</p>
         <p className="text-center text-sm text-muted-foreground">{copyrightInfo}</p>
       </CardContent>
-      <CardFooter className="flex justify-between">
-        <div>
-          <Button
-            className="cursor-pointer"
-            variant="link"
-            onClick={() => window.location.href = "/"}>
-            <ChevronLeft />
-            {$("about.footer.back")}
-          </Button>
-        </div>
-        <div className="space-x-2">
-          <Button
-            variant="secondary"
-            size="icon"
-            title={$("about.footer.donate")}
-            asChild>
-            <Link href="https://afdian.com/a/opanel" target="_blank">
-              <HandCoins />
-            </Link>
-          </Button>
-          <Button
-            variant="secondary"
-            size="icon"
-            title={$("about.footer.github")}
-            asChild>
-            <Link href="https://github.com/opanel-mc" target="_blank">
-              <Github />
-            </Link>
-          </Button>
-          <Button
-            variant="secondary"
-            size="icon"
-            title={$("about.footer.website")}
-            asChild>
-            <Link href="https://opanel.cn" target="_blank">
-              <Earth />
-            </Link>
-          </Button>
-          <Button
-            variant="secondary"
-            size="icon"
-            title={$("about.footer.docs")}
-            asChild>
-            <Link href="https://opanel.cn/docs/quick-start.html" target="_blank">
-              <BookText />
-            </Link>
-          </Button>
-        </div>
+      <CardFooter className="flex">
+        <Button
+          className="mr-auto cursor-pointer"
+          variant="link"
+          onClick={() => window.location.href = "/"}>
+          <ChevronLeft />
+          {$("about.footer.back")}
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          title={$("about.footer.donate")}
+          asChild>
+          <Link href="https://nocp.space/donate" target="_blank">
+            <HandCoins />
+          </Link>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          title={$("about.footer.github")}
+          asChild>
+          <Link href="https://github.com/opanel-mc" target="_blank">
+            <Github />
+          </Link>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          title={$("about.footer.website")}
+          asChild>
+          <Link href="https://opanel.cn" target="_blank">
+            <Earth />
+          </Link>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          title={$("about.footer.docs")}
+          asChild>
+          <Link href="https://opanel.cn/docs/quick-start.html" target="_blank">
+            <BookText />
+          </Link>
+        </Button>
       </CardFooter>
     </Card>
   );

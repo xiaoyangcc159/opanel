@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="zh-cn" suppressHydrationWarning>
       <body
-        className={cn(notoSansSC.className, notoColorEmoji.variable, googleSansCode.variable, "antialiased")}>
+        className={cn(notoSansSC.className, notoColorEmoji.variable, googleSansCode.variable, "antialiased overflow-hidden")}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

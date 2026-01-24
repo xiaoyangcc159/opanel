@@ -3,9 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useContext } from "react";
-import { deleteCookie } from "cookies-next/client";
 import { compare } from "semver";
-import { Blocks, BookText, Earth, Gauge, HeartHandshake, Info, LogOut, PaintBucket, PencilRuler, ScrollText, Settings, SquareArrowOutUpRight, SquareTerminal, Users } from "lucide-react";
+import { Blocks, Earth, Gauge, HeartHandshake, PaintBucket, PencilRuler, ScrollText, SquareTerminal, Users } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -18,9 +17,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from "./ui/sidebar";
-import { Button } from "./ui/button";
-import { ThemeToggle } from "./theme-toggle";
 import { cn, isBukkit } from "@/lib/utils";
 import { minecraftAE } from "@/lib/fonts";
 import { Logo } from "./logo";
@@ -82,43 +80,19 @@ const configurationGroupItems = [
   }
 ];
 
-const helpGroupItems = [
-  {
-    name: $("sidebar.help.settings"),
-    url: "/panel/settings",
-    icon: Settings
-  },
-  {
-    name: $("sidebar.help.about"),
-    url: "/about",
-    icon: Info
-  },
-  {
-    name: $("sidebar.help.docs"),
-    url: "https://opanel.cn/docs/quick-start.html",
-    icon: BookText,
-    newTab: true
-  },
-];
-
 export function AppSidebar() {
   const pathname = usePathname();
   const versionCtx = useContext(VersionContext);
-
-  const handleLogout = () => {
-    deleteCookie("token");
-    window.location.href = "/login";
-  };
 
   if(!versionCtx) return <></>;
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="pl-4 flex flex-row items-center gap-0 group-data-[state=collapsed]:justify-center group-data-[state=collapsed]:pt-3 group-data-[state=collapsed]:pl-2">
+      <SidebarHeader className="h-12 pl-4 bg-background border-b border-b-sidebar-border flex flex-row items-center gap-0 group-data-[state=collapsed]:justify-center group-data-[state=collapsed]:pt-3 group-data-[state=collapsed]:pl-2">
         <Logo size={26}/>
-        <h1 className={cn("m-2 text-lg text-theme font-semibold group-data-[state=collapsed]:hidden", minecraftAE.className)}>OPanel</h1>
+        <h1 className={cn("m-2 text-lg text-theme font-semibold select-none group-data-[state=collapsed]:hidden", minecraftAE.className)}>OPanel</h1>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="bg-background">
         <SidebarGroup>
           <SidebarGroupLabel>{$("sidebar.server")}</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -181,40 +155,9 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         )}
-        <SidebarGroup>
-          <SidebarGroupLabel>{$("sidebar.help")}</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {helpGroupItems.map((item, i) => (
-                <SidebarMenuItem key={i}>
-                  <SidebarMenuButton
-                    isActive={pathname.startsWith(item.url)}
-                    asChild>
-                    <Link
-                      href={item.url}
-                      target={item.newTab ? "_blank" : "_self"}
-                      className="pl-3">
-                      {pathname.startsWith(item.url) && <SidebarIndicator className="left-2"/>}
-                      <item.icon />
-                      <span className="whitespace-nowrap">{item.name}</span>
-                      {item.newTab && <SquareArrowOutUpRight className="!size-3 ml-1" stroke="var(--color-muted-foreground)"/>}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="flex-row gap-1 justify-end">
-        <ThemeToggle />
-        <Button
-          className="group-data-[state=collapsed]:hidden cursor-pointer"
-          variant="secondary"
-          size="icon"
-          onClick={() => handleLogout()}>
-          <LogOut />
-        </Button>
+      <SidebarFooter className="p-4 bg-background items-end group-data-[state=collapsed]:px-0 group-data-[state=collapsed]:items-center">
+        <SidebarTrigger className="cursor-pointer"/>
       </SidebarFooter>
     </Sidebar>
   );

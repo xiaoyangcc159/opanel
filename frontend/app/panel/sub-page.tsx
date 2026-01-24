@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import { cn } from "@/lib/utils";
+import { Navbar } from "@/components/navbar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,24 +10,27 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { cn } from "@/lib/utils";
 
 export function SubPage({
   children,
   title,
   subTitle,
+  description,
+  category,
   icon,
   outerClassName,
+  pageClassName,
   className,
   ...props
 }: Readonly<React.ComponentProps<"div"> & {
   children?: React.ReactNode
   title: string
   subTitle?: string
+  description?: string
+  category?: string
   icon?: React.ReactNode
   outerClassName?: string
+  pageClassName?: string
   className?: string
 }>) {
   useEffect(() => {
@@ -33,34 +38,34 @@ export function SubPage({
   }, [title, subTitle]);
 
   return (
-    <div className={cn("group px-16 max-md:px-12 max-sm:px-8 flex-1 flex flex-col gap-6 max-md:gap-2", outerClassName)}>
-      <div className="pt-10 pb-5 flex flex-col gap-8">
-        <div className="flex items-center gap-4">
-          <SidebarTrigger className="cursor-pointer"/>
-          <Separator orientation="vertical"/>
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>OPanel</BreadcrumbItem>
-              <BreadcrumbSeparator />
-              {subTitle && (
-                <>
-                  <BreadcrumbItem>{title}</BreadcrumbItem>
-                  <BreadcrumbSeparator />
-                </>
-              )}
-              <BreadcrumbItem>
-                <BreadcrumbPage>{subTitle ?? title}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+    <div className={cn("group max-h-screen bg-sidebar flex-1 flex flex-col", outerClassName)}>
+      <Navbar className="px-8 max-sm:px-2"/>
+      <div className={cn("flex-1 p-8 flex flex-col gap-4 overflow-y-auto", !description && "gap-8", pageClassName)}>
+        <div className="space-y-4">
+          {category && (
+            <Breadcrumb className="mb-3">
+              <BreadcrumbList>
+                <BreadcrumbItem>{category}</BreadcrumbItem>
+                {subTitle && (
+                  <>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>{title}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </>
+                )}
+              </BreadcrumbList>
+            </Breadcrumb>
+          )}
+          <div className="flex items-center gap-5">
+            {icon}
+            <h1 className="text-3xl font-bold">{subTitle ?? title}</h1>
+          </div>
+          {description && <span className="text-muted-foreground">{description}</span>}
         </div>
-        <div className="flex items-center gap-5">
-          {icon}
-          <h1 className="text-3xl font-bold">{subTitle ?? title}</h1>
+        <div className={className} {...props}>
+          {children}
         </div>
-      </div>
-      <div className={cn(className, "pb-14")} {...props}>
-        {children}
       </div>
     </div>
   );

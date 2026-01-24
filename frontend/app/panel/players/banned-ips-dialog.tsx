@@ -134,7 +134,7 @@ export function BannedIpsDialog({
             <Input
               value={inputtedIp}
               placeholder={$("players.banned-ips.input.placeholder")}
-              className="h-8"
+              className="h-8 rounded-sm"
               onInput={(e) => setInputtedIp((e.target as HTMLInputElement).value)}
               onKeyDown={(e) => (e.key === "Enter" && inputtedIp.length > 0) && banIp(inputtedIp)}/>
             <Button

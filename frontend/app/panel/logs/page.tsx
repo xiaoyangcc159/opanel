@@ -54,6 +54,8 @@ export default function Logs() {
   return (
     <SubPage
       title={$("logs.title")}
+      description={$("logs.description")}
+      category={$("sidebar.management")}
       icon={<ScrollText />}
       className="flex-1 flex flex-col gap-5">
       <div className="flex justify-end">

@@ -109,6 +109,8 @@ export default function BukkitConfig() {
   return (
     <SubPage
       title={$("bukkit-config.title")}
+      description={$("bukkit-config.description")}
+      category={$("sidebar.config")}
       icon={<PaintBucket />}
       outerClassName="max-h-screen overflow-y-hidden max-lg:max-h-none max-lg:overflow-y-auto"
       className="flex-1 min-h-0">
@@ -155,7 +157,7 @@ export default function BukkitConfig() {
           <MonacoEditor
             defaultLanguage="yaml"
             value={editorValue}
-            theme={theme === "dark" ? "server-log-theme-dark" : "server-log-theme"}
+            theme={theme === "dark" ? "opanel-theme-dark" : "opanel-theme"}
             options={{
               minimap: {
                 enabled: false

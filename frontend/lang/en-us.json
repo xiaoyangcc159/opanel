@@ -62,10 +62,9 @@
   "sidebar.management.code-of-conduct": "Code of Conduct",
   "sidebar.config": "Configurations",
   "sidebar.config.bukkit-config": "Bukkit Config",
-  "sidebar.help": "Help",
-  "sidebar.help.settings": "Settings",
-  "sidebar.help.about": "About",
-  "sidebar.help.docs": "Docs",
+
+  "nav.settings": "Settings",
+  "nav.docs": "Docs",
   
   "functional-card.more": "More",
 
@@ -149,8 +148,9 @@
   "dashboard.properties.hint2": "The server configuration attribute descriptions all come from {0} and {1}.",
 
   "saves.title": "Saves",
-  "saves.description.line1": "Drag the save archive (in zip format) onto the page to import. If the zip archive contains a single save folder, the name of the archive must match the folder name, otherwise the import will be rejected.",
-  "saves.description.line2": "Click the save file name to switch the current save. A server restart is required for the changes to take effect.",
+  "saves.description": "Manage and upload save files in the server directory",
+  "saves.hint.line1": "Drag the save archive (in zip format) onto the page to import. If the zip archive contains a single save folder, the name of the archive must match the folder name, otherwise the import will be rejected.",
+  "saves.hint.line2": "Click the save file name to switch the current save. A server restart is required for the changes to take effect.",
   "saves.fetch.error": "Unable to retrieve the save list",
   "saves.upload.error": "Unable to upload save file",
   "saves.upload.error.description": "The archive format is incorrect. Please upload a zip file.",
@@ -199,6 +199,7 @@
   "saves.datapacks.toggle.error.404": "Datapack {0} not found",
 
   "players.title": "Players",
+  "players.description": "Manage all online and offline players on the server, set whitelist and ban list",
   "players.hint": "Click on the player's name for more options.",
   "players.error": "Unable to retrieve player list",
   "players.ws.error": "Cannot connect to the WebSocket of player list",
@@ -290,6 +291,7 @@
   "players.action.set-gamemode.error.404": "Player not found",
 
   "gamerules.title": "Game Rules",
+  "gamerules.description": "Set the gamerules for the current world of the server",
   "gamerules.fetch.error": "Unable to retrieve server game rule information",
   "gamerules.save.success": "Saved successfully",
   "gamerules.save.error": "Unable to save game rules",
@@ -311,6 +313,7 @@
   "terminal.history": "History",
 
   "logs.title": "Logs",
+  "logs.description": "Manage and view all log files of the server",
   "logs.fetch.error": "Unable to retrieve log list",
   "logs.clear": "Clear Logs",
   "logs.clear.success": "All logs except the current one have been cleared",
@@ -335,6 +338,7 @@
   "logs.view.monaco.readonly": "Log cannot be edited",
 
   "coc.title": "Code of Conduct",
+  "coc.description": "Manage and edit the server's code of conduct to regulate player behavior within the server",
   "coc.error.503": "This server version does not support the code of conduct.",
   "coc.fetch.error": "Unable to obtain code of conduct information",
   "coc.save.error": "Unable to save code of conduct",
@@ -358,6 +362,7 @@
   "coc.create.input.description": "Language codes can refer to {0}\nFollow the {1} and {2} international standards.",
 
   "bukkit-config.title": "Bukkit Configurations",
+  "bukkit-config.description": "Edit the Bukkit configuration files",
   "bukkit-config.error.503": "This server is not a bukkit-series server.",
   "bukkit-config.fetch.error": "Unable to retrieve the configuration files",
   "bukkit-config.save.error": "Cannot save the configuration file {0}",
@@ -398,7 +403,6 @@
   "settings.monaco.word-wrap": "Word wrap",
   "settings.monaco.font-size": "Font size",
   "settings.monaco.font-size.description": "Font display size in the editor (unit: px)",
-  "settings.system.title": "System",
   "settings.system.language": "Language",
   "settings.system.access-key": "Access Key",
   "settings.system.access-key.modify": "Modify",
