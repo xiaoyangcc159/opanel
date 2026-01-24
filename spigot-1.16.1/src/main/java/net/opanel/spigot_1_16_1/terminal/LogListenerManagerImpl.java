@@ -12,15 +12,12 @@ import org.apache.logging.log4j.core.config.plugins.*;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 @Plugin(name = "LogListenerAppender", category = "Core", elementType = "appender")
 public class LogListenerManagerImpl extends AbstractAppender implements LogListenerManager {
-    private final List<ConsoleLog> logs = new ArrayList<>();
+    private final LinkedList<ConsoleLog> logs = new LinkedList<>();
     private final Set<Consumer<ConsoleLog>> listeners = new HashSet<>();
 
     protected LogListenerManagerImpl(String name, Filter filter, Layout<? extends Serializable> layout, boolean ignoreExceptions) {
@@ -43,8 +40,10 @@ public class LogListenerManagerImpl extends AbstractAppender implements LogListe
             log.setThrownMessage(Utils.stringifyThrowable(throwable));
         }
 
-        logs.add(log);
-        if(logs.size() > MAX_LOG_LINES) logs.remove(0);
+        synchronized(logs) {
+            logs.add(log);
+            while(logs.size() > MAX_LOG_LINES) logs.remove(0);
+        }
 
         listeners.forEach(listener -> {
             listener.accept(log);
@@ -72,6 +71,8 @@ public class LogListenerManagerImpl extends AbstractAppender implements LogListe
 
     @Override
     public List<ConsoleLog> getRecentLogs() {
-        return logs;
+        synchronized(logs) {
+            return new ArrayList<>(logs);
+        }
     }
 }
