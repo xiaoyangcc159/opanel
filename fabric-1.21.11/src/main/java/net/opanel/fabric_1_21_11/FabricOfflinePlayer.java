@@ -1,11 +1,9 @@
 package net.opanel.fabric_1_21_11;
 
-import com.mojang.authlib.GameProfile;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtSizeTracker;
 import net.minecraft.server.*;
-import net.minecraft.world.GameMode;
 import net.opanel.common.OPanelGameMode;
 import net.opanel.common.OPanelPlayer;
 import net.opanel.fabric_helper.BaseFabricOfflinePlayer;
@@ -16,33 +14,31 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class FabricOfflinePlayer extends BaseFabricOfflinePlayer implements OPanelPlayer {
-    private final GameProfile profile;
+    private final PlayerConfigEntry configEntry;
 
     public FabricOfflinePlayer(MinecraftServer server, UUID uuid) {
         super(server, uuid);
 
-        GameProfileResolver profileCache = server.getApiServices().profileResolver();
-        Optional<GameProfile> profileOpt = profileCache.getProfileById(uuid);
-        if(profileOpt.isEmpty()) {
-            throw new NullPointerException("Cannot get the game profile of the provided player.");
+        Optional<PlayerConfigEntry> configEntryOptional = server.getApiServices().nameToIdCache().getByUuid(uuid);
+        if(configEntryOptional.isEmpty()) {
+            throw new RuntimeException("Cannot get the cache of the provided player.");
         }
-
-        profile = profileOpt.get();
+        configEntry = configEntryOptional.get();
     }
 
     @Override
     public String getName() {
-        return profile.name();
+        return configEntry.name();
     }
 
     @Override
     public boolean isOp() {
-        return playerManager.isOperator(new PlayerConfigEntry(profile));
+        return playerManager.isOperator(configEntry);
     }
 
     @Override
     public boolean isBanned() {
-        return playerManager.getUserBanList().contains(new PlayerConfigEntry(profile));
+        return playerManager.getUserBanList().contains(configEntry);
     }
 
     @Override
@@ -71,27 +67,27 @@ public class FabricOfflinePlayer extends BaseFabricOfflinePlayer implements OPan
     @Override
     public void giveOp() {
         if(isOp()) return;
-        playerManager.addToOperators(new PlayerConfigEntry(profile));
+        playerManager.addToOperators(configEntry);
     }
 
     @Override
     public void depriveOp() {
         if(!isOp()) return;
-        playerManager.removeFromOperators(new PlayerConfigEntry(profile));
+        playerManager.removeFromOperators(configEntry);
     }
 
     @Override
     public void ban(String reason) {
         if(isBanned()) return;
         BannedPlayerList bannedList = playerManager.getUserBanList();
-        BannedPlayerEntry entry = new BannedPlayerEntry(new PlayerConfigEntry(profile), new Date(), null, null, reason);
+        BannedPlayerEntry entry = new BannedPlayerEntry(configEntry, new Date(), null, null, reason);
         bannedList.add(entry);
     }
 
     @Override
     public String getBanReason() {
         if(!isBanned()) return null;
-        BannedPlayerEntry banEntry = playerManager.getUserBanList().get(new PlayerConfigEntry(profile));
+        BannedPlayerEntry banEntry = playerManager.getUserBanList().get(configEntry);
         if(banEntry == null) return null;
         return banEntry.getReason();
     }
@@ -99,6 +95,6 @@ public class FabricOfflinePlayer extends BaseFabricOfflinePlayer implements OPan
     @Override
     public void pardon() {
         if(!isBanned()) return;
-        playerManager.getUserBanList().remove(new PlayerConfigEntry(profile));
+        playerManager.getUserBanList().remove(configEntry);
     }
 }
