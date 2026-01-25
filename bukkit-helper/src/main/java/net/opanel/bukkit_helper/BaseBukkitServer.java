@@ -1,6 +1,7 @@
 package net.opanel.bukkit_helper;
 
 import net.opanel.common.OPanelPlayer;
+import net.opanel.common.OPanelPlugin;
 import net.opanel.common.OPanelServer;
 import org.bukkit.*;
 import org.bukkit.help.HelpTopic;
@@ -109,4 +110,98 @@ public abstract class BaseBukkitServer implements OPanelServer {
     public long getIngameTime() {
         return server.getWorlds().get(0).getTime();
     }
+
+    @Override
+    public List<OPanelPlugin> getPlugins() {
+        List<OPanelPlugin> plugins = new ArrayList<>();
+        Path pluginsPath = getPluginsPath();
+        
+        // Get loaded plugins from Bukkit
+        for (org.bukkit.plugin.Plugin p : server.getPluginManager().getPlugins()) {
+            org.bukkit.plugin.PluginDescriptionFile desc = p.getDescription();
+            String fileName = p.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
+            // Extract just the filename
+            fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+            
+            long fileSize = 0;
+            try {
+                Path filePath = pluginsPath.resolve(fileName);
+                if (Files.exists(filePath)) {
+                    fileSize = Files.size(filePath);
+                }
+            } catch (IOException ignored) {}
+            
+            plugins.add(new OPanelPlugin(
+                fileName,
+                desc.getName(),
+                desc.getVersion(),
+                desc.getDescription(),
+                desc.getAuthors().toArray(new String[0]),
+                fileSize,
+                p.isEnabled(),
+                true
+            ));
+        }
+        
+        // Scan for disabled plugins (.jar.disabled files)
+        try (java.util.stream.Stream<Path> stream = Files.list(pluginsPath)) {
+            stream.filter(path -> path.toString().endsWith(".jar.disabled"))
+                .forEach(path -> {
+                    try {
+                        String fileName = path.getFileName().toString();
+                        long fileSize = Files.size(path);
+                        plugins.add(OPanelPlugin.createDisabled(fileName, fileSize));
+                    } catch (IOException ignored) {}
+                });
+        } catch (IOException ignored) {}
+        
+        return plugins;
+    }
+
+    @Override
+    public Path getPluginsPath() {
+        return plugin.getDataFolder().getParentFile().toPath();
+    }
+
+    @Override
+    public void togglePlugin(String fileName) throws IOException {
+        Path pluginsPath = getPluginsPath();
+        
+        if (fileName.endsWith(".disabled")) {
+            // Enable: rename from .jar.disabled to .jar
+            Path disabledPath = pluginsPath.resolve(fileName);
+            if (!Files.exists(disabledPath)) {
+                throw new IOException("Plugin file not found: " + fileName);
+            }
+            String enabledName = fileName.substring(0, fileName.length() - 9); // remove ".disabled"
+            Path enabledPath = pluginsPath.resolve(enabledName);
+            Files.move(disabledPath, enabledPath);
+        } else {
+            // Disable: rename from .jar to .jar.disabled
+            Path enabledPath = pluginsPath.resolve(fileName);
+            if (!Files.exists(enabledPath)) {
+                throw new IOException("Plugin file not found: " + fileName);
+            }
+            Path disabledPath = pluginsPath.resolve(fileName + ".disabled");
+            Files.move(enabledPath, disabledPath);
+        }
+    }
+
+    @Override
+    public void deletePlugin(String fileName) throws IOException {
+        Path pluginsPath = getPluginsPath();
+        Path filePath = pluginsPath.resolve(fileName);
+        
+        if (!Files.exists(filePath)) {
+            // Try with .disabled suffix
+            filePath = pluginsPath.resolve(fileName + ".disabled");
+        }
+        
+        if (!Files.exists(filePath)) {
+            throw new IOException("Plugin file not found: " + fileName);
+        }
+        
+        Files.delete(filePath);
+    }
 }
+

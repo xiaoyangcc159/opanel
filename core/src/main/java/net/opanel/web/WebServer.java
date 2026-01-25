@@ -77,6 +77,7 @@ public class WebServer {
         MonitorController monitorController = new MonitorController(plugin);
         PlayersController playersController = new PlayersController(plugin);
         SavesController savesController = new SavesController(plugin);
+        PluginsController pluginsController = new PluginsController(plugin);
         SecurityController securityController = new SecurityController(plugin);
         VersionController versionController = new VersionController(plugin);
         WhitelistController whitelistController = new WhitelistController(plugin);
@@ -152,6 +153,13 @@ public class WebServer {
                 post("{saveName}", savesController.editSave);
                 patch("{saveName}", savesController.toggleSaveDatapack);
                 delete("{saveName}", savesController.deleteSave);
+            });
+            path("plugins", () -> {
+                get("/", pluginsController.getPlugins);
+                post("/", pluginsController.uploadPlugin);
+                get("{fileName}/download", pluginsController.downloadPlugin);
+                post("{fileName}/toggle", pluginsController.togglePlugin);
+                delete("{fileName}", pluginsController.deletePlugin);
             });
             post("security", securityController.updateAccessKey);
             get("version", versionController.getVersionInfo);

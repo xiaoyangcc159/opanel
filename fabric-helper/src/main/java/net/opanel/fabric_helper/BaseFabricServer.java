@@ -2,20 +2,27 @@ package net.opanel.fabric_helper;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.ModMetadata;
+import net.fabricmc.loader.api.metadata.Person;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.WorldSavePath;
 import net.opanel.common.OPanelPlayer;
+import net.opanel.common.OPanelPlugin;
 import net.opanel.common.OPanelServer;
 import net.opanel.common.ServerType;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
+import java.util.stream.Stream;
 
 public abstract class BaseFabricServer implements OPanelServer {
     protected final MinecraftServer server;
@@ -127,4 +134,112 @@ public abstract class BaseFabricServer implements OPanelServer {
     public long getIngameTime() {
         return server.getOverworld().getTimeOfDay();
     }
+
+    @Override
+    public List<OPanelPlugin> getPlugins() {
+        List<OPanelPlugin> mods = new ArrayList<>();
+        Path modsPath = getPluginsPath();
+        
+        // Get loaded mods from FabricLoader
+        for (ModContainer modContainer : FabricLoader.getInstance().getAllMods()) {
+            ModMetadata metadata = modContainer.getMetadata();
+            
+            // Skip built-in mods (fabric-api internals, minecraft, java, etc.)
+            String modId = metadata.getId();
+            if (modId.equals("minecraft") || modId.equals("java") || modId.equals("fabricloader")) {
+                continue;
+            }
+            
+            // Try to find the mod file
+            String fileName = modId + ".jar"; // Default name
+            long fileSize = 0;
+            
+            // Try to get the actual file from the mod's origin
+            Path[] origins = modContainer.getOrigin().getPaths().toArray(new Path[0]);
+            if (origins.length > 0 && Files.exists(origins[0])) {
+                fileName = origins[0].getFileName().toString();
+                try {
+                    fileSize = Files.size(origins[0]);
+                } catch (IOException ignored) {}
+            }
+            
+            // Get authors
+            List<String> authorList = new ArrayList<>();
+            for (Person author : metadata.getAuthors()) {
+                authorList.add(author.getName());
+            }
+            
+            mods.add(new OPanelPlugin(
+                fileName,
+                metadata.getName(),
+                metadata.getVersion().getFriendlyString(),
+                metadata.getDescription(),
+                authorList.toArray(new String[0]),
+                fileSize,
+                true, // All loaded mods are enabled
+                true  // All loaded mods are loaded
+            ));
+        }
+        
+        // Scan for disabled mods (.jar.disabled files)
+        try (Stream<Path> stream = Files.list(modsPath)) {
+            stream.filter(path -> path.toString().endsWith(".jar.disabled"))
+                .forEach(path -> {
+                    try {
+                        String fileName = path.getFileName().toString();
+                        long fileSize = Files.size(path);
+                        mods.add(OPanelPlugin.createDisabled(fileName, fileSize));
+                    } catch (IOException ignored) {}
+                });
+        } catch (IOException ignored) {}
+        
+        return mods;
+    }
+
+    @Override
+    public Path getPluginsPath() {
+        return Paths.get("").resolve("mods").toAbsolutePath();
+    }
+
+    @Override
+    public void togglePlugin(String fileName) throws IOException {
+        Path modsPath = getPluginsPath();
+        
+        if (fileName.endsWith(".disabled")) {
+            // Enable: rename from .jar.disabled to .jar
+            Path disabledPath = modsPath.resolve(fileName);
+            if (!Files.exists(disabledPath)) {
+                throw new IOException("Mod file not found: " + fileName);
+            }
+            String enabledName = fileName.substring(0, fileName.length() - 9); // remove ".disabled"
+            Path enabledPath = modsPath.resolve(enabledName);
+            Files.move(disabledPath, enabledPath);
+        } else {
+            // Disable: rename from .jar to .jar.disabled
+            Path enabledPath = modsPath.resolve(fileName);
+            if (!Files.exists(enabledPath)) {
+                throw new IOException("Mod file not found: " + fileName);
+            }
+            Path disabledPath = modsPath.resolve(fileName + ".disabled");
+            Files.move(enabledPath, disabledPath);
+        }
+    }
+
+    @Override
+    public void deletePlugin(String fileName) throws IOException {
+        Path modsPath = getPluginsPath();
+        Path filePath = modsPath.resolve(fileName);
+        
+        if (!Files.exists(filePath)) {
+            // Try with .disabled suffix
+            filePath = modsPath.resolve(fileName + ".disabled");
+        }
+        
+        if (!Files.exists(filePath)) {
+            throw new IOException("Mod file not found: " + fileName);
+        }
+        
+        Files.delete(filePath);
+    }
 }
+

@@ -55,6 +55,12 @@ public interface OPanelServer {
     void stop();
     long getIngameTime();
 
+    // Plugin management methods
+    List<OPanelPlugin> getPlugins();
+    Path getPluginsPath();
+    void togglePlugin(String fileName) throws IOException;
+    void deletePlugin(String fileName) throws IOException;
+
     static String getPropertiesContent() throws IOException {
         if(!Files.exists(serverPropertiesPath)) {
             throw new IOException("Cannot find server.properties");
