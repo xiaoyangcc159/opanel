@@ -56,7 +56,7 @@ export default function PanelLayout({
       <VersionContext value={versionInfo}>
         <AppSidebar />
         <SidebarInset className="min-w-0">
-            {children}
+          {children}
         </SidebarInset>
       </VersionContext>
     </SidebarProvider>

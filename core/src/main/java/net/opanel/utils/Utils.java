@@ -281,4 +281,19 @@ public class Utils {
         }
         return value;
     }
+
+    public static String getFileExtension(Path filePath) {
+        String fileName = filePath.getFileName().toString();
+        int lastDotIndex = fileName.lastIndexOf(".");
+        return lastDotIndex <= 0 ? "" : fileName.substring(lastDotIndex + 1);
+    }
+
+    public static <T> boolean arrayHas(T[] arr, T obj) {
+        for(T item : arr) {
+            if(item.equals(obj)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

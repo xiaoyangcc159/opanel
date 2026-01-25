@@ -153,6 +153,8 @@ export default function CodeOfConduct() {
   return (
     <SubPage
       title={$("coc.title")}
+      description={$("coc.description")}
+      category={$("sidebar.management")}
       icon={<HeartHandshake />}
       outerClassName="max-h-screen overflow-y-hidden max-lg:max-h-none max-lg:overflow-y-auto"
       className="flex-1 min-h-0">
@@ -189,7 +191,7 @@ export default function CodeOfConduct() {
                 <MonacoEditor
                   defaultLanguage="txt"
                   value={editorValue}
-                  theme={theme === "dark" ? "server-log-theme-dark" : "server-log-theme"}
+                  theme={theme === "dark" ? "opanel-theme-dark" : "opanel-theme"}
                   options={{
                     minimap: {
                       enabled: false

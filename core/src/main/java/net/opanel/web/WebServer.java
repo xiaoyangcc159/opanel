@@ -66,6 +66,7 @@ public class WebServer {
         // Controllers
         BeforeController beforeController = new BeforeController(plugin);
         ErrorController errorController = new ErrorController(plugin);
+        AssetsController assetsController = new AssetsController(plugin);
         DownloadController downloadController = new DownloadController(plugin);
         AuthController authController = new AuthController(plugin);
         BannedIpsController bannedIpsController = new BannedIpsController(plugin);
@@ -86,6 +87,12 @@ public class WebServer {
         app.before("/*", beforeController.beforeAll);
         app.before("/*", beforeController.handleRsc);
         app.before("/*", beforeController.handleFonts);
+        app.routes(() -> path("assets", () -> {
+            before("/upload/*", beforeController.authCookie);
+            get("/{name}", assetsController.getAsset);
+            post("/upload/{name}", assetsController.uploadAsset);
+            delete("/reset/{name}", assetsController.resetAsset);
+        }));
         app.routes(() -> path("file", () -> {
             before("/*", beforeController.authCookie);
             get("/{id}/{fileName}", downloadController.downloadFile);

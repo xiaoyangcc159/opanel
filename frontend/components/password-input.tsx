@@ -14,7 +14,9 @@ export function PasswordInput({
         autoComplete="off"
         {...props}/>
       <InputGroupAddon align="inline-end">
-        <InputGroupButton onClick={() => setVisible((current) => !current)}>
+        <InputGroupButton
+          className="hover:bg-transparent!"
+          onClick={() => setVisible((current) => !current)}>
           {
             visible
             ? <Eye />

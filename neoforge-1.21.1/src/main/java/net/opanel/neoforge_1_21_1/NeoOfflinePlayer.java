@@ -16,6 +16,7 @@ import net.opanel.common.OPanelGameMode;
 import net.opanel.common.OPanelPlayer;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
@@ -145,6 +146,11 @@ public class NeoOfflinePlayer implements OPanelPlayer {
 
     @Override
     public int getPing() {
+        throw new IllegalStateException("The player is offline.");
+    }
+
+    @Override
+    public InetAddress getAddress() {
         throw new IllegalStateException("The player is offline.");
     }
 }

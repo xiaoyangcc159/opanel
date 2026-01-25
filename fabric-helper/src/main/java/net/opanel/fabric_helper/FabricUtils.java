@@ -1,6 +1,5 @@
 package net.opanel.fabric_helper;
 
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.*;
 import net.opanel.common.OPanelServer;
 

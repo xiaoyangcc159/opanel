@@ -9,6 +9,7 @@ import org.bukkit.Server;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -101,6 +102,11 @@ public abstract class BaseBukkitOfflinePlayer implements OPanelPlayer {
 
     @Override
     public int getPing() {
+        throw new IllegalStateException("The player is offline.");
+    }
+
+    @Override
+    public InetAddress getAddress() {
         throw new IllegalStateException("The player is offline.");
     }
 }

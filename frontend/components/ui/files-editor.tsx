@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 export function FilesEditor({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      className={cn("h-full border rounded-md flex max-lg:flex-col overflow-hidden", className)}
+      className={cn("h-full border rounded-md bg-background dark:bg-transparent flex max-lg:flex-col overflow-hidden", className)}
       {...props}/>
   );
 }

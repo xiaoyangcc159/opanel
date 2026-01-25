@@ -6,6 +6,9 @@ import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.opanel.common.OPanelPlayer;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 public abstract class BaseFabricPlayer implements OPanelPlayer {
     protected final ServerPlayerEntity player;
     protected final PlayerManager playerManager;
@@ -44,4 +47,13 @@ public abstract class BaseFabricPlayer implements OPanelPlayer {
 
     @Override
     public void pardon() { }
+
+    @Override
+    public InetAddress getAddress() {
+        try {
+            return InetAddress.getByName(player.getIp());
+        } catch (UnknownHostException e) {
+            return null;
+        }
+    }
 }

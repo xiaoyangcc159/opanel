@@ -54,7 +54,7 @@ export default function LogView() {
   }, [fetchLogContent]);
 
   return (
-    <SubPage title={$("logs.title")} subTitle={log ?? ""}>
+    <SubPage title={$("logs.title")} subTitle={log ?? ""} category={$("sidebar.management")}>
       <div className="mb-3 flex justify-between items-center">
         <Text
           id="logs.view.hint"
@@ -99,6 +99,7 @@ export default function LogView() {
           },
           ...monacoSettingsOptions
         }}
+        className="border rounded-md overflow-hidden"
         onMount={(editor) => editorRef.current = editor}/>
     </SubPage>
   );

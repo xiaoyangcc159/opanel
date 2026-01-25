@@ -10,6 +10,8 @@ import net.minecraft.world.level.GameType;
 import net.opanel.common.OPanelGameMode;
 import net.opanel.common.OPanelPlayer;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 
 public class NeoPlayer implements OPanelPlayer {
@@ -100,5 +102,14 @@ public class NeoPlayer implements OPanelPlayer {
     @Override
     public int getPing() {
         return player.connection.latency();
+    }
+
+    @Override
+    public InetAddress getAddress() {
+        try {
+            return InetAddress.getByName(player.getIpAddress());
+        } catch (UnknownHostException e) {
+            return null;
+        }
     }
 }

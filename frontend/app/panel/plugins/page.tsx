@@ -6,7 +6,10 @@ import { $ } from "@/lib/i18n";
 
 export default function Plugins() {
   return (
-    <SubPage title={$("plugins.title")} icon={<Blocks />}>
+    <SubPage
+      title={$("plugins.title")}
+      category={$("sidebar.management")}
+      icon={<Blocks />}>
       <div className="flex justify-center">
         <span className="text-muted-foreground">{$("plugins.wip")}</span>
       </div>

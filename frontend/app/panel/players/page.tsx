@@ -98,6 +98,8 @@ export default function Players() {
     <SubPage
       title={$("players.title")}
       subTitle={currentTab === "player-list" ? $("players.player-list.title") : $("players.banned-list.title")}
+      description={$("players.description")}
+      category={$("sidebar.server")}
       icon={<Users />}
       className="flex flex-col gap-3">
       <span className="text-sm text-muted-foreground">{$("players.hint")}</span>
@@ -107,7 +109,7 @@ export default function Players() {
           setCurrentTab(value as TabValueType);
           changeSettings("state.players.tab", value as TabValueType);
         }}>
-        <div className="flex justify-between items-center max-lg:flex-col-reverse max-lg:items-start max-lg:gap-2">
+        <div className="flex justify-between items-end max-lg:flex-col-reverse max-lg:items-start">
           <TabsList className="*:cursor-pointer">
             <TabsTrigger value="player-list">
               {`${$("players.player-list.title")} (${players.filter(({ isOnline }) => isOnline).length} / ${maxPlayerCount})`}
@@ -116,7 +118,7 @@ export default function Players() {
               {`${$("players.banned-list.title")} (${players.filter(({ isBanned }) => isBanned).length})`}
             </TabsTrigger>
           </TabsList>
-          <div className="flex gap-2 max-sm:flex-col max-sm:items-start *:cursor-pointer">
+          <div className="min-w-fit border-b border-b-sidebar-border max-lg:border-b-transparent pb-1 flex gap-2 max-sm:flex-col max-sm:items-start *:cursor-pointer">
             <Button
               variant="ghost"
               title={$("players.action.refresh")}

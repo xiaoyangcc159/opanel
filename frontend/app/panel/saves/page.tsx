@@ -82,6 +82,8 @@ export default function Saves() {
   return (
     <SubPage
       title={$("saves.title")}
+      description={$("saves.description")}
+      category={$("sidebar.server")}
       icon={<Earth />}
       className="relative h-full z-20"
       onDragEnter={() => setUploadVisible(true)}>
@@ -102,8 +104,8 @@ export default function Saves() {
       <div className="flex flex-col gap-4">
         <div className="flex justify-between max-lg:flex-col max-lg:gap-4">
           <div className="flex flex-col gap-3">
-            <span className="text-sm text-muted-foreground max-md:hidden">{$("saves.description.line1")}</span>
-            <span className="text-sm text-muted-foreground">{$("saves.description.line2")}</span>
+            <span className="text-sm text-muted-foreground max-md:hidden">{$("saves.hint.line1")}</span>
+            <span className="text-sm text-muted-foreground">{$("saves.hint.line2")}</span>
           </div>
           {uploadProgress && (
             <div className="w-72 self-end max-md:w-full flex flex-col justify-end items-end gap-2">

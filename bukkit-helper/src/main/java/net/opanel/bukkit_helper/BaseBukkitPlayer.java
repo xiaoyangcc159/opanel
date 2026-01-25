@@ -6,6 +6,9 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+
 public abstract class BaseBukkitPlayer implements OPanelPlayer {
     protected final JavaPlugin plugin;
     protected final TaskRunner runner;
@@ -85,4 +88,10 @@ public abstract class BaseBukkitPlayer implements OPanelPlayer {
 
     @Override
     public void pardon() { }
+
+    @Override
+    public InetAddress getAddress() {
+        InetSocketAddress socketAddress = player.getAddress();
+        return socketAddress == null ? null : socketAddress.getAddress();
+    }
 }
