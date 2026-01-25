@@ -92,7 +92,10 @@ public class PlayersEndpoint extends BaseEndpoint {
         final String banReason = player.getBanReason();
         if(banReason != null) playerInfo.put("banReason", Utils.stringToBase64(banReason));
         if(server.isWhitelistEnabled()) playerInfo.put("isWhitelisted", whitelistedNames.contains(player.getName()));
-        if(player.isOnline()) playerInfo.put("ping", player.getPing());
+        if(player.isOnline()) {
+            playerInfo.put("ping", player.getPing());
+            playerInfo.put("ip", player.getAddress().getHostAddress());
+        }
         return playerInfo;
     }
 }

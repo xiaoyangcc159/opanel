@@ -48,6 +48,7 @@ export interface Player {
   banReason?: string // base64
   isWhitelisted?: boolean
   ping?: number
+  ip?: string
 }
 
 /** Bot player may not have a name */

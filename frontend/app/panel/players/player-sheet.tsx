@@ -89,17 +89,22 @@ export function PlayerSheet({
             </SheetHeader>
             <div className="flex-1 px-4 flex flex-col gap-5">
               <SkinViewer uuid={player.uuid}/>
-              <div className="flex justify-center items-center gap-2">
-                <OnlineBadge isOnline={player.isOnline}/>
-                {
-                  player.name
-                  ? <h2 className="inline-block text-lg font-semibold">{player.name}</h2>
-                  : (
-                    <span className="text-muted-foreground italic">
-                      &lt;{$("players.unnamed")}&gt;
-                    </span>
-                  )
-                }
+              <div className="flex flex-col items-center">
+                <div className="flex justify-center items-center gap-2">
+                  <OnlineBadge isOnline={player.isOnline}/>
+                  {
+                    player.name
+                    ? <h2 className="inline-block text-lg font-semibold">{player.name}</h2>
+                    : (
+                      <span className="text-muted-foreground italic">
+                        &lt;{$("players.unnamed")}&gt;
+                      </span>
+                    )
+                  }
+                </div>
+                {(player.isOnline && player.ip) && (
+                  <span className="text-sm text-muted-foreground">{player.ip}</span>
+                )}
               </div>
               <FormField
                 control={form.control}

@@ -6,6 +6,7 @@ import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.level.storage.LevelResource;
 import net.opanel.common.OPanelPlayer;
 
+import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -47,6 +48,11 @@ public abstract class BaseForgeOfflinePlayer implements OPanelPlayer {
 
     @Override
     public int getPing() {
+        throw new IllegalStateException("The player is offline.");
+    }
+
+    @Override
+    public InetAddress getAddress() {
         throw new IllegalStateException("The player is offline.");
     }
 }
