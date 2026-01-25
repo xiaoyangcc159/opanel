@@ -1,5 +1,7 @@
 package net.opanel.common;
 
+import java.net.InetAddress;
+
 public interface OPanelPlayer {
     String getName();
     String getUUID();
@@ -15,4 +17,5 @@ public interface OPanelPlayer {
     String getBanReason();
     void pardon();
     int getPing();
+    InetAddress getAddress();
 }

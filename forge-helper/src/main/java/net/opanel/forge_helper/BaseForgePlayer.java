@@ -6,6 +6,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.opanel.common.OPanelPlayer;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 public abstract class BaseForgePlayer implements OPanelPlayer {
     protected final ServerPlayer player;
     protected final PlayerList playerManager;
@@ -44,4 +47,13 @@ public abstract class BaseForgePlayer implements OPanelPlayer {
 
     @Override
     public void pardon() { }
+
+    @Override
+    public InetAddress getAddress() {
+        try {
+            return InetAddress.getByName(player.getIpAddress());
+        } catch (UnknownHostException e) {
+            return null;
+        }
+    }
 }
