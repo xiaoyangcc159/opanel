@@ -5,6 +5,8 @@ import net.opanel.common.OPanelPlugin;
 import net.opanel.common.OPanelServer;
 import org.bukkit.*;
 import org.bukkit.help.HelpTopic;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -12,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public abstract class BaseBukkitServer implements OPanelServer {
     protected final JavaPlugin plugin;
@@ -117,8 +120,8 @@ public abstract class BaseBukkitServer implements OPanelServer {
         Path pluginsPath = getPluginsPath();
         
         // Get loaded plugins from Bukkit
-        for (org.bukkit.plugin.Plugin p : server.getPluginManager().getPlugins()) {
-            org.bukkit.plugin.PluginDescriptionFile desc = p.getDescription();
+        for(Plugin p : server.getPluginManager().getPlugins()) {
+            PluginDescriptionFile desc = p.getDescription();
             String fileName = p.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
             // Extract just the filename
             fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
@@ -126,17 +129,19 @@ public abstract class BaseBukkitServer implements OPanelServer {
             long fileSize = 0;
             try {
                 Path filePath = pluginsPath.resolve(fileName);
-                if (Files.exists(filePath)) {
+                if(Files.exists(filePath)) {
                     fileSize = Files.size(filePath);
                 }
-            } catch (IOException ignored) {}
+            } catch (IOException e) {
+                //
+            }
             
             plugins.add(new OPanelPlugin(
                 fileName,
                 desc.getName(),
                 desc.getVersion(),
                 desc.getDescription(),
-                desc.getAuthors().toArray(new String[0]),
+                desc.getAuthors(),
                 fileSize,
                 p.isEnabled(),
                 true
@@ -144,16 +149,20 @@ public abstract class BaseBukkitServer implements OPanelServer {
         }
         
         // Scan for disabled plugins (.jar.disabled files)
-        try (java.util.stream.Stream<Path> stream = Files.list(pluginsPath)) {
-            stream.filter(path -> path.toString().endsWith(".jar.disabled"))
+        try(Stream<Path> stream = Files.list(pluginsPath)) {
+            stream.filter(path -> path.toString().endsWith(".jar"+ OPanelPlugin.DISABLED_SUFFIX))
                 .forEach(path -> {
                     try {
                         String fileName = path.getFileName().toString();
                         long fileSize = Files.size(path);
                         plugins.add(OPanelPlugin.createDisabled(fileName, fileSize));
-                    } catch (IOException ignored) {}
+                    } catch (IOException e) {
+                        //
+                    }
                 });
-        } catch (IOException ignored) {}
+        } catch (IOException e) {
+            //
+        }
         
         return plugins;
     }
@@ -167,22 +176,22 @@ public abstract class BaseBukkitServer implements OPanelServer {
     public void togglePlugin(String fileName) throws IOException {
         Path pluginsPath = getPluginsPath();
         
-        if (fileName.endsWith(".disabled")) {
+        if(fileName.endsWith(OPanelPlugin.DISABLED_SUFFIX)) {
             // Enable: rename from .jar.disabled to .jar
             Path disabledPath = pluginsPath.resolve(fileName);
-            if (!Files.exists(disabledPath)) {
+            if(!Files.exists(disabledPath)) {
                 throw new IOException("Plugin file not found: " + fileName);
             }
-            String enabledName = fileName.substring(0, fileName.length() - 9); // remove ".disabled"
+            String enabledName = fileName.substring(0, fileName.length() - OPanelPlugin.DISABLED_SUFFIX.length()); // remove ".disabled"
             Path enabledPath = pluginsPath.resolve(enabledName);
             Files.move(disabledPath, enabledPath);
         } else {
             // Disable: rename from .jar to .jar.disabled
             Path enabledPath = pluginsPath.resolve(fileName);
-            if (!Files.exists(enabledPath)) {
+            if(!Files.exists(enabledPath)) {
                 throw new IOException("Plugin file not found: " + fileName);
             }
-            Path disabledPath = pluginsPath.resolve(fileName + ".disabled");
+            Path disabledPath = pluginsPath.resolve(fileName + OPanelPlugin.DISABLED_SUFFIX);
             Files.move(enabledPath, disabledPath);
         }
     }
@@ -192,12 +201,12 @@ public abstract class BaseBukkitServer implements OPanelServer {
         Path pluginsPath = getPluginsPath();
         Path filePath = pluginsPath.resolve(fileName);
         
-        if (!Files.exists(filePath)) {
+        if(!Files.exists(filePath)) {
             // Try with .disabled suffix
-            filePath = pluginsPath.resolve(fileName + ".disabled");
+            filePath = pluginsPath.resolve(fileName + OPanelPlugin.DISABLED_SUFFIX);
         }
         
-        if (!Files.exists(filePath)) {
+        if(!Files.exists(filePath)) {
             throw new IOException("Plugin file not found: " + fileName);
         }
         

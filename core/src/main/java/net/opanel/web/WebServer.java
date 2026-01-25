@@ -164,8 +164,8 @@ public class WebServer {
             path("plugins", () -> {
                 get("/", pluginsController.getPlugins);
                 post("/", pluginsController.uploadPlugin);
-                get("{fileName}/download", pluginsController.downloadPlugin);
-                post("{fileName}/toggle", pluginsController.togglePlugin);
+                get("{fileName}", pluginsController.downloadPlugin);
+                post("{fileName}", pluginsController.togglePlugin);
                 delete("{fileName}", pluginsController.deletePlugin);
             });
             post("security", securityController.updateAccessKey);

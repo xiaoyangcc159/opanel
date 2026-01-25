@@ -54,8 +54,6 @@ public interface OPanelServer {
     void reload();
     void stop();
     long getIngameTime();
-
-    // Plugin management methods
     List<OPanelPlugin> getPlugins();
     Path getPluginsPath();
     void togglePlugin(String fileName) throws IOException;

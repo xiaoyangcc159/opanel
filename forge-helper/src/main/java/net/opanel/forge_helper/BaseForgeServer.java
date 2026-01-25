@@ -146,11 +146,11 @@ public abstract class BaseForgeServer implements OPanelServer {
         Path modsPath = getPluginsPath();
         
         // Get loaded mods from Forge ModList
-        for (IModInfo modInfo : ModList.get().getMods()) {
+        for(IModInfo modInfo : ModList.get().getMods()) {
             String modId = modInfo.getModId();
             
             // Skip built-in mods
-            if (modId.equals("minecraft") || modId.equals("forge")) {
+            if(modId.equals("minecraft") || modId.equals("forge")) {
                 continue;
             }
             
@@ -160,18 +160,20 @@ public abstract class BaseForgeServer implements OPanelServer {
             
             // Try to get the actual file path from the mod
             Path modFile = modInfo.getOwningFile().getFile().getFilePath();
-            if (modFile != null && Files.exists(modFile)) {
+            if(modFile != null && Files.exists(modFile)) {
                 fileName = modFile.getFileName().toString();
                 try {
                     fileSize = Files.size(modFile);
-                } catch (IOException ignored) {}
+                } catch (IOException e) {
+                    //
+                }
             }
             
             // Get authors
-            String authorsStr = modInfo.getConfig().getConfigElement("authors")
-                .map(Object::toString)
-                .orElse("");
-            String[] authors = authorsStr.isEmpty() ? new String[0] : new String[]{authorsStr};
+            List<String> authors = modInfo.getConfig().getConfigElement("authors")
+                .map(obj -> List.of(obj.toString().split(",")))
+                .map(list -> list.stream().map(String::trim).toList())
+                .orElse(List.of());
             
             mods.add(new OPanelPlugin(
                 fileName,
@@ -186,16 +188,20 @@ public abstract class BaseForgeServer implements OPanelServer {
         }
         
         // Scan for disabled mods (.jar.disabled files)
-        try (Stream<Path> stream = Files.list(modsPath)) {
-            stream.filter(path -> path.toString().endsWith(".jar.disabled"))
+        try(Stream<Path> stream = Files.list(modsPath)) {
+            stream.filter(path -> path.toString().endsWith(".jar"+ OPanelPlugin.DISABLED_SUFFIX))
                 .forEach(path -> {
                     try {
                         String fileName = path.getFileName().toString();
                         long fileSize = Files.size(path);
                         mods.add(OPanelPlugin.createDisabled(fileName, fileSize));
-                    } catch (IOException ignored) {}
+                    } catch (IOException e) {
+                        //
+                    }
                 });
-        } catch (IOException ignored) {}
+        } catch (IOException e) {
+            //
+        }
         
         return mods;
     }
@@ -209,22 +215,22 @@ public abstract class BaseForgeServer implements OPanelServer {
     public void togglePlugin(String fileName) throws IOException {
         Path modsPath = getPluginsPath();
         
-        if (fileName.endsWith(".disabled")) {
+        if(fileName.endsWith(OPanelPlugin.DISABLED_SUFFIX)) {
             // Enable: rename from .jar.disabled to .jar
             Path disabledPath = modsPath.resolve(fileName);
-            if (!Files.exists(disabledPath)) {
+            if(!Files.exists(disabledPath)) {
                 throw new IOException("Mod file not found: " + fileName);
             }
-            String enabledName = fileName.substring(0, fileName.length() - 9); // remove ".disabled"
+            String enabledName = fileName.substring(0, fileName.length() - OPanelPlugin.DISABLED_SUFFIX.length()); // remove ".disabled"
             Path enabledPath = modsPath.resolve(enabledName);
             Files.move(disabledPath, enabledPath);
         } else {
             // Disable: rename from .jar to .jar.disabled
             Path enabledPath = modsPath.resolve(fileName);
-            if (!Files.exists(enabledPath)) {
+            if(!Files.exists(enabledPath)) {
                 throw new IOException("Mod file not found: " + fileName);
             }
-            Path disabledPath = modsPath.resolve(fileName + ".disabled");
+            Path disabledPath = modsPath.resolve(fileName + OPanelPlugin.DISABLED_SUFFIX);
             Files.move(enabledPath, disabledPath);
         }
     }
@@ -234,12 +240,12 @@ public abstract class BaseForgeServer implements OPanelServer {
         Path modsPath = getPluginsPath();
         Path filePath = modsPath.resolve(fileName);
         
-        if (!Files.exists(filePath)) {
+        if(!Files.exists(filePath)) {
             // Try with .disabled suffix
-            filePath = modsPath.resolve(fileName + ".disabled");
+            filePath = modsPath.resolve(fileName + OPanelPlugin.DISABLED_SUFFIX);
         }
         
-        if (!Files.exists(filePath)) {
+        if(!Files.exists(filePath)) {
             throw new IOException("Mod file not found: " + fileName);
         }
         

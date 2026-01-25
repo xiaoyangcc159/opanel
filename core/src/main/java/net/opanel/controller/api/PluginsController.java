@@ -22,14 +22,11 @@ public class PluginsController extends BaseController {
         super(plugin);
     }
 
-    /**
-     * GET /api/plugins - Get all plugins (including disabled ones)
-     */
     public Handler getPlugins = ctx -> {
         HashMap<String, Object> obj = new HashMap<>();
 
         List<HashMap<String, Object>> plugins = new ArrayList<>();
-        for (OPanelPlugin p : server.getPlugins()) {
+        for(OPanelPlugin p : server.getPlugins()) {
             HashMap<String, Object> pluginInfo = new HashMap<>();
             pluginInfo.put("fileName", p.getFileName());
             pluginInfo.put("name", p.getName());
@@ -42,24 +39,21 @@ public class PluginsController extends BaseController {
             plugins.add(pluginInfo);
         }
         obj.put("plugins", plugins);
-        obj.put("pluginsPath", server.getPluginsPath().toString());
+        obj.put("path", server.getPluginsPath().toString());
 
         sendResponse(ctx, obj);
     };
 
-    /**
-     * POST /api/plugins - Upload a new plugin
-     */
     public Handler uploadPlugin = ctx -> {
         try {
             UploadedFile file = ctx.uploadedFile("file");
-            if (file == null || file.size() <= 0) {
+            if(file == null || file.size() <= 0) {
                 sendResponse(ctx, HttpStatus.BAD_REQUEST, "File is missing.");
                 return;
             }
 
             final String fileName = file.filename();
-            if (!fileName.endsWith(".jar")) {
+            if(!fileName.endsWith(".jar")) {
                 sendResponse(ctx, HttpStatus.BAD_REQUEST, "Plugin file should be a .jar file.");
                 return;
             }
@@ -68,13 +62,13 @@ public class PluginsController extends BaseController {
             final Path targetPath = pluginsPath.resolve(fileName);
             
             // Check if file already exists (either enabled or disabled)
-            if (Files.exists(targetPath) || Files.exists(pluginsPath.resolve(fileName + ".disabled"))) {
+            if(Files.exists(targetPath) || Files.exists(pluginsPath.resolve(fileName + OPanelPlugin.DISABLED_SUFFIX))) {
                 sendResponse(ctx, HttpStatus.CONFLICT, "Plugin file already exists.");
                 return;
             }
 
             // Copy file to plugins directory
-            try (InputStream is = file.content()) {
+            try(InputStream is = file.content()) {
                 Files.copy(is, targetPath, StandardCopyOption.REPLACE_EXISTING);
             }
 
@@ -85,9 +79,6 @@ public class PluginsController extends BaseController {
         }
     };
 
-    /**
-     * POST /api/plugins/{fileName}/toggle - Toggle plugin enabled/disabled status
-     */
     public Handler togglePlugin = ctx -> {
         final String fileName = ctx.pathParam("fileName");
 
@@ -100,9 +91,6 @@ public class PluginsController extends BaseController {
         }
     };
 
-    /**
-     * DELETE /api/plugins/{fileName} - Delete a plugin file
-     */
     public Handler deletePlugin = ctx -> {
         final String fileName = ctx.pathParam("fileName");
 
@@ -115,9 +103,6 @@ public class PluginsController extends BaseController {
         }
     };
 
-    /**
-     * GET /api/plugins/{fileName}/download - Download a plugin file
-     */
     public Handler downloadPlugin = ctx -> {
         final String fileName = ctx.pathParam("fileName");
 
@@ -125,25 +110,17 @@ public class PluginsController extends BaseController {
         Path filePath = pluginsPath.resolve(fileName);
         
         // Also check for disabled version
-        if (!Files.exists(filePath)) {
-            filePath = pluginsPath.resolve(fileName + ".disabled");
+        if(!Files.exists(filePath)) {
+            filePath = pluginsPath.resolve(fileName + OPanelPlugin.DISABLED_SUFFIX);
         }
         
-        if (!Files.exists(filePath) || Files.isDirectory(filePath)) {
+        if(!Files.exists(filePath) || Files.isDirectory(filePath)) {
             sendResponse(ctx, HttpStatus.NOT_FOUND, "Cannot find the specified plugin.");
             return;
         }
 
         try {
-            // Copy to temp dir for download
-            Path tempPath = OPanel.TMP_DIR_PATH.resolve(UUID.randomUUID() + ".jar");
-            Files.copy(filePath, tempPath, StandardCopyOption.REPLACE_EXISTING);
-
-            Path finalFilePath = filePath;
-            final String downloadId = downloadController.registerPath(tempPath, () -> {
-                Files.deleteIfExists(tempPath);
-            });
-
+            final String downloadId = downloadController.registerPath(filePath);
             HashMap<String, Object> obj = new HashMap<>();
             obj.put("download", downloadId);
             sendResponse(ctx, obj);
