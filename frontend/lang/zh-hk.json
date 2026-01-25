@@ -241,6 +241,8 @@
   "players.banned-list.columns.ban-reason": "封鎖原因",
   "players.edit.title": "編輯玩家",
   "players.edit.description": "喺呢度設定同管理呢個玩家嘅狀態同權限。",
+  "players.edit.form.ip": "IP地址",
+  "players.edit.form.online-time": "在線時長",
   "players.edit.form.gamemode.label": "遊戲模式",
   "players.edit.form.op.label": "OP 權限",
   "players.edit.form.manage": "管理",

@@ -127,12 +127,12 @@ export function PlayerSheet({
                 <div className="flex flex-col gap-3">
                   {player.ip && (
                     <FormItem className="flex justify-between">
-                      <FormLabel>IP地址</FormLabel>
+                      <FormLabel>{$("players.edit.form.ip")}</FormLabel>
                       <span className="text-sm">{player.ip}</span>
                     </FormItem>
                   )}
                   <FormItem className="flex justify-between">
-                    <FormLabel>在线时长</FormLabel>
+                    <FormLabel>{$("players.edit.form.online-time")}</FormLabel>
                     <span className="text-sm">{millisToTime(onlineTime ?? 0)}</span>
                   </FormItem>
                 </div>
