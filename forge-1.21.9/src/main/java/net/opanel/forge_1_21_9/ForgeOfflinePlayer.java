@@ -1,6 +1,5 @@
 package net.opanel.forge_1_21_9;
 
-import com.mojang.authlib.GameProfile;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
@@ -16,33 +15,31 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class ForgeOfflinePlayer extends BaseForgeOfflinePlayer implements OPanelPlayer {
-    private final GameProfile profile;
+    private final NameAndId nameAndId;
 
     public ForgeOfflinePlayer(MinecraftServer server, UUID uuid) {
         super(server, uuid);
 
-        ProfileResolver profileCache = server.services().profileResolver();
-        Optional<GameProfile> profileOpt = profileCache.fetchById(uuid);
-        if(profileOpt.isEmpty()) {
-            throw new NullPointerException("Cannot get the game profile of the provided player.");
+        Optional<NameAndId> nameAndIdOptional = server.services().nameToIdCache().get(uuid);
+        if(nameAndIdOptional.isEmpty()) {
+            throw new RuntimeException("Cannot get the cache of the provided player.");
         }
-
-        profile = profileOpt.get();
+        nameAndId = nameAndIdOptional.get();
     }
 
     @Override
     public String getName() {
-        return profile.name();
+        return nameAndId.name();
     }
 
     @Override
     public boolean isOp() {
-        return playerManager.isOp(new NameAndId(profile));
+        return playerManager.isOp(nameAndId);
     }
 
     @Override
     public boolean isBanned() {
-        return playerManager.getBans().isBanned(new NameAndId(profile));
+        return playerManager.getBans().isBanned(nameAndId);
     }
 
     @Override
@@ -71,27 +68,27 @@ public class ForgeOfflinePlayer extends BaseForgeOfflinePlayer implements OPanel
     @Override
     public void giveOp() {
         if(isOp()) return;
-        playerManager.op(new NameAndId(profile));
+        playerManager.op(nameAndId);
     }
 
     @Override
     public void depriveOp() {
         if(!isOp()) return;
-        playerManager.deop(new NameAndId(profile));
+        playerManager.deop(nameAndId);
     }
 
     @Override
     public void ban(String reason) {
         if(isBanned()) return;
         UserBanList bannedList = playerManager.getBans();
-        UserBanListEntry entry = new UserBanListEntry(new NameAndId(profile), new Date(), null, null, reason);
+        UserBanListEntry entry = new UserBanListEntry(nameAndId, new Date(), null, null, reason);
         bannedList.add(entry);
     }
 
     @Override
     public String getBanReason() {
         if(!isBanned()) return null;
-        UserBanListEntry banEntry = playerManager.getBans().get(new NameAndId(profile));
+        UserBanListEntry banEntry = playerManager.getBans().get(nameAndId);
         if(banEntry == null) return null;
         return banEntry.getReason();
     }
@@ -99,6 +96,6 @@ public class ForgeOfflinePlayer extends BaseForgeOfflinePlayer implements OPanel
     @Override
     public void pardon() {
         if(!isBanned()) return;
-        playerManager.getBans().remove(new NameAndId(profile));
+        playerManager.getBans().remove(nameAndId);
     }
 }
