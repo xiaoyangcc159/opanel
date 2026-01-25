@@ -49,6 +49,7 @@ export interface Player {
   isWhitelisted?: boolean
   ping?: number
   ip?: string
+  joinTime?: number
 }
 
 /** Bot player may not have a name */

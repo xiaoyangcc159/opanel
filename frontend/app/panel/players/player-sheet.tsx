@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from "react";
+import { useEffect, useRef, useState, type PropsWithChildren } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -40,6 +40,7 @@ import {
   setGameMode
 } from "./player-utils";
 import { emitter } from "@/lib/emitter";
+import { millisToTime } from "@/lib/time";
 import { $ } from "@/lib/i18n";
 
 const formSchema = z.object({
@@ -55,6 +56,10 @@ export function PlayerSheet({
   player: Player
   asChild?: boolean
 }) {
+  const [onlineTime, setOnlineTime] = useState<number | null>(
+    player.joinTime ? Date.now() - player.joinTime : null
+  ); // ms
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
@@ -75,6 +80,23 @@ export function PlayerSheet({
     emitter.emit("refresh-data");
   };
 
+  useEffect(() => {
+    if(!player.isOnline) return;
+
+    timerRef.current = setInterval(() => {
+      setOnlineTime((prev) => {
+        if(!player.joinTime || !prev) return null;
+        return prev + 1000;
+      });
+    }, 1000);
+
+    return () => {
+      if(timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [player]);
+
   return (
     <Sheet>
       <SheetTrigger asChild={asChild}>{children}</SheetTrigger>
@@ -89,23 +111,32 @@ export function PlayerSheet({
             </SheetHeader>
             <div className="flex-1 px-4 flex flex-col gap-5">
               <SkinViewer uuid={player.uuid}/>
-              <div className="flex flex-col items-center">
-                <div className="flex justify-center items-center gap-2">
-                  <OnlineBadge isOnline={player.isOnline}/>
-                  {
-                    player.name
-                    ? <h2 className="inline-block text-lg font-semibold">{player.name}</h2>
-                    : (
-                      <span className="text-muted-foreground italic">
-                        &lt;{$("players.unnamed")}&gt;
-                      </span>
-                    )
-                  }
-                </div>
-                {(player.isOnline && player.ip) && (
-                  <span className="text-sm text-muted-foreground">{player.ip}</span>
-                )}
+              <div className="flex justify-center items-center gap-2">
+                <OnlineBadge isOnline={player.isOnline}/>
+                {
+                  player.name
+                  ? <h2 className="inline-block text-lg font-semibold">{player.name}</h2>
+                  : (
+                    <span className="text-muted-foreground italic">
+                      &lt;{$("players.unnamed")}&gt;
+                    </span>
+                  )
+                }
               </div>
+              {player.isOnline && (
+                <div className="flex flex-col gap-3">
+                  {player.ip && (
+                    <FormItem className="flex justify-between">
+                      <FormLabel>IP地址</FormLabel>
+                      <span className="text-sm">{player.ip}</span>
+                    </FormItem>
+                  )}
+                  <FormItem className="flex justify-between">
+                    <FormLabel>在线时长</FormLabel>
+                    <span className="text-sm">{millisToTime(onlineTime ?? 0)}</span>
+                  </FormItem>
+                </div>
+              )}
               <FormField
                 control={form.control}
                 name="gamemode"
