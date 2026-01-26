@@ -1,16 +1,23 @@
 package net.opanel.bukkit_helper;
 
 import net.opanel.common.OPanelPlayer;
+import net.opanel.common.OPanelPlugin;
 import net.opanel.common.OPanelServer;
 import org.bukkit.*;
 import org.bukkit.help.HelpTopic;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public abstract class BaseBukkitServer implements OPanelServer {
     protected final JavaPlugin plugin;
@@ -109,4 +116,123 @@ public abstract class BaseBukkitServer implements OPanelServer {
     public long getIngameTime() {
         return server.getWorlds().get(0).getTime();
     }
+
+    @Override
+    public Path getPluginsPath() {
+        return plugin.getDataFolder().getParentFile().toPath();
+    }
+
+    @Override
+    public List<OPanelPlugin> getPlugins() {
+        List<OPanelPlugin> plugins = new ArrayList<>();
+        Path pluginsPath = getPluginsPath();
+        List<String> loadedPluginFileNames = new ArrayList<>();
+        
+        // Get loaded plugins from Bukkit
+        for(Plugin p : server.getPluginManager().getPlugins()) {
+            PluginDescriptionFile desc = p.getDescription();
+            String fileName = URLDecoder.decode(p.getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), StandardCharsets.UTF_8);
+            // Extract just the filename
+            fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+            
+            try {
+                long fileSize = Files.size(pluginsPath.resolve(fileName));
+
+                plugins.add(new OPanelPlugin(
+                        fileName,
+                        desc.getName(),
+                        desc.getVersion(),
+                        desc.getDescription(),
+                        desc.getAuthors(),
+                        fileSize,
+                        p.isEnabled(),
+                        true
+                ));
+
+                loadedPluginFileNames.add(fileName);
+            } catch (IOException e) {
+                //
+            }
+        }
+        
+        // Scan for disabled or unloaded plugins
+        try(Stream<Path> stream = Files.list(pluginsPath)) {
+            stream.filter(path -> (
+                    (path.toString().endsWith(".jar"+ OPanelPlugin.DISABLED_SUFFIX) || path.toString().endsWith(".jar"))
+                    && !loadedPluginFileNames.contains(path.getFileName().toString())
+                ))
+                .forEach(path -> {
+                    try {
+                        String fileName = path.getFileName().toString();
+                        String name = fileName.replaceAll("\\.jar(\\"+ OPanelPlugin.DISABLED_SUFFIX +")?$", "");
+                        long fileSize = Files.size(path);
+                        boolean enabled = path.toString().endsWith(".jar");
+                        plugins.add(new OPanelPlugin(
+                            fileName,
+                            name,
+                            null,
+                            null,
+                            null,
+                            fileSize,
+                            enabled,
+                            false
+                        ));
+                    } catch (IOException e) {
+                        //
+                    }
+                });
+        } catch (IOException e) {
+            //
+        }
+        
+        return plugins;
+    }
+
+    @Override
+    public void togglePlugin(String fileName, boolean enabled) throws IOException {
+        Path pluginsPath = getPluginsPath();
+        Path originalPath = pluginsPath.resolve(fileName);
+        if(!Files.exists(originalPath)) {
+            throw new NoSuchFileException("Plugin file not found: " + fileName);
+        }
+
+        final boolean isActuallyDisabled = fileName.endsWith(OPanelPlugin.DISABLED_SUFFIX);
+
+        if(isActuallyDisabled && enabled) {
+            // Rename from .jar.disabled to .jar
+            Path newPath = pluginsPath.resolve(fileName.replaceAll("\\"+ OPanelPlugin.DISABLED_SUFFIX +"$", ""));
+            Files.move(originalPath, newPath);
+        } else if(!isActuallyDisabled && !enabled) {
+            for(Plugin p : server.getPluginManager().getPlugins()) {
+                String itemName = URLDecoder.decode(p.getClass().getProtectionDomain().getCodeSource().getLocation().getPath(), StandardCharsets.UTF_8);
+                // Extract just the filename
+                itemName = itemName.substring(itemName.lastIndexOf('/') + 1);
+                if(fileName.equals(itemName)) {
+                    throw new IllegalStateException("Cannot disable a loaded plugin.");
+                }
+            }
+
+            // Rename from .jar to .jar.disabled
+            Path newPath = pluginsPath.resolve(fileName + OPanelPlugin.DISABLED_SUFFIX);
+            Files.move(originalPath, newPath);
+        }
+    }
+
+    @Override
+    public void deletePlugin(String fileName) throws IOException {
+        Path pluginsPath = getPluginsPath();
+        Path filePath = pluginsPath.resolve(fileName);
+        
+        if(!Files.exists(filePath)) {
+            // Try with .disabled suffix
+            filePath = pluginsPath.resolve(fileName + OPanelPlugin.DISABLED_SUFFIX);
+        }
+        
+        if(!Files.exists(filePath)) {
+            throw new NoSuchFileException("Plugin file not found: " + fileName);
+        }
+        
+        Files.delete(filePath);
+    }
 }
+

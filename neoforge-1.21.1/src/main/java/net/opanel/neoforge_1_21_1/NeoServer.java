@@ -12,8 +12,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.IpBanListEntry;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.storage.LevelResource;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforgespi.language.IModInfo;
 import net.opanel.common.ServerType;
 import net.opanel.common.OPanelPlayer;
+import net.opanel.common.OPanelPlugin;
 import net.opanel.common.OPanelSave;
 import net.opanel.common.OPanelServer;
 import net.opanel.common.OPanelWhitelist;
@@ -21,7 +24,10 @@ import net.opanel.utils.Utils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -339,4 +345,128 @@ public class NeoServer implements OPanelServer {
     public long getIngameTime() {
         return server.overworld().getDayTime();
     }
+
+    @Override
+    public Path getPluginsPath() {
+        return Paths.get("").resolve("mods").toAbsolutePath();
+    }
+
+    @Override
+    public List<OPanelPlugin> getPlugins() {
+        List<OPanelPlugin> mods = new ArrayList<>();
+        Path modsPath = getPluginsPath();
+        List<String> loadedPluginFileNames = new ArrayList<>();
+
+        // Get loaded mods from Forge ModList
+        for(IModInfo modInfo : ModList.get().getMods()) {
+            String modId = modInfo.getModId();
+
+            // Skip built-in mods
+            if(modId.equals("minecraft") || modId.equals("neoforge")) {
+                continue;
+            }
+
+            try {
+                String fileName = modInfo.getOwningFile().getFile().getFileName();
+                long fileSize = Files.size(modInfo.getOwningFile().getFile().getFilePath());
+
+                List<String> authors = modInfo.getConfig().getConfigElement("authors")
+                        .map(obj -> List.of(obj.toString().split(",")))
+                        .map(list -> list.stream().map(String::trim).toList())
+                        .orElse(List.of());
+
+                mods.add(new OPanelPlugin(
+                        fileName,
+                        modInfo.getDisplayName(),
+                        modInfo.getVersion().toString(),
+                        modInfo.getDescription(),
+                        authors,
+                        fileSize,
+                        true, // All loaded mods are enabled
+                        true  // All loaded mods are loaded
+                ));
+
+                loadedPluginFileNames.add(fileName);
+            } catch (IOException e) {
+                //
+            }
+        }
+
+        // Scan for disabled mods (.jar.disabled files)
+        try(Stream<Path> stream = Files.list(modsPath)) {
+            stream.filter(path -> (
+                    (path.toString().endsWith(".jar"+ OPanelPlugin.DISABLED_SUFFIX) || path.toString().endsWith(".jar"))
+                    && !loadedPluginFileNames.contains(path.getFileName().toString())
+                ))
+                .forEach(path -> {
+                    try {
+                        String fileName = path.getFileName().toString();
+                        String name = fileName.replaceAll("\\.jar(\\"+ OPanelPlugin.DISABLED_SUFFIX +")?$", "");
+                        long fileSize = Files.size(path);
+                        boolean enabled = path.toString().endsWith(".jar");
+                        mods.add(new OPanelPlugin(
+                            fileName,
+                            name,
+                            null,
+                            null,
+                            null,
+                            fileSize,
+                            enabled,
+                            false
+                        ));
+                    } catch (IOException e) {
+                        //
+                    }
+                });
+        } catch (IOException e) {
+            //
+        }
+
+        return mods;
+    }
+
+    @Override
+    public void togglePlugin(String fileName, boolean enabled) throws IOException {
+        Path pluginsPath = getPluginsPath();
+        Path originalPath = pluginsPath.resolve(fileName);
+        if(!Files.exists(originalPath)) {
+            throw new NoSuchFileException("Mod file not found: " + fileName);
+        }
+
+        final boolean isActuallyDisabled = fileName.endsWith(OPanelPlugin.DISABLED_SUFFIX);
+
+        if(isActuallyDisabled && enabled) {
+            // Rename from .jar.disabled to .jar
+            Path newPath = pluginsPath.resolve(fileName.replaceAll("\\"+ OPanelPlugin.DISABLED_SUFFIX +"$", ""));
+            Files.move(originalPath, newPath);
+        } else if(!isActuallyDisabled && !enabled) {
+            for(IModInfo modInfo : ModList.get().getMods()) {
+                if(fileName.equals(modInfo.getOwningFile().getFile().getFileName())) {
+                    throw new IllegalStateException("Cannot disable a loaded mod.");
+                }
+            }
+
+            // Rename from .jar to .jar.disabled
+            Path newPath = pluginsPath.resolve(fileName + OPanelPlugin.DISABLED_SUFFIX);
+            Files.move(originalPath, newPath);
+        }
+    }
+
+    @Override
+    public void deletePlugin(String fileName) throws IOException {
+        Path modsPath = getPluginsPath();
+        Path filePath = modsPath.resolve(fileName);
+
+        if(!Files.exists(filePath)) {
+            // Try with .disabled suffix
+            filePath = modsPath.resolve(fileName + OPanelPlugin.DISABLED_SUFFIX);
+        }
+
+        if(!Files.exists(filePath)) {
+            throw new NoSuchFileException("Mod file not found: " + fileName);
+        }
+
+        Files.delete(filePath);
+    }
 }
+

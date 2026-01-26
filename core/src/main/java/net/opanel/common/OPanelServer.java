@@ -54,6 +54,10 @@ public interface OPanelServer {
     void reload();
     void stop();
     long getIngameTime();
+    Path getPluginsPath();
+    List<OPanelPlugin> getPlugins();
+    void togglePlugin(String fileName, boolean enabled) throws IOException;
+    void deletePlugin(String fileName) throws IOException;
 
     static String getPropertiesContent() throws IOException {
         if(!Files.exists(serverPropertiesPath)) {
