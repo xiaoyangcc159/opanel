@@ -62,6 +62,17 @@ export type Whitelist = {
   uuid: string
 }[]
 
+export interface Plugin {
+  fileName: string // base64
+  name: string
+  version?: string
+  description?: string // base64
+  authors: string[]
+  size: number
+  enabled: boolean
+  loaded: boolean
+}
+
 export type EditorRefType = Parameters<OnMount>[0];
 export type EditorOptionsType = React.ComponentProps<typeof Editor>["options"];
 
@@ -175,6 +186,12 @@ export interface WhitelistResponse {
 /** `/api/banned-ips` */
 export interface BannedIpsResponse {
   bannedIps: string[]
+}
+
+/** `/api/plugins` */
+export interface PluginsResponse {
+  plugins: Plugin[]
+  folderPath: string
 }
 
 /** `https://api.github.com/repos/opanel-mc/opanel/releases` */

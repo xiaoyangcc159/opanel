@@ -2,9 +2,6 @@ package net.opanel.common;
 
 import java.util.List;
 
-/**
- * Represents a plugin or mod installed on the server
- */
 public class OPanelPlugin {
     public static final String DISABLED_SUFFIX = ".disabled";
 
@@ -26,18 +23,6 @@ public class OPanelPlugin {
         this.fileSize = fileSize;
         this.enabled = enabled;
         this.loaded = loaded;
-    }
-
-    /**
-     * Create a plugin from a disabled file (only filename and size available)
-     */
-    public static OPanelPlugin createDisabled(String fileName, long fileSize) {
-        // Remove .disabled suffix to get original name
-        String originalFileName = fileName.endsWith(DISABLED_SUFFIX)
-            ? fileName.substring(0, fileName.length() - 9) 
-            : fileName;
-        String name = originalFileName.replace(".jar", "");
-        return new OPanelPlugin(fileName, name, "Unknown", null, null, fileSize, false, false);
     }
 
     public String getFileName() {

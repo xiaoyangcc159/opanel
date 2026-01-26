@@ -4,6 +4,7 @@ import io.javalin.http.*;
 import net.opanel.OPanel;
 import net.opanel.common.OPanelPlugin;
 import net.opanel.controller.BaseController;
+import net.opanel.utils.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,19 +28,21 @@ public class PluginsController extends BaseController {
 
         List<HashMap<String, Object>> plugins = new ArrayList<>();
         for(OPanelPlugin p : server.getPlugins()) {
+            final String description = p.getDescription();
+
             HashMap<String, Object> pluginInfo = new HashMap<>();
-            pluginInfo.put("fileName", p.getFileName());
+            pluginInfo.put("fileName", Utils.stringToBase64(p.getFileName()));
             pluginInfo.put("name", p.getName());
             pluginInfo.put("version", p.getVersion());
-            pluginInfo.put("description", p.getDescription());
+            pluginInfo.put("description", description != null ? Utils.stringToBase64(description) : null);
             pluginInfo.put("authors", p.getAuthors());
-            pluginInfo.put("fileSize", p.getFileSize());
+            pluginInfo.put("size", p.getFileSize());
             pluginInfo.put("enabled", p.isEnabled());
             pluginInfo.put("loaded", p.isLoaded());
             plugins.add(pluginInfo);
         }
         obj.put("plugins", plugins);
-        obj.put("path", server.getPluginsPath().toString());
+        obj.put("folderPath", server.getPluginsPath().toAbsolutePath().toString());
 
         sendResponse(ctx, obj);
     };
@@ -81,9 +84,26 @@ public class PluginsController extends BaseController {
 
     public Handler togglePlugin = ctx -> {
         final String fileName = ctx.pathParam("fileName");
+        final String enabled = ctx.queryParam("enabled");
+        if(!fileName.endsWith(".jar") && !fileName.endsWith(".jar"+ OPanelPlugin.DISABLED_SUFFIX)) {
+            sendResponse(ctx, HttpStatus.BAD_REQUEST, "Illegal file name.");
+            return;
+        }
+
+        if(enabled == null) {
+            sendResponse(ctx, HttpStatus.BAD_REQUEST, "Enabled status is missing.");
+            return;
+        }
+
+        for(OPanelPlugin plugin : server.getPlugins()) {
+            if(fileName.equals(plugin.getFileName()) && plugin.isLoaded()) {
+                sendResponse(ctx, HttpStatus.FORBIDDEN, "Cannot disable a loaded plugin.");
+                return;
+            }
+        }
 
         try {
-            server.togglePlugin(fileName);
+            server.togglePlugin(fileName, enabled.equals("1"));
             sendResponse(ctx, HttpStatus.OK);
         } catch (IOException e) {
             e.printStackTrace();
@@ -93,6 +113,10 @@ public class PluginsController extends BaseController {
 
     public Handler deletePlugin = ctx -> {
         final String fileName = ctx.pathParam("fileName");
+        if(!fileName.endsWith(".jar") && !fileName.endsWith(".jar"+ OPanelPlugin.DISABLED_SUFFIX)) {
+            sendResponse(ctx, HttpStatus.BAD_REQUEST, "Illegal file name.");
+            return;
+        }
 
         try {
             server.deletePlugin(fileName);
@@ -105,6 +129,10 @@ public class PluginsController extends BaseController {
 
     public Handler downloadPlugin = ctx -> {
         final String fileName = ctx.pathParam("fileName");
+        if(!fileName.endsWith(".jar") && !fileName.endsWith(".jar"+ OPanelPlugin.DISABLED_SUFFIX)) {
+            sendResponse(ctx, HttpStatus.BAD_REQUEST, "Illegal file name.");
+            return;
+        }
 
         final Path pluginsPath = server.getPluginsPath();
         Path filePath = pluginsPath.resolve(fileName);
@@ -119,14 +147,7 @@ public class PluginsController extends BaseController {
             return;
         }
 
-        try {
-            final String downloadId = downloadController.registerPath(filePath);
-            HashMap<String, Object> obj = new HashMap<>();
-            obj.put("download", downloadId);
-            sendResponse(ctx, obj);
-        } catch (Exception e) {
-            e.printStackTrace();
-            sendResponse(ctx, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+        final String downloadId = downloadController.registerPath(filePath);
+        ctx.redirect("/file/"+ downloadId +"/"+ fileName.replaceAll("\\"+ OPanelPlugin.DISABLED_SUFFIX +"$", ""));
     };
 }

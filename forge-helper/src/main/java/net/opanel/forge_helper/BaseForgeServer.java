@@ -141,9 +141,15 @@ public abstract class BaseForgeServer implements OPanelServer {
     }
 
     @Override
+    public Path getPluginsPath() {
+        return Paths.get("").resolve("mods").toAbsolutePath();
+    }
+
+    @Override
     public List<OPanelPlugin> getPlugins() {
         List<OPanelPlugin> mods = new ArrayList<>();
         Path modsPath = getPluginsPath();
+        List<String> loadedPluginFileNames = new ArrayList<>();
         
         // Get loaded mods from Forge ModList
         for(IModInfo modInfo : ModList.get().getMods()) {
@@ -153,48 +159,55 @@ public abstract class BaseForgeServer implements OPanelServer {
             if(modId.equals("minecraft") || modId.equals("forge")) {
                 continue;
             }
-            
-            // Try to find the mod file
-            String fileName = modId + ".jar"; // Default name
-            long fileSize = 0;
-            
-            // Try to get the actual file path from the mod
-            Path modFile = modInfo.getOwningFile().getFile().getFilePath();
-            if(modFile != null && Files.exists(modFile)) {
-                fileName = modFile.getFileName().toString();
-                try {
-                    fileSize = Files.size(modFile);
-                } catch (IOException e) {
-                    //
-                }
+
+            try {
+                String fileName = modInfo.getOwningFile().getFile().getFileName();
+                long fileSize = Files.size(modInfo.getOwningFile().getFile().getFilePath());
+
+                List<String> authors = modInfo.getConfig().getConfigElement("authors")
+                        .map(obj -> List.of(obj.toString().split(",")))
+                        .map(list -> list.stream().map(String::trim).toList())
+                        .orElse(List.of());
+
+                mods.add(new OPanelPlugin(
+                        fileName,
+                        modInfo.getDisplayName(),
+                        modInfo.getVersion().toString(),
+                        modInfo.getDescription(),
+                        authors,
+                        fileSize,
+                        true, // All loaded mods are enabled
+                        true  // All loaded mods are loaded
+                ));
+
+                loadedPluginFileNames.add(fileName);
+            } catch (IOException e) {
+                //
             }
-            
-            // Get authors
-            List<String> authors = modInfo.getConfig().getConfigElement("authors")
-                .map(obj -> List.of(obj.toString().split(",")))
-                .map(list -> list.stream().map(String::trim).toList())
-                .orElse(List.of());
-            
-            mods.add(new OPanelPlugin(
-                fileName,
-                modInfo.getDisplayName(),
-                modInfo.getVersion().toString(),
-                modInfo.getDescription(),
-                authors,
-                fileSize,
-                true, // All loaded mods are enabled
-                true  // All loaded mods are loaded
-            ));
         }
         
         // Scan for disabled mods (.jar.disabled files)
         try(Stream<Path> stream = Files.list(modsPath)) {
-            stream.filter(path -> path.toString().endsWith(".jar"+ OPanelPlugin.DISABLED_SUFFIX))
+            stream.filter(path -> (
+                    (path.toString().endsWith(".jar"+ OPanelPlugin.DISABLED_SUFFIX) || path.toString().endsWith(".jar"))
+                    && !loadedPluginFileNames.contains(path.getFileName().toString())
+                ))
                 .forEach(path -> {
                     try {
                         String fileName = path.getFileName().toString();
+                        String name = fileName.replaceAll("\\.jar(\\"+ OPanelPlugin.DISABLED_SUFFIX +")?$", "");
                         long fileSize = Files.size(path);
-                        mods.add(OPanelPlugin.createDisabled(fileName, fileSize));
+                        boolean enabled = path.toString().endsWith(".jar");
+                        mods.add(new OPanelPlugin(
+                            fileName,
+                            name,
+                            null,
+                            null,
+                            null,
+                            fileSize,
+                            enabled,
+                            false
+                        ));
                     } catch (IOException e) {
                         //
                     }
@@ -207,31 +220,29 @@ public abstract class BaseForgeServer implements OPanelServer {
     }
 
     @Override
-    public Path getPluginsPath() {
-        return Paths.get("").resolve("mods").toAbsolutePath();
-    }
+    public void togglePlugin(String fileName, boolean enabled) throws IOException {
+        Path pluginsPath = getPluginsPath();
+        Path originalPath = pluginsPath.resolve(fileName);
+        if(!Files.exists(originalPath)) {
+            throw new IOException("Mod file not found: " + fileName);
+        }
 
-    @Override
-    public void togglePlugin(String fileName) throws IOException {
-        Path modsPath = getPluginsPath();
-        
-        if(fileName.endsWith(OPanelPlugin.DISABLED_SUFFIX)) {
-            // Enable: rename from .jar.disabled to .jar
-            Path disabledPath = modsPath.resolve(fileName);
-            if(!Files.exists(disabledPath)) {
-                throw new IOException("Mod file not found: " + fileName);
+        final boolean isActuallyDisabled = fileName.endsWith(OPanelPlugin.DISABLED_SUFFIX);
+
+        if(isActuallyDisabled && enabled) {
+            // Rename from .jar.disabled to .jar
+            Path newPath = pluginsPath.resolve(fileName.replaceAll("\\"+ OPanelPlugin.DISABLED_SUFFIX +"$", ""));
+            Files.move(originalPath, newPath);
+        } else if(!isActuallyDisabled && !enabled) {
+            for(IModInfo modInfo : ModList.get().getMods()) {
+                if(fileName.equals(modInfo.getOwningFile().getFile().getFileName())) {
+                    throw new IllegalStateException("Cannot disable a loaded mod.");
+                }
             }
-            String enabledName = fileName.substring(0, fileName.length() - OPanelPlugin.DISABLED_SUFFIX.length()); // remove ".disabled"
-            Path enabledPath = modsPath.resolve(enabledName);
-            Files.move(disabledPath, enabledPath);
-        } else {
-            // Disable: rename from .jar to .jar.disabled
-            Path enabledPath = modsPath.resolve(fileName);
-            if(!Files.exists(enabledPath)) {
-                throw new IOException("Mod file not found: " + fileName);
-            }
-            Path disabledPath = modsPath.resolve(fileName + OPanelPlugin.DISABLED_SUFFIX);
-            Files.move(enabledPath, disabledPath);
+
+            // Rename from .jar to .jar.disabled
+            Path newPath = pluginsPath.resolve(fileName + OPanelPlugin.DISABLED_SUFFIX);
+            Files.move(originalPath, newPath);
         }
     }
 
