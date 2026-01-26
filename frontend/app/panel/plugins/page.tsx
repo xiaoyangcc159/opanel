@@ -2,7 +2,8 @@
 
 import type { Plugin, PluginsResponse } from "@/lib/types";
 import { useContext, useEffect, useState } from "react";
-import { Blocks, PackageCheck, PackageX, RotateCw, Search } from "lucide-react";
+import { Blocks, PackageCheck, PackageX, RotateCw, Search, Upload } from "lucide-react";
+import { toast } from "sonner";
 import { SubPage } from "../sub-page";
 import { changeSettings, getSettings, type SettingsStorageType } from "@/lib/settings";
 import { $ } from "@/lib/i18n";
@@ -11,12 +12,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button";
 import { emitter } from "@/lib/emitter";
-import { sendGetRequest, toastError } from "@/lib/api";
-import { pluginOrMod } from "./plugin-utils";
+import { sendGetRequest, toastError, uploadFile } from "@/lib/api";
 import { VersionContext } from "@/contexts/api-context";
 import { DataTable } from "@/components/data-table";
 import { disabledPluginColumns, enabledPluginColumns } from "./columns";
-import { base64ToString } from "@/lib/utils";
+import { base64ToString, cn } from "@/lib/utils";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
 
 const DISABLED_SUFFIX = ".disabled";
 
@@ -28,6 +41,10 @@ export default function Plugins() {
   const [folderPath, setFolderPath] = useState("");
   const [currentTab, setCurrentTab] = useState<TabValueType>(getSettings("state.plugins.tab"));
   const [searchString, setSearchString] = useState("");
+  const [uploadVisible, setUploadVisible] = useState(false);
+  const [uploadName, setUploadName] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   const fetchPluginList = async () => {
     if(!versionCtx) return;
@@ -37,8 +54,33 @@ export default function Plugins() {
       setPlugins(res.plugins.sort((a, b) => a.name.localeCompare(b.name)));
       setFolderPath(res.folderPath);
     } catch (e: any) {
-      toastError(e, `无法获取${pluginOrMod(versionCtx.serverType)}列表`, [
+      toastError(e, $("plugins.fetch.error"), [
+        [400, $("common.error.400")],
+        [401, $("common.error.401")]
+      ]);
+    }
+  };
 
+  const handleUpload = async (file: File) => {
+    setUploadVisible(false);
+
+    if(!file.name.endsWith(".jar")) {
+      toast.error($("plugins.action.upload.error"), { description: $("plugins.action.upload.error.description") });
+      return;
+    }
+
+    setUploadName(file.name);
+    try {
+      await uploadFile("/api/plugins", file, (progress) => {
+        setUploadProgress(progress < 1 ? progress : null);
+      });
+      fetchPluginList();
+    } catch (e: any) {
+      toastError(e, $("plugins.action.upload.error"), [
+        [400, $("plugins.action.upload.error.400")],
+        [401, $("common.error.401")],
+        [409, $("plugins.action.upload.error.409")],
+        [500, $("common.error.500")]
       ]);
     }
   };
@@ -59,76 +101,128 @@ export default function Plugins() {
   return (
     <SubPage
       title={$("plugins.title")}
+      description={$("plugins.description")}
       category={$("sidebar.management")}
       icon={<Blocks />}
-      className="flex flex-col gap-3">
-      <span className="text-sm text-muted-foreground">文件夹路径： {folderPath}</span>
-      <Tabs
-        value={currentTab}
-        onValueChange={(value) => {
-          setCurrentTab(value as TabValueType);
-          changeSettings("state.plugins.tab", value as TabValueType);
-        }}>
-        <div className="flex justify-between items-end max-lg:flex-col-reverse max-lg:items-start">
-          <TabsList>
-            <TabsTrigger value="enabled-list">
-              <PackageCheck />
-              已启用
-            </TabsTrigger>
-            <TabsTrigger value="disabled-list">
-              <PackageX />
-              已禁用
-            </TabsTrigger>
-          </TabsList>
-          <div className="min-w-fit border-b border-b-sidebar-border max-lg:border-b-transparent pb-1 flex gap-2 max-sm:flex-col max-sm:items-start *:cursor-pointer">
-            <Button
-              variant="ghost"
-              title="刷新"
-              onClick={() => emitter.emit("refresh-data")}>
-              <RotateCw />
-            </Button>
-            <InputGroup>
-              <InputGroupAddon>
-                <Search />
-              </InputGroupAddon>
-              <InputGroupInput
-                value={searchString}
-                placeholder="搜索插件..."
-                onChange={(e) => setSearchString(e.target.value)}/>
-            </InputGroup>
-          </div>
+      className="relative h-full"
+      onDragEnter={() => setUploadVisible(true)}>
+      {/* Drag and Drop Area */}
+      <div className={cn("absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-center items-center gap-4", uploadVisible ? "" : "hidden")}>
+        <div
+          className="absolute w-full h-full border-4 rounded-sm border-dashed"
+          onDrop={(e) => {
+            e.preventDefault();
+            handleUpload(e.dataTransfer.files[0]);
+          }}
+          onDragOver={(e) => e.preventDefault()}
+          onDragLeave={() => setUploadVisible(false)}/>
+        <Upload size={60} stroke="var(--color-muted-foreground)"/>
+        <span className="text-muted-foreground">{$("plugins.dnd.label")}</span>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        <div className="flex justify-between items-end max-lg:flex-col max-lg:gap-4">
+          <span className="text-sm text-muted-foreground">{$("plugins.hint", folderPath)}</span>
+          {uploadProgress && (
+            <div className="w-72 self-end max-md:w-full flex flex-col justify-end items-end gap-2">
+              {$("plugins.progress.label", uploadName)}
+              <Progress value={uploadProgress * 100} className="h-1"/>
+            </div>
+          )}
         </div>
-        <TabsContent value="enabled-list">
-          <DataTable
-            columns={enabledPluginColumns}
-            data={[
-              ...plugins.filter(({ name, fileName, enabled }) => (
-                (
-                  name.toLowerCase().includes(searchString.toLowerCase())
-                  || decodeURIComponent(base64ToString(fileName)).toLowerCase().includes(searchString.toLowerCase())
-                )
-                && (enabled && !fileName.endsWith(DISABLED_SUFFIX))
-              )),
-            ]}
-            pagination
-            fallbackMessage="暂无插件"/>
-        </TabsContent>
-        <TabsContent value="disabled-list">
-          <DataTable
-            columns={disabledPluginColumns}
-            data={[
-              ...plugins.filter(({ name, fileName, enabled }) => (
-                (
-                  name.toLowerCase().includes(searchString.toLowerCase())
-                  || decodeURIComponent(base64ToString(fileName)).toLowerCase().includes(searchString.toLowerCase())
-                )
-                && (!enabled || fileName.endsWith(DISABLED_SUFFIX))
-              )),
-            ]}
-            pagination
-            fallbackMessage="暂无插件"/>
-        </TabsContent>
-      </Tabs>
+        <Tabs
+          value={currentTab}
+          onValueChange={(value) => {
+            setCurrentTab(value as TabValueType);
+            changeSettings("state.plugins.tab", value as TabValueType);
+          }}>
+          <div className="flex justify-between items-end max-lg:flex-col-reverse max-lg:items-start">
+            <TabsList>
+              <TabsTrigger value="enabled-list">
+                <PackageCheck />
+                {$("plugins.enabled-list.title")}
+              </TabsTrigger>
+              <TabsTrigger value="disabled-list">
+                <PackageX />
+                {$("plugins.disabled-list.title")}
+              </TabsTrigger>
+            </TabsList>
+            <div className="min-w-fit border-b border-b-sidebar-border max-lg:border-b-transparent pb-1 flex gap-2 max-sm:flex-col max-sm:items-start *:cursor-pointer">
+              <Button
+                variant="ghost"
+                title={$("plugins.action.refresh")}
+                onClick={() => emitter.emit("refresh-data")}>
+                <RotateCw />
+              </Button>
+              <InputGroup>
+                <InputGroupAddon>
+                  <Search />
+                </InputGroupAddon>
+                <InputGroupInput
+                  value={searchString}
+                  placeholder={$("plugins.search.placeholder")}
+                  onChange={(e) => setSearchString(e.target.value)}/>
+              </InputGroup>
+              <AlertDialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+                <AlertDialogTrigger asChild>
+                  <Button className="cursor-pointer">
+                    <Upload />
+                    {$("plugins.action.upload")}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{$("plugins.action.upload.title")}</AlertDialogTitle>
+                    <AlertDialogDescription>{$("plugins.action.upload.description")}</AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <Label>{$("plugins.action.upload.input.label")}</Label>
+                  <Input
+                    type="file"
+                    accept=".jar"
+                    onChange={(e) => {
+                      const fileList = (e.target as HTMLInputElement).files;
+                      fileList && handleUpload(fileList[0]);
+                      setUploadDialogOpen(false);
+                    }}/>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>{$("dialog.close")}</AlertDialogCancel>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </div>
+          <TabsContent value="enabled-list">
+            <DataTable
+              columns={enabledPluginColumns}
+              data={[
+                ...plugins.filter(({ name, fileName, enabled }) => (
+                  (
+                    name.toLowerCase().includes(searchString.toLowerCase())
+                    || decodeURIComponent(base64ToString(fileName)).toLowerCase().includes(searchString.toLowerCase())
+                  )
+                  && (enabled && !fileName.endsWith(DISABLED_SUFFIX))
+                )),
+              ]}
+              pagination
+              fallbackMessage={$("plugins.empty")}/>
+          </TabsContent>
+          <TabsContent value="disabled-list">
+            <DataTable
+              columns={disabledPluginColumns}
+              data={[
+                ...plugins.filter(({ name, fileName, enabled }) => (
+                  (
+                    name.toLowerCase().includes(searchString.toLowerCase())
+                    || decodeURIComponent(base64ToString(fileName)).toLowerCase().includes(searchString.toLowerCase())
+                  )
+                  && (!enabled || fileName.endsWith(DISABLED_SUFFIX))
+                )),
+              ]}
+              pagination
+              fallbackMessage={$("plugins.empty")}/>
+          </TabsContent>
+        </Tabs>
+      </div>
     </SubPage>
   );
 }

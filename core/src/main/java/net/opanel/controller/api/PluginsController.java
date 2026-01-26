@@ -9,6 +9,7 @@ import net.opanel.utils.Utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -105,7 +106,9 @@ public class PluginsController extends BaseController {
         try {
             server.togglePlugin(fileName, enabled.equals("1"));
             sendResponse(ctx, HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (NoSuchFileException e) {
+            sendResponse(ctx, HttpStatus.NOT_FOUND, "Cannot find the plugin.");
+        } catch (Exception e) {
             e.printStackTrace();
             sendResponse(ctx, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -118,10 +121,19 @@ public class PluginsController extends BaseController {
             return;
         }
 
+        for(OPanelPlugin plugin : server.getPlugins()) {
+            if(fileName.equals(plugin.getFileName()) && plugin.isLoaded()) {
+                sendResponse(ctx, HttpStatus.FORBIDDEN, "Cannot delete a loaded plugin.");
+                return;
+            }
+        }
+
         try {
             server.deletePlugin(fileName);
             sendResponse(ctx, HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (NoSuchFileException e) {
+            sendResponse(ctx, HttpStatus.NOT_FOUND, "Cannot find the plugin.");
+        } catch (Exception e) {
             e.printStackTrace();
             sendResponse(ctx, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -143,7 +155,7 @@ public class PluginsController extends BaseController {
         }
         
         if(!Files.exists(filePath) || Files.isDirectory(filePath)) {
-            sendResponse(ctx, HttpStatus.NOT_FOUND, "Cannot find the specified plugin.");
+            sendResponse(ctx, HttpStatus.NOT_FOUND, "Cannot find the plugin.");
             return;
         }
 

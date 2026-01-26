@@ -1,20 +1,6 @@
-import type { ServerType } from "@/lib/types";
-import { apiUrl, sendDeleteRequest, sendPostRequest } from "@/lib/api";
+import { apiUrl, sendDeleteRequest, sendPostRequest, toastError } from "@/lib/api";
 import { emitter } from "@/lib/emitter";
-
-export function pluginOrMod(serverType: ServerType): "plugin" | "mod" {
-  switch(serverType) {
-    case "Bukkit":
-    case "Spigot":
-    case "Paper":
-    case "Folia":
-      return "plugin";
-    case "Fabric":
-    case "Forge":
-    case "Neoforge":
-      return "mod";
-  }
-}
+import { $ } from "@/lib/i18n";
 
 export async function downloadPlugin(fileName: string) {
   window.open(`${apiUrl}/api/plugins/${fileName}`, "_blank");
@@ -25,7 +11,13 @@ export async function togglePlugin(fileName: string, enabled: boolean) {
     await sendPostRequest(`/api/plugins/${fileName}?enabled=${enabled ? "1" : "0"}`);
     emitter.emit("refresh-data");
   } catch (e: any) {
-
+    toastError(e, enabled ? $("plugins.action.toggle.enable.error", fileName) : $("plugins.action.toggle.disable.error", fileName), [
+      [400, $("common.error.400")],
+      [401, $("common.error.401")],
+      [403, $("plugins.action.toggle.disable.error.403")],
+      [404, $("plugins.action.toggle.error.404", fileName)],
+      [500, $("common.error.500")]
+    ]);
   }
 }
 
@@ -34,6 +26,12 @@ export async function deletePlugin(fileName: string) {
     await sendDeleteRequest(`/api/plugins/${fileName}`);
     emitter.emit("refresh-data");
   } catch (e: any) {
-
+    toastError(e, $("plugins.action.delete.error"), [
+      [400, $("common.error.400")],
+      [401, $("common.error.401")],
+      [403, $("plugins.action.delete.error.403")],
+      [404, $("plugins.action.delete.error.404", fileName)],
+      [500, $("common.error.500")]
+    ]);
   }
 }

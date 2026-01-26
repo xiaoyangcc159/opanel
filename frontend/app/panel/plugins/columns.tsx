@@ -6,11 +6,12 @@ import { base64ToString, cn, formatDataSize } from "@/lib/utils";
 import { googleSansCode } from "@/lib/fonts";
 import { Button } from "@/components/ui/button";
 import { deletePlugin, downloadPlugin, togglePlugin } from "./plugin-utils";
+import { $ } from "@/lib/i18n";
 
 export const enabledPluginColumns: ColumnDef<Plugin>[] = [
   {
     accessorKey: "name",
-    header: "插件名称",
+    header: $("plugins.columns.name"),
     cell: ({ row }) => (
       <Tooltip>
         <TooltipTrigger>
@@ -22,12 +23,12 @@ export const enabledPluginColumns: ColumnDef<Plugin>[] = [
   },
   {
     accessorKey: "version",
-    header: "版本",
+    header: $("plugins.columns.version"),
     cell: ({ row }) => row.original.version ?? ""
   },
   {
     accessorKey: "description",
-    header: "描述",
+    header: $("plugins.columns.description"),
     cell: ({ row }) => {
       const { description } = row.original;
       return (
@@ -39,7 +40,7 @@ export const enabledPluginColumns: ColumnDef<Plugin>[] = [
   },
   {
     accessorKey: "size",
-    header: "大小",
+    header: $("plugins.columns.size"),
     cell: ({ row }) => (
       <span className={cn("text-xs", googleSansCode.className)}>
         {formatDataSize(row.original.size)}
@@ -48,7 +49,7 @@ export const enabledPluginColumns: ColumnDef<Plugin>[] = [
   },
   {
     accessorKey: "loaded",
-    header: () => <div className="text-center">已加载</div>,
+    header: () => <div className="text-center">{$("plugins.columns.loaded")}</div>,
     cell: ({ row }) => (
       <div className="flex justify-center">
         {
@@ -70,7 +71,7 @@ export const enabledPluginColumns: ColumnDef<Plugin>[] = [
             <Button
               variant="ghost"
               size="icon"
-              title="禁用插件"
+              title={$("plugins.action.toggle.disable")}
               onClick={() => togglePlugin(fileName, false)}>
               <Ban className="stroke-red-400"/>
             </Button>
@@ -78,7 +79,7 @@ export const enabledPluginColumns: ColumnDef<Plugin>[] = [
           <Button
             variant="ghost"
             size="icon"
-            title="下载插件"
+            title={$ ("plugins.action.download")}
             onClick={() => downloadPlugin(fileName)}>
             <Download />
           </Button>
@@ -91,7 +92,7 @@ export const enabledPluginColumns: ColumnDef<Plugin>[] = [
 export const disabledPluginColumns: ColumnDef<Plugin>[] = [
   {
     accessorKey: "name",
-    header: "插件名称",
+    header: $("plugins.columns.name"),
     cell: ({ row }) => (
       <Tooltip>
         <TooltipTrigger>
@@ -103,16 +104,16 @@ export const disabledPluginColumns: ColumnDef<Plugin>[] = [
   },
   {
     accessorKey: "version",
-    header: "版本",
+    header: $("plugins.columns.version"),
     cell: ({ row }) => row.original.version ?? ""
   },
   {
     accessorKey: "description",
-    header: "描述",
+    header: $("plugins.columns.description"),
   },
   {
     accessorKey: "size",
-    header: "大小",
+    header: $("plugins.columns.size"),
     cell: ({ row }) => (
       <span className={cn("text-xs", googleSansCode.className)}>
         {formatDataSize(row.original.size)}
@@ -129,21 +130,21 @@ export const disabledPluginColumns: ColumnDef<Plugin>[] = [
           <Button
             variant="ghost"
             size="icon"
-            title="启用插件"
+            title={$("plugins.action.toggle.enable")}
             onClick={() => togglePlugin(fileName, true)}>
             <PackagePlus className="stroke-green-600"/>
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            title="下载插件"
+            title={$("plugins.action.download")}
             onClick={() => downloadPlugin(fileName)}>
             <Download />
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            title="删除插件"
+            title={$("plugins.action.delete")}
             onClick={() => deletePlugin(fileName)}>
             <Trash2 />
           </Button>

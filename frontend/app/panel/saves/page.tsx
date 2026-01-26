@@ -88,7 +88,7 @@ export default function Saves() {
       className="relative h-full z-20"
       onDragEnter={() => setUploadVisible(true)}>
       {/* Drag and Drop Area */}
-      <div className={cn("absolute top-0 left-0 right-0 bottom-16 flex flex-col justify-center items-center gap-4", uploadVisible ? "" : "hidden")}>
+      <div className={cn("absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-center items-center gap-4", uploadVisible ? "" : "hidden")}>
         <div
           className="absolute w-full h-full border-4 rounded-sm border-dashed"
           onDrop={(e) => {
@@ -133,6 +133,7 @@ export default function Saves() {
               <Label>{$("saves.list.upload.input.label")}</Label>
               <Input
                 type="file"
+                accept=".zip"
                 onChange={(e) => {
                   const fileList = (e.target as HTMLInputElement).files;
                   fileList && handleUpload(fileList[0]);

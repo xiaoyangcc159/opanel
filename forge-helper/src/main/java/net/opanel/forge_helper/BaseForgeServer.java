@@ -15,6 +15,7 @@ import net.opanel.common.ServerType;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -224,7 +225,7 @@ public abstract class BaseForgeServer implements OPanelServer {
         Path pluginsPath = getPluginsPath();
         Path originalPath = pluginsPath.resolve(fileName);
         if(!Files.exists(originalPath)) {
-            throw new IOException("Mod file not found: " + fileName);
+            throw new NoSuchFileException("Mod file not found: " + fileName);
         }
 
         final boolean isActuallyDisabled = fileName.endsWith(OPanelPlugin.DISABLED_SUFFIX);
@@ -257,7 +258,7 @@ public abstract class BaseForgeServer implements OPanelServer {
         }
         
         if(!Files.exists(filePath)) {
-            throw new IOException("Mod file not found: " + fileName);
+            throw new NoSuchFileException("Mod file not found: " + fileName);
         }
         
         Files.delete(filePath);
