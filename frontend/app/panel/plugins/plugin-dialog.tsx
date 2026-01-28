@@ -46,7 +46,7 @@ export function PluginDialog({
               {
                 plugin.description
                 ? base64ToString(plugin.description ?? "")
-                : <span className="italic">暂无描述</span>
+                : <span className="italic">{$("plugins.detailed-info.no-description")}</span>
               }
             </DialogDescription>
           </div>
@@ -54,14 +54,14 @@ export function PluginDialog({
         <div className="flex flex-col gap-2">
           <div className="pb-2 border-b flex justify-between items-end">
             <div className="pb-1 text-sm leading-5.5">
-              <span className="text-muted-foreground">作者：</span>
+              <span className="text-muted-foreground">{$("plugins.detailed-info.author")}</span>
               <span className="space-x-2 wrap-anywhere *:whitespace-nowrap">
                 {
                   plugin.authors.length > 0
                   ? plugin.authors.map((author, i) => (
                     <span key={i}>{author}</span>
                   ))
-                  : <span className="italic">佚名</span>
+                  : <span className="italic">{$("plugins.detailed-info.anonymous-author")}</span>
                 }
               </span>
             </div>
@@ -72,7 +72,7 @@ export function PluginDialog({
                 asChild>
                 <Link href={plugin.website} target="_blank" rel="noopener noreferrer">
                   <House />
-                  插件主页
+                  {$("plugins.detailed-info.website")}
                   <SquareArrowOutUpRight className="!size-3 ml-1 max-sm:hidden" stroke="var(--color-muted-foreground)"/>
                 </Link>
               </Button>
