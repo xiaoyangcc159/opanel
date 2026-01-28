@@ -38,8 +38,17 @@ export function PluginDialog({
             src={plugin.icon ? (apiUrl + plugin.icon) : PackIcon.src}
             alt={plugin.name}/>
           <div className="flex flex-col gap-2">
-            <DialogTitle>{plugin.name}</DialogTitle>
-            <DialogDescription className="line-clamp-2">{base64ToString(plugin.description ?? "")}</DialogDescription>
+            <div className="space-x-2">
+              <DialogTitle className="inline-block">{plugin.name}</DialogTitle>
+              <span className="text-sm text-muted-foreground">{plugin.version}</span>
+            </div>
+            <DialogDescription className="line-clamp-2">
+              {
+                plugin.description
+                ? base64ToString(plugin.description ?? "")
+                : <span className="italic">暂无描述</span>
+              }
+            </DialogDescription>
           </div>
         </DialogHeader>
         <div className="flex flex-col gap-2">
@@ -47,9 +56,13 @@ export function PluginDialog({
             <div className="pb-1 text-sm leading-5.5">
               <span className="text-muted-foreground">作者：</span>
               <span className="space-x-2 wrap-anywhere *:whitespace-nowrap">
-                {plugin.authors.map((author, i) => (
-                  <span key={i}>{author}</span>
-                ))}
+                {
+                  plugin.authors.length > 0
+                  ? plugin.authors.map((author, i) => (
+                    <span key={i}>{author}</span>
+                  ))
+                  : <span className="italic">佚名</span>
+                }
               </span>
             </div>
             {plugin.website && (
