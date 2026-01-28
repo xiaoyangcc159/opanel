@@ -10,16 +10,31 @@ public class OPanelPlugin {
     private final String version;
     private final String description;
     private final List<String> authors;
+    private final String website;
+    private final byte[] icon;
     private final long fileSize;
     private final boolean enabled;
     private final boolean loaded;
 
-    public OPanelPlugin(String fileName, String name, String version, String description, List<String> authors, long fileSize, boolean enabled, boolean loaded) {
+    public OPanelPlugin(
+        String fileName,
+        String name,
+        String version,
+        String description,
+        List<String> authors,
+        String website,
+        byte[] icon,
+        long fileSize,
+        boolean enabled,
+        boolean loaded
+    ) {
         this.fileName = fileName;
         this.name = name;
         this.version = version;
         this.description = description;
         this.authors = authors;
+        this.website = website;
+        this.icon = icon;
         this.fileSize = fileSize;
         this.enabled = enabled;
         this.loaded = loaded;
@@ -43,6 +58,14 @@ public class OPanelPlugin {
 
     public List<String> getAuthors() {
         return authors;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public byte[] getIcon() {
+        return icon;
     }
 
     public long getFileSize() {

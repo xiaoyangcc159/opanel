@@ -144,6 +144,8 @@ public abstract class BaseBukkitServer implements OPanelServer {
                         desc.getVersion(),
                         desc.getDescription(),
                         desc.getAuthors(),
+                        desc.getWebsite(),
+                        null,
                         fileSize,
                         p.isEnabled(),
                         true
@@ -170,6 +172,8 @@ public abstract class BaseBukkitServer implements OPanelServer {
                         plugins.add(new OPanelPlugin(
                             fileName,
                             name,
+                            null,
+                            null,
                             null,
                             null,
                             null,
