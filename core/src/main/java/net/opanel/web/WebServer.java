@@ -163,6 +163,7 @@ public class WebServer {
             });
             path("plugins", () -> {
                 get("/", pluginsController.getPlugins);
+                get("/icon/{fileName}", pluginsController.getPluginIcon);
                 post("/", pluginsController.uploadPlugin);
                 get("{fileName}", pluginsController.downloadPlugin);
                 post("{fileName}", pluginsController.togglePlugin);

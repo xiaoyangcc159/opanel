@@ -68,6 +68,8 @@ export interface Plugin {
   version?: string
   description?: string // base64
   authors: string[]
+  website?: string
+  icon?: string
   size: number
   enabled: boolean
   loaded: boolean

@@ -32,7 +32,8 @@ export function Navbar({ className, ...props }: React.ComponentProps<"nav">) {
           asChild>
           <Link
             href="https://opanel.cn/docs/quick-start.html"
-            target="_blank">
+            target="_blank"
+            rel="noopener noreferrer">
             <BookText />
             <span className="max-sm:hidden">{$("nav.docs")}</span>
             <SquareArrowOutUpRight className="!size-3 ml-1 max-sm:hidden" stroke="var(--color-muted-foreground)"/>

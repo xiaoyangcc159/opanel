@@ -8,18 +8,21 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.IModInfo;
+import net.minecraftforge.forgespi.locating.IModFile;
 import net.opanel.common.OPanelPlayer;
 import net.opanel.common.OPanelPlugin;
 import net.opanel.common.OPanelServer;
 import net.opanel.common.ServerType;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
@@ -161,14 +164,31 @@ public abstract class BaseForgeServer implements OPanelServer {
                 continue;
             }
 
+            final IModFile modFile = modInfo.getOwningFile().getFile();
+
             try {
-                String fileName = modInfo.getOwningFile().getFile().getFileName();
-                long fileSize = Files.size(modInfo.getOwningFile().getFile().getFilePath());
+                String fileName = modFile.getFileName();
+                long fileSize = Files.size(modFile.getFilePath());
 
                 List<String> authors = modInfo.getConfig().getConfigElement("authors")
                         .map(obj -> List.of(obj.toString().split(",")))
                         .map(list -> list.stream().map(String::trim).toList())
                         .orElse(List.of());
+
+                String website = null;
+                Optional<URL> modUrlOptional = modInfo.getModURL();
+                if(modUrlOptional.isPresent()) {
+                    website = modUrlOptional.get().toString();
+                }
+
+                byte[] icon = null;
+                Optional<String> logoFileOptional = modInfo.getLogoFile();
+                if(logoFileOptional.isPresent()) {
+                    Path iconPath = modFile.findResource(logoFileOptional.get());
+                    if(Files.exists(iconPath)) {
+                        icon = Files.readAllBytes(iconPath);
+                    }
+                }
 
                 mods.add(new OPanelPlugin(
                         fileName,
@@ -176,6 +196,8 @@ public abstract class BaseForgeServer implements OPanelServer {
                         modInfo.getVersion().toString(),
                         modInfo.getDescription(),
                         authors,
+                        website,
+                        icon,
                         fileSize,
                         true, // All loaded mods are enabled
                         true  // All loaded mods are loaded
@@ -202,6 +224,8 @@ public abstract class BaseForgeServer implements OPanelServer {
                         mods.add(new OPanelPlugin(
                             fileName,
                             name,
+                            null,
+                            null,
                             null,
                             null,
                             null,

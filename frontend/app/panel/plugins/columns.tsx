@@ -7,19 +7,31 @@ import { googleSansCode } from "@/lib/fonts";
 import { Button } from "@/components/ui/button";
 import { deletePlugin, downloadPlugin, togglePlugin } from "./plugin-utils";
 import { $ } from "@/lib/i18n";
+import { PluginDialog } from "./plugin-dialog";
 
 export const enabledPluginColumns: ColumnDef<Plugin>[] = [
   {
     accessorKey: "name",
     header: $("plugins.columns.name"),
-    cell: ({ row }) => (
-      <Tooltip>
-        <TooltipTrigger>
-          <span className="font-semibold">{row.original.name}</span>
-        </TooltipTrigger>
-        <TooltipContent>{base64ToString(row.original.fileName)}</TooltipContent>
-      </Tooltip>
-    )
+    cell: ({ row }) => {
+      const { fileName, name, loaded } = row.original;
+      return (
+        <Tooltip>
+          <TooltipTrigger>
+            {
+              loaded
+              ? (
+                <PluginDialog plugin={row.original} asChild>
+                  <span className="font-semibold cursor-pointer">{name}</span>
+                </PluginDialog>
+              )
+              : <span className="font-semibold">{name}</span>
+            }
+          </TooltipTrigger>
+          <TooltipContent>{base64ToString(fileName)}</TooltipContent>
+        </Tooltip>
+      );
+    }
   },
   {
     accessorKey: "version",

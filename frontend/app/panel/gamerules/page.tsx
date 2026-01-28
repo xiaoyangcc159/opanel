@@ -195,6 +195,7 @@ export default function Gamerules() {
                 <Link
                   href="https://zh.minecraft.wiki/w/游戏规则#游戏规则列表"
                   target="_blank"
+                  rel="noopener noreferrer"
                   key={0}>
                   Minecraft Wiki
                 </Link>

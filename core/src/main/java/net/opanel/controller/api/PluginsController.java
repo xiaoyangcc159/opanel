@@ -37,6 +37,8 @@ public class PluginsController extends BaseController {
             pluginInfo.put("version", p.getVersion());
             pluginInfo.put("description", description != null ? Utils.stringToBase64(description) : null);
             pluginInfo.put("authors", p.getAuthors());
+            pluginInfo.put("website", p.getWebsite());
+            pluginInfo.put("icon", p.getIcon() != null ? "/api/plugins/icon/"+ p.getFileName() +"?t="+ System.currentTimeMillis() : null);
             pluginInfo.put("size", p.getFileSize());
             pluginInfo.put("enabled", p.isEnabled());
             pluginInfo.put("loaded", p.isLoaded());
@@ -46,6 +48,34 @@ public class PluginsController extends BaseController {
         obj.put("folderPath", server.getPluginsPath().toAbsolutePath().toString());
 
         sendResponse(ctx, obj);
+    };
+
+    public Handler getPluginIcon = ctx -> {
+        final String fileName = ctx.pathParam("fileName");
+        if(!fileName.endsWith(".jar") && !fileName.endsWith(".jar"+ OPanelPlugin.DISABLED_SUFFIX)) {
+            sendResponse(ctx, HttpStatus.BAD_REQUEST, "Illegal file name.");
+            return;
+        }
+
+        for(OPanelPlugin plugin : server.getPlugins()) {
+            if(fileName.equals(plugin.getFileName())) {
+                if(!plugin.isLoaded()) {
+                    sendResponse(ctx, HttpStatus.PRECONDITION_FAILED, "The plugin is not loaded by the server.");
+                    return;
+                }
+
+                byte[] icon = plugin.getIcon();
+                if(icon == null) {
+                    sendResponse(ctx, HttpStatus.UNPROCESSABLE_CONTENT, "The plugin doesn't have an icon.");
+                    return;
+                }
+
+                sendContent(ctx, icon, ContentType.IMAGE_PNG);
+                return;
+            }
+        }
+
+        sendResponse(ctx, HttpStatus.NOT_FOUND, "Cannot find the plugin.");
     };
 
     public Handler uploadPlugin = ctx -> {

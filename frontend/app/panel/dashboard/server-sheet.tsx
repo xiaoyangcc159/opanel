@@ -184,11 +184,14 @@ export function ServerSheet({
                   <Link
                     href="https://zh.minecraft.wiki/w/服务端配置文件格式"
                     target="_blank"
+                    rel="noopener noreferrer"
                     key={0}>
                     Minecraft Wiki
                   </Link>,
                   <Link
                     href="https://docs.papermc.io/paper/reference/server-properties"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     key={1}>
                     Paper Docs
                   </Link>

@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.stream.Stream;
 
@@ -171,12 +172,29 @@ public abstract class BaseFabricServer implements OPanelServer {
                     authorList.add(author.getName());
                 }
 
+                String website = null;
+                Optional<String> websiteOptional = metadata.getContact().get("homepage");
+                if(websiteOptional.isPresent()) {
+                    website = websiteOptional.get();
+                }
+
+                byte[] icon = null;
+                Optional<String> iconPathStrOptional = metadata.getIconPath(64);
+                if(iconPathStrOptional.isPresent()) {
+                    Optional<Path> iconPathOptional = modContainer.findPath(iconPathStrOptional.get());
+                    if(iconPathOptional.isPresent()) {
+                        icon = Files.readAllBytes(iconPathOptional.get());
+                    }
+                }
+
                 mods.add(new OPanelPlugin(
                         fileName,
                         metadata.getName(),
                         metadata.getVersion().getFriendlyString(),
                         metadata.getDescription(),
                         authorList,
+                        website,
+                        icon,
                         fileSize,
                         true, // All loaded mods are enabled
                         true  // All loaded mods are loaded
@@ -203,6 +221,8 @@ public abstract class BaseFabricServer implements OPanelServer {
                         mods.add(new OPanelPlugin(
                             fileName,
                             name,
+                            null,
+                            null,
                             null,
                             null,
                             null,
