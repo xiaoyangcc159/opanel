@@ -3,6 +3,7 @@ package net.opanel;
 import net.opanel.common.Constants;
 import net.opanel.config.ConfigManager;
 import net.opanel.config.OPanelConfiguration;
+import net.opanel.task.ScheduledTaskManager;
 import net.opanel.terminal.LogListenerManager;
 import net.opanel.common.OPanelServer;
 import net.opanel.logger.Loggable;
@@ -34,6 +35,7 @@ public class OPanel {
     public final Loggable logger;
 
     private final Uptimer uptimer;
+    private final ScheduledTaskManager scheduledTaskManager;
     private final WebServer webServer;
     private OPanelServer server;
     private LogListenerManager logListenerManager;
@@ -50,6 +52,9 @@ public class OPanel {
             logger.error("Failed to initialize OPanel directories: " + e.getMessage());
             throw new RuntimeException("OPanel initialization failed", e);
         }
+
+        // Initialize scheduled task manager
+        scheduledTaskManager = new ScheduledTaskManager(this);
 
         // Setup web server
         webServer = new WebServer(this);
@@ -119,6 +124,10 @@ public class OPanel {
 
     public Uptimer getUptimer() {
         return uptimer;
+    }
+
+    public ScheduledTaskManager getScheduledTaskManager() {
+        return scheduledTaskManager;
     }
 
     public WebServer getWebServer() {

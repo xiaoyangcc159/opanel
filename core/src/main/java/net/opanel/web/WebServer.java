@@ -82,6 +82,7 @@ public class WebServer {
         SecurityController securityController = new SecurityController(plugin);
         VersionController versionController = new VersionController(plugin);
         WhitelistController whitelistController = new WhitelistController(plugin);
+        TasksController tasksController = new TasksController(plugin);
 
         // API Routes
         app.before("/*", beforeController.beforeAll);
@@ -178,6 +179,12 @@ public class WebServer {
                 post("write", whitelistController.writeWhitelist);
                 post("add", whitelistController.addWhitelistEntry);
                 post("remove", whitelistController.removeWhitelistEntry);
+            });
+            path("tasks", () -> {
+                get("/", tasksController.getTasks);
+                post("/", tasksController.createTask);
+                post("/{id}", tasksController.editTask);
+                patch("/{id}", tasksController.toggleTask);
             });
         }));
 
