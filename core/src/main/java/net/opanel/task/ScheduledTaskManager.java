@@ -14,14 +14,21 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ScheduledTaskManager {
     private final OPanel plugin;
     private final List<ScheduledTask> tasks;
-    private final Set<String> deletedTaskIds = Collections.synchronizedSet(new HashSet<>());
+    private final Map<String, ScheduledFuture<?>> taskFutures = new ConcurrentHashMap<>();
+    
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    private final ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
+    private final ReentrantReadWriteLock.WriteLock writeLock = lock.writeLock();
 
-    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-    private final CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.SPRING));
+    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(
+        Math.max(2, Runtime.getRuntime().availableProcessors() / 2)
+    );
+    private final CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
 
     @SuppressWarnings("unchecked")
     public ScheduledTaskManager(OPanel plugin) {
@@ -30,25 +37,40 @@ public class ScheduledTaskManager {
             (List<ScheduledTask>) Storage.get().getStoredData(StorageKey.SCHEDULED_TASKS)
         );
 
-        for(ScheduledTask task : tasks) {
-            scheduleTask(ExecutionTime.forCron(task.getCron()), task);
+        writeLock.lock();
+        try {
+            for(ScheduledTask task : tasks) {
+                scheduleTask(ExecutionTime.forCron(task.getCron()), task);
+            }
+        } finally {
+            writeLock.unlock();
         }
     }
 
     private void scheduleTask(ExecutionTime executionTime, ScheduledTask task) {
+        ScheduledFuture<?> existingFuture = taskFutures.get(task.getId());
+        if(existingFuture != null && !existingFuture.isDone()) {
+            existingFuture.cancel(false);
+        }
+
         ZonedDateTime now = ZonedDateTime.now();
         Optional<ZonedDateTime> nextOptional = executionTime.nextExecution(now);
         if(nextOptional.isEmpty()) return;
 
         ZonedDateTime next = nextOptional.get();
         long timeout = Duration.between(now, next).toMillis();
-        executor.schedule(() -> {
+        
+        ScheduledFuture<?> future = executor.schedule(() -> {
             OPanelServer server = plugin.getServer();
             if(server == null) return;
 
             try {
                 if(task.isEnabled()) {
-                    for(String command : task.getCommands()) {
+                    readLock.lock();
+                    List<String> commands = new ArrayList<>(task.getCommands());
+                    readLock.unlock();
+                    
+                    for(String command : commands) {
                         server.sendServerCommand(command);
                     }
                 }
@@ -56,48 +78,70 @@ public class ScheduledTaskManager {
                 e.printStackTrace();
             }
 
-            synchronized(deletedTaskIds) {
-                for(String id : deletedTaskIds) {
-                    if(task.getId().equals(id)) {
-                        deletedTaskIds.remove(id);
-                        return;
-                    }
-                }
-            }
-
             scheduleTask(executionTime, task);
         }, timeout, TimeUnit.MILLISECONDS);
+        
+        taskFutures.put(task.getId(), future);
     }
 
     public ScheduledTask createTask(String name, String cronExpression, List<String> commands) throws IllegalArgumentException {
-        ScheduledTask task = new ScheduledTask(
-            Utils.generateRandomCharSequence(32, false),
-            name,
-            parser.parse(cronExpression),
-            commands,
-            true
-        );
-        tasks.add(task);
-        scheduleTask(ExecutionTime.forCron(task.getCron()), task);
-        saveTasks();
-        return task;
+        writeLock.lock();
+        try {
+            ScheduledTask task = new ScheduledTask(
+                Utils.generateRandomCharSequence(32, false),
+                name,
+                parser.parse(cronExpression),
+                new ArrayList<>(commands),
+                true
+            );
+            tasks.add(task);
+            scheduleTask(ExecutionTime.forCron(task.getCron()), task);
+            saveTasks();
+            return task;
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     public void deleteTask(String id) {
-        ScheduledTask task = getTask(id);
-        if(task == null) {
-            throw new NoSuchElementException("Cannot find the task: "+ id);
-        }
+        writeLock.lock();
+        try {
+            ScheduledTask task = getTaskUnsafe(id);
+            if(task == null) {
+                throw new NoSuchElementException("Cannot find the task: " + id);
+            }
 
-        tasks.remove(task);
-        deletedTaskIds.add(id);
+            ScheduledFuture<?> future = taskFutures.remove(id);
+            if(future != null && !future.isDone()) {
+                future.cancel(false);
+            }
+
+            tasks.remove(task);
+            saveTasks();
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     public List<ScheduledTask> getTasks() {
-        return tasks;
+        readLock.lock();
+        try {
+            return new ArrayList<>(tasks);
+        } finally {
+            readLock.unlock();
+        }
     }
 
     public ScheduledTask getTask(String id) {
+        readLock.lock();
+        try {
+            return getTaskUnsafe(id);
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    private ScheduledTask getTaskUnsafe(String id) {
         for(ScheduledTask task : tasks) {
             if(task.getId().equals(id)) {
                 return task;
@@ -107,42 +151,84 @@ public class ScheduledTaskManager {
     }
 
     public void setTaskName(String id, String name) {
-        ScheduledTask task = getTask(id);
-        if(task == null) {
-            throw new NoSuchElementException("Cannot find the task: "+ id);
-        }
+        writeLock.lock();
+        try {
+            ScheduledTask task = getTaskUnsafe(id);
+            if(task == null) {
+                throw new NoSuchElementException("Cannot find the task: "+ id);
+            }
 
-        task.setName(name);
+            task.setName(name);
+            saveTasks();
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     public void setTaskCron(String id, String cronExpression) throws IllegalArgumentException {
-        ScheduledTask task = getTask(id);
-        if(task == null) {
-            throw new NoSuchElementException("Cannot find the task: "+ id);
-        }
+        writeLock.lock();
+        try {
+            ScheduledTask task = getTaskUnsafe(id);
+            if(task == null) {
+                throw new NoSuchElementException("Cannot find the task: "+ id);
+            }
 
-        task.setCron(parser.parse(cronExpression));
+            task.setCron(parser.parse(cronExpression));
+            
+            scheduleTask(ExecutionTime.forCron(task.getCron()), task);
+            saveTasks();
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     public void setTaskCommands(String id, List<String> commands) {
-        ScheduledTask task = getTask(id);
-        if(task == null) {
-            throw new NoSuchElementException("Cannot find the task: "+ id);
-        }
+        writeLock.lock();
+        try {
+            ScheduledTask task = getTaskUnsafe(id);
+            if(task == null) {
+                throw new NoSuchElementException("Cannot find the task: "+ id);
+            }
 
-        task.setCommands(commands);
+            task.setCommands(new ArrayList<>(commands)); // 创建副本
+            saveTasks();
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     public void setTaskEnabled(String id, boolean enabled) {
-        ScheduledTask task = getTask(id);
-        if(task == null) {
-            throw new NoSuchElementException("Cannot find the task: "+ id);
-        }
+        writeLock.lock();
+        try {
+            ScheduledTask task = getTaskUnsafe(id);
+            if(task == null) {
+                throw new NoSuchElementException("Cannot find the task: "+ id);
+            }
 
-        task.setEnabled(enabled);
+            task.setEnabled(enabled);
+            saveTasks();
+        } finally {
+            writeLock.unlock();
+        }
     }
 
-    public void saveTasks() {
-        Storage.get().setStoredData(StorageKey.SCHEDULED_TASKS, tasks);
+    private void saveTasks() { // Should be called within write lock
+        Storage.get().setStoredData(StorageKey.SCHEDULED_TASKS, new ArrayList<>(tasks));
+    }
+
+    public void shutdown() {
+        writeLock.lock();
+        try {
+            for(ScheduledFuture<?> future : taskFutures.values()) {
+                if(!future.isDone()) {
+                    future.cancel(false);
+                }
+            }
+            taskFutures.clear();
+            executor.shutdownNow();
+            saveTasks();
+        } finally {
+            writeLock.unlock();
+        }
     }
 }

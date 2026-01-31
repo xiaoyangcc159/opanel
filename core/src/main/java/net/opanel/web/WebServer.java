@@ -185,6 +185,7 @@ public class WebServer {
                 post("/", tasksController.createTask);
                 post("/{id}", tasksController.editTask);
                 patch("/{id}", tasksController.toggleTask);
+                delete("/{id}", tasksController.deleteTask);
             });
         }));
 

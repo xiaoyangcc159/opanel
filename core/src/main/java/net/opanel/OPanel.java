@@ -151,11 +151,16 @@ public class OPanel {
     }
 
     public void stop() {
-        if(webServer == null) return;
-        try {
-            webServer.stop();
-        } catch (Exception e) {
-            logger.error("Failed to stop web server: " + e.getMessage());
+        if(scheduledTaskManager != null) {
+            scheduledTaskManager.shutdown();
+        }
+
+        if(webServer != null) {
+            try {
+                webServer.stop();
+            } catch (Exception e) {
+                logger.error("Failed to stop web server: " + e.getMessage());
+            }
         }
     }
 

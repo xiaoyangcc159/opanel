@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useContext } from "react";
+import { Fragment, useContext } from "react";
 import { compare } from "semver";
-import { Blocks, Earth, Gauge, HeartHandshake, PaintBucket, PencilRuler, ScrollText, SquareTerminal, Users } from "lucide-react";
+import { Blocks, ClockFading, Earth, Gauge, HeartHandshake, PaintBucket, PencilRuler, ScrollText, SquareTerminal, Users } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -74,6 +74,11 @@ const managementGroupItems = [
 
 const configurationGroupItems = [
   {
+    name: "定时任务",
+    url: "/panel/tasks",
+    icon: ClockFading
+  },
+  {
     name: $("sidebar.config.bukkit-config"),
     url: "/panel/bukkit-config",
     icon: PaintBucket
@@ -133,12 +138,14 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        {isBukkit(versionCtx.serverType) && (
-          <SidebarGroup>
-            <SidebarGroupLabel>{$("sidebar.config")}</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {configurationGroupItems.map((item, i) => (
+        <SidebarGroup>
+          <SidebarGroupLabel>{$("sidebar.config")}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {configurationGroupItems.map((item, i) => (
+                (item.url === "/panel/bukkit-config" && !isBukkit(versionCtx.serverType))
+                ? <Fragment key={i}/>
+                : (
                   <SidebarMenuItem key={i}>
                     <SidebarMenuButton
                       isActive={pathname.startsWith(item.url)}
@@ -150,11 +157,11 @@ export function AppSidebar() {
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
+                )
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="p-4 bg-background items-end group-data-[state=collapsed]:px-0 group-data-[state=collapsed]:items-center">
         <SidebarTrigger className="cursor-pointer"/>

@@ -6,9 +6,12 @@ import net.opanel.OPanel;
 import net.opanel.controller.BaseController;
 import net.opanel.task.ScheduledTask;
 import net.opanel.task.ScheduledTaskManager;
+import net.opanel.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class TasksController extends BaseController {
     private ScheduledTaskManager scheduledTaskManager;
@@ -21,13 +24,25 @@ public class TasksController extends BaseController {
 
     public Handler getTasks = ctx -> {
         HashMap<String, Object> obj = new HashMap<>();
-        obj.put("tasks", scheduledTaskManager.getTasks());
+
+        List<HashMap<String, Object>> serializedTaskList = new ArrayList<>();
+        for(ScheduledTask task : scheduledTaskManager.getTasks()) {
+            HashMap<String, Object> serializedTask = new HashMap<>();
+            serializedTask.put("id", task.getId());
+            serializedTask.put("name", Utils.stringToBase64(task.getName()));
+            serializedTask.put("cron", task.getCron().asString());
+            serializedTask.put("commands", task.getCommands());
+            serializedTask.put("enabled", task.isEnabled());
+            serializedTaskList.add(serializedTask);
+        }
+
+        obj.put("tasks", serializedTaskList);
         sendResponse(ctx, obj);
     };
 
     public Handler createTask = ctx -> {
-        TaskEditRequestBodyType reqBody = ctx.bodyAsClass(TaskEditRequestBodyType.class);
         try {
+            TaskEditRequestBodyType reqBody = ctx.bodyAsClass(TaskEditRequestBodyType.class);
             ScheduledTask task = scheduledTaskManager.createTask(reqBody.name, reqBody.cron, reqBody.commands);
 
             HashMap<String, Object> obj = new HashMap<>();
@@ -35,21 +50,26 @@ public class TasksController extends BaseController {
             sendResponse(ctx, obj);
         } catch (IllegalArgumentException e) {
             sendResponse(ctx, HttpStatus.BAD_REQUEST, "Illegal cron expression.");
+        } catch (Exception e) {
+            sendResponse(ctx, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     };
 
     public Handler editTask = ctx -> {
         final String id = ctx.pathParam("id");
-        TaskEditRequestBodyType reqBody = ctx.bodyAsClass(TaskEditRequestBodyType.class);
-
+        
         try {
+            TaskEditRequestBodyType reqBody = ctx.bodyAsClass(TaskEditRequestBodyType.class);
             scheduledTaskManager.setTaskCron(id, reqBody.cron);
             scheduledTaskManager.setTaskName(id, reqBody.name);
             scheduledTaskManager.setTaskCommands(id, reqBody.commands);
-            scheduledTaskManager.saveTasks();
             sendResponse(ctx, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             sendResponse(ctx, HttpStatus.BAD_REQUEST, "Illegal cron expression.");
+        } catch (NoSuchElementException e) {
+            sendResponse(ctx, HttpStatus.NOT_FOUND, "Task not found: " + id);
+        } catch (Exception e) {
+            sendResponse(ctx, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     };
 
@@ -61,8 +81,27 @@ public class TasksController extends BaseController {
             return;
         }
 
-        scheduledTaskManager.setTaskEnabled(id, enabled.equals("1"));
-        scheduledTaskManager.saveTasks();
+        try {
+            scheduledTaskManager.setTaskEnabled(id, enabled.equals("1"));
+            sendResponse(ctx, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            sendResponse(ctx, HttpStatus.NOT_FOUND, "Task not found: " + id);
+        } catch (Exception e) {
+            sendResponse(ctx, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    };
+
+    public Handler deleteTask = ctx -> {
+        final String id = ctx.pathParam("id");
+        
+        try {
+            scheduledTaskManager.deleteTask(id);
+            sendResponse(ctx, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            sendResponse(ctx, HttpStatus.NOT_FOUND, "Task not found: " + id);
+        } catch (Exception e) {
+            sendResponse(ctx, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     };
 
     private static class TaskEditRequestBodyType {
