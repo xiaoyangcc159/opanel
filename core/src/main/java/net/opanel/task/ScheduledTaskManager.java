@@ -69,18 +69,17 @@ public class ScheduledTaskManager {
             OPanelServer server = plugin.getServer();
             if(server == null) return;
 
-            try {
-                if(task.isEnabled()) {
+            if(task.isEnabled()) {
+                try {
                     readLock.lock();
                     List<String> commands = new ArrayList<>(task.getCommands());
-                    readLock.unlock();
-                    
+
                     for(String command : commands) {
                         server.sendServerCommand(command);
                     }
+                } finally {
+                    readLock.unlock();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
 
             scheduleTask(executionTime, task);
@@ -196,7 +195,7 @@ public class ScheduledTaskManager {
                 throw new NoSuchElementException("Cannot find the task: "+ id);
             }
 
-            task.setCommands(new ArrayList<>(commands)); // 创建副本
+            task.setCommands(new ArrayList<>(commands));
             saveTasks();
         } finally {
             writeLock.unlock();

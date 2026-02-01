@@ -1,8 +1,5 @@
 package net.opanel.task;
 
-import com.cronutils.model.Cron;
-import com.cronutils.model.time.ExecutionTime;
-
 import java.util.List;
 
 public class ScheduledTask {
