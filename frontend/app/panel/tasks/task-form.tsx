@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -35,6 +36,8 @@ import { googleSansCode } from "@/lib/fonts";
 import { Button } from "@/components/ui/button";
 import { monacoSettingsOptions } from "@/lib/settings";
 import { sendPostRequest, toastError } from "@/lib/api";
+import { $ } from "@/lib/i18n";
+import { Text } from "@/components/i18n-text";
 
 const MonacoEditor = dynamic(() => import("@/components/monaco-editor"), { ssr: false });
 
@@ -79,9 +82,9 @@ function cronWeekToValue(week: string): "0" | "1" | "2" | "3" | "4" | "5" | "6" 
 }
 
 export const formSchema = z.object({
-  name: z.string().min(1, "任务名称不能为空"),
-  cron: z.string().min(1, "Cron 表达式不能为空"),
-  commands: z.array(z.string().min(1, "指令不能为空")).min(1, "至少需要一个指令"),
+  name: z.string().min(1, $("tasks.form.name.empty")),
+  cron: z.string().min(1),
+  commands: z.array(z.string().min(1, $("tasks.form.commands.empty1"))).min(1, $("tasks.form.commands.empty2")),
 });
 
 export function TaskForm({
@@ -115,10 +118,12 @@ export function TaskForm({
         commands: data.commands
       });
       onCreate && onCreate(res.taskId);
-      toast.success("定时任务创建成功");
+      toast.success($("tasks.create.success"));
     } catch (e: any) {
-      toastError(e, "无法创建定时任务", [
-
+      toastError(e, $("tasks.create.error"), [
+        [400, $("tasks.error.400")],
+        [401, $("common.error.401")],
+        [500, $("common.error.500")]
       ]);
     }
   };
@@ -127,10 +132,13 @@ export function TaskForm({
     try {
       await sendPostRequest(`/api/tasks/${task.id}`, data);
       onEdit && onEdit();
-      toast.success("已保存定时任务");
+      toast.success($("tasks.edit.success"));
     } catch (e: any) {
-      toastError(e, "无法保存定时任务", [
-
+      toastError(e, $("tasks.edit.error"), [
+        [400, $("tasks.error.400")],
+        [401, $("common.error.401")],
+        [404, $("tasks.error.404")],
+        [500, $("common.error.500")]
       ]);
     }
   };
@@ -153,10 +161,10 @@ export function TaskForm({
           control={form.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>任务名称</FormLabel>
+              <FormLabel>{$("tasks.form.name.label")}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="请输入任务名称..."
+                  placeholder={$("tasks.form.name.placeholder")}
                   autoComplete="off"
                   {...field}/>
               </FormControl>
@@ -165,13 +173,13 @@ export function TaskForm({
           )}/>
         
         <div className="h-max flex flex-col gap-3">
-          <Label>定时设置</Label>
+          <Label>{$("tasks.form.cron.label")}</Label>
           <Tabs
             value={cronInputType}
             onValueChange={(value) => setCronInputType(value as any)}>
             <TabsList>
-              <TabsTrigger value="simple">简单</TabsTrigger>
-              <TabsTrigger value="advanced">高级</TabsTrigger>
+              <TabsTrigger value="simple">{$("tasks.form.cron.simple")}</TabsTrigger>
+              <TabsTrigger value="advanced">{$("tasks.form.cron.advanced")}</TabsTrigger>
             </TabsList>
             <div
               className="*:data-[slot=tabs-content]:p-2 w-[calc(200%+16px)] flex gap-4 overflow-hidden"
@@ -186,7 +194,7 @@ export function TaskForm({
                     return (
                       <div className="w-full grid grid-cols-3 max-sm:grid-cols-2 gap-4">
                         <FormItem className="flex-1">
-                          <FormLabel>分钟</FormLabel>
+                          <FormLabel>{$("tasks.form.cron.simple.minutes")}</FormLabel>
                           <FormControl>
                             <Input
                               value={cronParts[0]}
@@ -196,7 +204,7 @@ export function TaskForm({
                           <FormMessage />
                         </FormItem>
                         <FormItem className="flex-1">
-                          <FormLabel>小时</FormLabel>
+                          <FormLabel>{$("tasks.form.cron.simple.hours")}</FormLabel>
                           <FormControl>
                             <Input
                               value={cronParts[1]}
@@ -206,7 +214,7 @@ export function TaskForm({
                           <FormMessage />
                         </FormItem>
                         <FormItem className="flex-1">
-                          <FormLabel>日</FormLabel>
+                          <FormLabel>{$("tasks.form.cron.simple.days")}</FormLabel>
                           <FormControl>
                             <Input
                               value={cronParts[2]}
@@ -216,7 +224,7 @@ export function TaskForm({
                           <FormMessage />
                         </FormItem>
                         <FormItem className="flex-1">
-                          <FormLabel>月</FormLabel>
+                          <FormLabel>{$("tasks.form.cron.simple.months")}</FormLabel>
                           <FormControl>
                             <Input
                               value={cronParts[3]}
@@ -226,7 +234,7 @@ export function TaskForm({
                           <FormMessage />
                         </FormItem>
                         <FormItem className="flex-1">
-                          <FormLabel>星期</FormLabel>
+                          <FormLabel>{$("tasks.form.cron.simple.weekdays")}</FormLabel>
                           <FormControl>
                             <Select
                               value={cronWeekToValue(cronParts[4])}
@@ -235,14 +243,14 @@ export function TaskForm({
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="*">每星期</SelectItem>
-                                <SelectItem value="1">星期一</SelectItem>
-                                <SelectItem value="2">星期二</SelectItem>
-                                <SelectItem value="3">星期三</SelectItem>
-                                <SelectItem value="4">星期四</SelectItem>
-                                <SelectItem value="5">星期五</SelectItem>
-                                <SelectItem value="6">星期六</SelectItem>
-                                <SelectItem value="0">星期日</SelectItem>
+                                <SelectItem value="*">{$("tasks.form.cron.simple.weekdays.every")}</SelectItem>
+                                <SelectItem value="1">{$("tasks.form.cron.simple.weekdays.mon")}</SelectItem>
+                                <SelectItem value="2">{$("tasks.form.cron.simple.weekdays.tue")}</SelectItem>
+                                <SelectItem value="3">{$("tasks.form.cron.simple.weekdays.wed")}</SelectItem>
+                                <SelectItem value="4">{$("tasks.form.cron.simple.weekdays.thu")}</SelectItem>
+                                <SelectItem value="5">{$("tasks.form.cron.simple.weekdays.fri")}</SelectItem>
+                                <SelectItem value="6">{$("tasks.form.cron.simple.weekdays.sat")}</SelectItem>
+                                <SelectItem value="0">{$("tasks.form.cron.simple.weekdays.sun")}</SelectItem>
                               </SelectContent>
                             </Select>
                           </FormControl>
@@ -258,18 +266,28 @@ export function TaskForm({
                   control={form.control}
                   render={({ field }) => (
                     <FormItem className="flex-1">
-                      <FormLabel>Cron 表达式</FormLabel>
+                      <FormLabel>{$("tasks.form.cron.advanced.input.label")}</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="请输入 Cron 表达式..."
+                          placeholder={$("tasks.form.cron.advanced.input.placeholder")}
                           autoComplete="off"
                           className={googleSansCode.className}
                           {...field}/>
                       </FormControl>
                       <FormMessage />
-                      <span className="text-sm text-muted-foreground">
-                        Cron 表达式语法请参考 <Link href="https://ibm.com/docs/en/db2/latest?topic=task-unix-cron-format" target="_blank" rel="noopener noreferrer">UNIX cron format</Link>
-                      </span>
+                      <FormDescription>
+                        <Text
+                          id="tasks.form.cron.advanced.input.description"
+                          args={[
+                            <Link
+                              href="https://ibm.com/docs/en/db2/latest?topic=task-unix-cron-format"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              key={0}>
+                              UNIX cron format
+                            </Link>
+                          ]}/>
+                      </FormDescription>
                     </FormItem>
                   )}/>
               </TabsContent>
@@ -282,7 +300,7 @@ export function TaskForm({
           control={form.control}
           render={({ field }) => (
             <FormItem className="flex-1 min-h-40">
-              <FormLabel>指令列表</FormLabel>
+              <FormLabel>{$("tasks.form.commands.label")}</FormLabel>
               <FormControl className="border rounded-md overflow-hidden">
                 <MonacoEditor
                   defaultLanguage="txt"
@@ -296,13 +314,16 @@ export function TaskForm({
                   }}
                   onChange={(value) => field.onChange(value ? value.split("\n") : [])}/>
               </FormControl>
+              <FormDescription>
+                {$("tasks.form.commands.description")}
+              </FormDescription>
             </FormItem>
           )}/>
 
         <Button
           type="submit"
           className="w-fit mt-auto cursor-pointer">
-          {mode === "create" ? "新建" : "保存"}
+          {mode === "create" ? $("dialog.create") : $("dialog.save")}
         </Button>
       </form>
     </Form>

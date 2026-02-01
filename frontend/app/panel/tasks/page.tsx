@@ -10,6 +10,7 @@ import { TaskItem } from "./task-item";
 import { cn } from "@/lib/utils";
 import { TaskForm, type TaskFormMode } from "./task-form";
 import { emitter } from "@/lib/emitter";
+import { $ } from "@/lib/i18n";
 
 export default function Tasks() {
   const [tasks, setTasks] = useState<ScheduledTask[] | null>(null);
@@ -21,8 +22,10 @@ export default function Tasks() {
       const res = await sendGetRequest<TasksResponse>("/api/tasks");
       setTasks(res.tasks);
     } catch (e: any) {
-      toastError(e, "无法获取定时任务列表", [
-
+      toastError(e, $("tasks.fetch.error"), [
+        [400, $("common.error.400")],
+        [401, $("common.error.401")],
+        [500, $("common.error.500")]
       ]);
     }
   };
@@ -38,9 +41,9 @@ export default function Tasks() {
 
   return (
     <SubPage
-      title="定时任务"
-      description="在设定的时间自动化执行指定的指令"
-      category="配置"
+      title={$("tasks.title")}
+      description={$("tasks.description")}
+      category={$("sidebar.config")}
       icon={<ClockFading />}
       className="flex-1 min-h-0">
       <FilesEditor className="min-lg:*:flex-1">
@@ -63,7 +66,7 @@ export default function Tasks() {
               )}
               onClick={() => setMode("create")}>
               <Plus size={18}/>
-              新建任务
+              {$("tasks.create")}
             </div>
           </FilesEditorSidebarList>
         </FilesEditorSidebar>

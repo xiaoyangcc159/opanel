@@ -74,7 +74,7 @@ const managementGroupItems = [
 
 const configurationGroupItems = [
   {
-    name: "定时任务",
+    name: $("sidebar.config.tasks"),
     url: "/panel/tasks",
     icon: ClockFading
   },

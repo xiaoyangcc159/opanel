@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { sendDeleteRequest, sendPatchRequest, toastError } from "@/lib/api";
 import { Switch } from "@/components/ui/switch";
 import { emitter } from "@/lib/emitter";
+import { $ } from "@/lib/i18n";
 
 export function TaskItem({
   task,
@@ -25,8 +26,11 @@ export function TaskItem({
       await sendDeleteRequest(`/api/tasks/${task.id}`);
       emitter.emit("refresh-data");
     } catch (e: any) {
-      toastError(e, "无法删除定时任务", [
-
+      toastError(e, $("tasks.delete.error"), [
+        [400, $("common.error.400")],
+        [401, $("common.error.401")],
+        [404, $("tasks.error.404")],
+        [500, $("common.error.500")]
       ]);
     }
   };
@@ -35,8 +39,11 @@ export function TaskItem({
     try {
       await sendPatchRequest(`/api/tasks/${task.id}?enabled=${enabled ? "1" : "0"}`);
     } catch (e: any) {
-      toastError(e, `无法${enabled ? "启用" : "禁用"}定时任务`, [
-
+      toastError(e, enabled ? $("tasks.toggle.enable.error") : $("tasks.toggle.disable.error"), [
+        [400, $("common.error.400")],
+        [401, $("common.error.401")],
+        [404, $("tasks.error.404")],
+        [500, $("common.error.500")]
       ]);
     }
   };
@@ -57,7 +64,7 @@ export function TaskItem({
         <span className="whitespace-nowrap overflow-hidden text-ellipsis">
           {base64ToString(task.name)}
         </span>
-        {task.enabled && (
+        {enabled && (
           <div className="rounded-full w-1 h-1 mr-2 bg-green-600 dark:bg-emerald-500"/>
         )}
       </div>
@@ -65,6 +72,7 @@ export function TaskItem({
         variant="ghost"
         size="icon-sm"
         className="ml-auto -mr-1 cursor-pointer"
+        title={$("tasks.delete")}
         onClick={(e) => {
           e.stopPropagation();
           handleDelete();

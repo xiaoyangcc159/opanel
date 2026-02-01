@@ -1,5 +1,6 @@
 package net.opanel.task;
 
+import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
@@ -88,18 +89,19 @@ public class ScheduledTaskManager {
         taskFutures.put(task.getId(), future);
     }
 
-    public ScheduledTask createTask(String name, String cron, List<String> commands) throws IllegalArgumentException {
+    public ScheduledTask createTask(String name, String cronExpression, List<String> commands) throws IllegalArgumentException {
         writeLock.lock();
         try {
+            Cron cron = cronParser.parse(cronExpression); // parse cron first to catch the syntax error if it has
             ScheduledTask task = new ScheduledTask(
                 Utils.generateRandomCharSequence(16, false),
                 name,
-                cron,
+                cronExpression,
                 new ArrayList<>(commands),
                 true
             );
             tasks.add(task);
-            scheduleTask(ExecutionTime.forCron(cronParser.parse(cron)), task);
+            scheduleTask(ExecutionTime.forCron(cron), task);
             saveTasks();
             return task;
         } finally {
@@ -169,7 +171,7 @@ public class ScheduledTaskManager {
         }
     }
 
-    public void setTaskCron(String id, String cron) throws IllegalArgumentException {
+    public void setTaskCron(String id, String cronExpression) throws IllegalArgumentException {
         writeLock.lock();
         try {
             ScheduledTask task = getTaskUnsafe(id);
@@ -177,9 +179,9 @@ public class ScheduledTaskManager {
                 throw new NoSuchElementException("Cannot find the task: "+ id);
             }
 
-            task.setCron(cron);
-            
-            scheduleTask(ExecutionTime.forCron(cronParser.parse(cron)), task);
+            Cron cron = cronParser.parse(cronExpression); // parse cron first to catch the syntax error if it has
+            task.setCron(cronExpression);
+            scheduleTask(ExecutionTime.forCron(cron), task);
             saveTasks();
         } finally {
             writeLock.unlock();
