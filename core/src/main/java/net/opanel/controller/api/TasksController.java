@@ -30,7 +30,7 @@ public class TasksController extends BaseController {
             HashMap<String, Object> serializedTask = new HashMap<>();
             serializedTask.put("id", task.getId());
             serializedTask.put("name", Utils.stringToBase64(task.getName()));
-            serializedTask.put("cron", task.getCron().asString());
+            serializedTask.put("cron", task.getCron());
             serializedTask.put("commands", task.getCommands());
             serializedTask.put("enabled", task.isEnabled());
             serializedTaskList.add(serializedTask);
@@ -43,7 +43,7 @@ public class TasksController extends BaseController {
     public Handler createTask = ctx -> {
         try {
             TaskEditRequestBodyType reqBody = ctx.bodyAsClass(TaskEditRequestBodyType.class);
-            ScheduledTask task = scheduledTaskManager.createTask(reqBody.name, reqBody.cron, reqBody.commands);
+            ScheduledTask task = scheduledTaskManager.createTask(Utils.base64ToString(reqBody.name), reqBody.cron, reqBody.commands);
 
             HashMap<String, Object> obj = new HashMap<>();
             obj.put("taskId", task.getId());

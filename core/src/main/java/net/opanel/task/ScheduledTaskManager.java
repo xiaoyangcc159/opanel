@@ -28,7 +28,7 @@ public class ScheduledTaskManager {
     private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(
         Math.max(2, Runtime.getRuntime().availableProcessors() / 2)
     );
-    private final CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+    private final CronParser cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
 
     @SuppressWarnings("unchecked")
     public ScheduledTaskManager(OPanel plugin) {
@@ -40,11 +40,15 @@ public class ScheduledTaskManager {
         writeLock.lock();
         try {
             for(ScheduledTask task : tasks) {
-                scheduleTask(ExecutionTime.forCron(task.getCron()), task);
+                scheduleTask(ExecutionTime.forCron(cronParser.parse(task.getCron())), task);
             }
         } finally {
             writeLock.unlock();
         }
+    }
+
+    private void saveTasks() { // Should be called within write lock
+        Storage.get().setStoredData(StorageKey.SCHEDULED_TASKS, new ArrayList<>(tasks));
     }
 
     private void scheduleTask(ExecutionTime executionTime, ScheduledTask task) {
@@ -84,18 +88,18 @@ public class ScheduledTaskManager {
         taskFutures.put(task.getId(), future);
     }
 
-    public ScheduledTask createTask(String name, String cronExpression, List<String> commands) throws IllegalArgumentException {
+    public ScheduledTask createTask(String name, String cron, List<String> commands) throws IllegalArgumentException {
         writeLock.lock();
         try {
             ScheduledTask task = new ScheduledTask(
-                Utils.generateRandomCharSequence(32, false),
+                Utils.generateRandomCharSequence(16, false),
                 name,
-                parser.parse(cronExpression),
+                cron,
                 new ArrayList<>(commands),
                 true
             );
             tasks.add(task);
-            scheduleTask(ExecutionTime.forCron(task.getCron()), task);
+            scheduleTask(ExecutionTime.forCron(cronParser.parse(cron)), task);
             saveTasks();
             return task;
         } finally {
@@ -165,7 +169,7 @@ public class ScheduledTaskManager {
         }
     }
 
-    public void setTaskCron(String id, String cronExpression) throws IllegalArgumentException {
+    public void setTaskCron(String id, String cron) throws IllegalArgumentException {
         writeLock.lock();
         try {
             ScheduledTask task = getTaskUnsafe(id);
@@ -173,9 +177,9 @@ public class ScheduledTaskManager {
                 throw new NoSuchElementException("Cannot find the task: "+ id);
             }
 
-            task.setCron(parser.parse(cronExpression));
+            task.setCron(cron);
             
-            scheduleTask(ExecutionTime.forCron(task.getCron()), task);
+            scheduleTask(ExecutionTime.forCron(cronParser.parse(cron)), task);
             saveTasks();
         } finally {
             writeLock.unlock();
@@ -210,10 +214,6 @@ public class ScheduledTaskManager {
         } finally {
             writeLock.unlock();
         }
-    }
-
-    private void saveTasks() { // Should be called within write lock
-        Storage.get().setStoredData(StorageKey.SCHEDULED_TASKS, new ArrayList<>(tasks));
     }
 
     public void shutdown() {

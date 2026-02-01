@@ -209,6 +209,11 @@ export interface TasksResponse {
   tasks: ScheduledTask[]
 }
 
+/** `/api/tasks/{id}` */
+export interface CreateTaskResponse {
+  taskId: string
+}
+
 /** `https://api.github.com/repos/opanel-mc/opanel/releases` */
 export type GithubReleaseResponse = {
   id: number

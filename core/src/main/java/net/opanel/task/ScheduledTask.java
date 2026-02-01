@@ -8,11 +8,11 @@ import java.util.List;
 public class ScheduledTask {
     private final String id;
     private String name;
-    private Cron cron;
+    private String cron;
     private List<String> commands;
     private boolean enabled;
 
-    public ScheduledTask(String id, String name, Cron cron, List<String> commands, boolean enabled) {
+    public ScheduledTask(String id, String name, String cron, List<String> commands, boolean enabled) {
         this.id = id;
         this.name = name;
         this.cron = cron;
@@ -32,11 +32,11 @@ public class ScheduledTask {
         this.name = name;
     }
 
-    public Cron getCron() {
+    public String getCron() {
         return cron;
     }
 
-    public void setCron(Cron cron) {
+    public void setCron(String cron) {
         this.cron = cron;
     }
 

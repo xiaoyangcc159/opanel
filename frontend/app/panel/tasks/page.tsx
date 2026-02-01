@@ -2,23 +2,24 @@
 
 import type { ScheduledTask, TasksResponse } from "@/lib/types";
 import { useEffect, useState } from "react";
-import { ClockFading } from "lucide-react";
+import { ClockFading, Plus } from "lucide-react";
 import { SubPage } from "../sub-page";
 import { FilesEditor, FilesEditorContent, FilesEditorSidebar, FilesEditorSidebarList } from "@/components/ui/files-editor";
 import { sendGetRequest, toastError } from "@/lib/api";
 import { TaskItem } from "./task-item";
-import { TaskEditForm } from "./task-edit-form";
+import { cn } from "@/lib/utils";
+import { TaskForm, type TaskFormMode } from "./task-form";
 import { emitter } from "@/lib/emitter";
 
 export default function Tasks() {
   const [tasks, setTasks] = useState<ScheduledTask[] | null>(null);
   const [currentEditing, setCurrentEditing] = useState<string | null>(null);
+  const [mode, setMode] = useState<TaskFormMode>("create");
 
   const fetchTaskList = async () => {
     try {
       const res = await sendGetRequest<TasksResponse>("/api/tasks");
       setTasks(res.tasks);
-      setCurrentEditing(res.tasks.length > 0 ? res.tasks[0].id : null);
     } catch (e: any) {
       toastError(e, "无法获取定时任务列表", [
 
@@ -43,20 +44,50 @@ export default function Tasks() {
       icon={<ClockFading />}
       className="flex-1 min-h-0">
       <FilesEditor className="min-lg:*:flex-1">
-        <FilesEditorSidebar>
-          <FilesEditorSidebarList>
+        <FilesEditorSidebar className="h-full min-h-0 block overflow-y-auto o-scrollbar">
+          <FilesEditorSidebarList className="h-fit grid grid-cols-2 max-sm:grid-cols-1 gap-2">
             {tasks?.map((task) => (
               <TaskItem
                 task={task}
-                isActive={currentEditing === task.id}
-                onClick={() => setCurrentEditing(task.id)}
+                isActive={mode === "edit" && currentEditing === task.id}
+                onClick={() => {
+                  setCurrentEditing(task.id);
+                  setMode("edit");
+                }}
                 key={task.id}/>
             ))}
+            <div
+              className={cn(
+                "h-20 text-sm border rounded-sm hover:bg-muted transition-colors duration-75 flex justify-center items-center gap-2 cursor-pointer",
+                mode === "create" && "bg-muted"
+              )}
+              onClick={() => setMode("create")}>
+              <Plus size={18}/>
+              新建任务
+            </div>
           </FilesEditorSidebarList>
         </FilesEditorSidebar>
-        <FilesEditorContent className="">
-          {(tasks && currentEditing) && (
-            <TaskEditForm task={tasks.find(task => task.id === currentEditing)!}/>
+        <FilesEditorContent className="min-lg:max-w-[50%]">
+          {(tasks && (currentEditing || mode === "create")) && (
+            <TaskForm
+              task={
+                mode === "create"
+                ? {
+                  id: "",
+                  name: "",
+                  cron: "0 0 * * *",
+                  commands: [],
+                  enabled: true
+                }
+                : tasks.find(task => task.id === currentEditing)!
+              }
+              mode={mode}
+              onCreate={async (id) => {
+                await fetchTaskList();
+                setCurrentEditing(id);
+                setMode("edit");
+              }}
+              onEdit={() => fetchTaskList()}/>
           )}
         </FilesEditorContent>
       </FilesEditor>
