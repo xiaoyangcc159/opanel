@@ -70,8 +70,8 @@ public class ScheduledTaskManager {
             if(server == null) return;
 
             if(task.isEnabled()) {
+                readLock.lock();
                 try {
-                    readLock.lock();
                     List<String> commands = new ArrayList<>(task.getCommands());
 
                     for(String command : commands) {
