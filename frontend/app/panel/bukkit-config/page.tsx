@@ -28,7 +28,7 @@ import { Spinner } from "@/components/ui/spinner";
 
 const MonacoEditor = dynamic(() => import("@/components/monaco-editor"), { ssr: false });
 
-export type ConfigFile = "bukkit" | "spigot" | "paper";
+export type ConfigFile = "bukkit" | "spigot" | "paper" | "leaves";
 
 export default function BukkitConfig() {
   const { push } = useRouter();
@@ -122,19 +122,26 @@ export default function BukkitConfig() {
               isActive={currentEditing === "bukkit"}
               isSaved={saved}
               onClick={() => handleSwitchFile("bukkit")}/>
-            {["Spigot", "Paper", "Folia"].includes(versionCtx?.serverType ?? "") && (
+            {["Spigot", "Paper", "Folia", "Leaves"].includes(versionCtx?.serverType ?? "") && (
               <ConfigItem
                 name="spigot.yml"
                 isActive={currentEditing === "spigot"}
                 isSaved={saved}
                 onClick={() => handleSwitchFile("spigot")}/>
             )}
-            {["Paper", "Folia"].includes(versionCtx?.serverType ?? "") && (
+            {["Paper", "Folia", "Leaves"].includes(versionCtx?.serverType ?? "") && (
               <ConfigItem
                 name="paper-global.yml"
                 isActive={currentEditing === "paper"}
                 isSaved={saved}
                 onClick={() => handleSwitchFile("paper")}/>
+            )}
+            {["Leaves"].includes(versionCtx?.serverType ?? "") && (
+              <ConfigItem
+                name="leaves.yml"
+                isActive={currentEditing === "leaves"}
+                isSaved={saved}
+                onClick={() => handleSwitchFile("leaves")}/>
             )}
           </FilesEditorSidebarList>
           <div className="flex justify-end *:cursor-pointer">

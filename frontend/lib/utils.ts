@@ -152,6 +152,7 @@ export function isBukkit(serverType: ServerType): boolean {
     || serverType === "Spigot"
     || serverType === "Paper"
     || serverType === "Folia"
+    || serverType === "Leaves"
   );
 }
 

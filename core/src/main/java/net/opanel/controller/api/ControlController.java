@@ -153,11 +153,20 @@ public class ControlController extends BaseController {
         try {
             HashMap<String, Object> obj = new HashMap<>();
             obj.put("bukkit", Utils.stringToBase64(((BukkitConfigFeature) server).getBukkitServerConfigContent("bukkit")));
-            if(serverType == ServerType.SPIGOT || serverType == ServerType.PAPER || serverType == ServerType.FOLIA) {
-                obj.put("spigot", Utils.stringToBase64(((BukkitConfigFeature) server).getBukkitServerConfigContent("spigot")));
+            if(serverType == ServerType.SPIGOT || serverType == ServerType.PAPER || serverType == ServerType.FOLIA || serverType == ServerType.LEAVES) {
+                obj.put("spigot", Utils.stringToBase64(
+                    ((BukkitConfigFeature) server).getBukkitServerConfigContent("spigot")
+                ));
             }
-            if(serverType == ServerType.PAPER || serverType == ServerType.FOLIA) {
-                obj.put("paper", Utils.stringToBase64(((BukkitConfigFeature) server).getBukkitServerConfigContent("paper")));
+            if(serverType == ServerType.PAPER || serverType == ServerType.FOLIA || serverType == ServerType.LEAVES) {
+                obj.put("paper", Utils.stringToBase64(
+                    ((BukkitConfigFeature) server).getBukkitServerConfigContent("paper")
+                ));
+            }
+            if(serverType == ServerType.LEAVES) {
+                obj.put("leaves", Utils.stringToBase64(
+                    ((BukkitConfigFeature) server).getBukkitServerConfigContent("leaves")
+                ));
             }
             sendResponse(ctx, obj);
         } catch (IllegalArgumentException e) {

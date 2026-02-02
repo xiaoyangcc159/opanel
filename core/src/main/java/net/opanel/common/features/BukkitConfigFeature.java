@@ -13,6 +13,7 @@ public interface BukkitConfigFeature {
     Path spigotConfigPath = Paths.get("").resolve("spigot.yml");
     Path paperGlobalConfigPath = Paths.get("").resolve("config/paper-global.yml");
     Path paperWorldDefaultsConfigPath = Paths.get("").resolve("config/paper-world-defaults.yml");
+    Path leavesConfigPath = Paths.get("").resolve("leaves.yml");
 
     private Path getBukkitServerConfigPath(String target) throws NoSuchFileException {
         Path targetPath;
@@ -20,6 +21,7 @@ public interface BukkitConfigFeature {
             case "bukkit" -> targetPath = bukkitConfigPath;
             case "spigot" -> targetPath = spigotConfigPath;
             case "paper" -> targetPath = paperGlobalConfigPath;
+            case "leaves" -> targetPath = leavesConfigPath;
             default -> throw new IllegalArgumentException("Unknown target name");
         }
         if(!Files.exists(targetPath)) {

@@ -7,7 +7,8 @@ public enum ServerType {
     FABRIC("Fabric"),
     FORGE("Forge"),
     NEOFORGE("Neoforge"),
-    FOLIA("Folia");
+    FOLIA("Folia"),
+    LEAVES("Leaves");
 
     private final String name;
 
@@ -25,6 +26,7 @@ public enum ServerType {
                 || this == SPIGOT
                 || this == PAPER
                 || this == FOLIA
+                || this == LEAVES
         );
     }
 }

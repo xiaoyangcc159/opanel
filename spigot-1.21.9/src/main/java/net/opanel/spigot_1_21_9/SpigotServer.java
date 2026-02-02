@@ -29,17 +29,6 @@ public class SpigotServer extends BaseBukkitServer implements OPanelServer, Code
     }
 
     @Override
-    public ServerType getServerType() {
-        if(Utils.hasClass("com.destroystokyo.paper.PaperConfig")) {
-            return ServerType.PAPER;
-        }
-        if(Utils.hasClass("org.bukkit.entity.Player$Spigot")) {
-            return ServerType.SPIGOT;
-        }
-        return ServerType.BUKKIT;
-    }
-
-    @Override
     public void setFavicon(byte[] iconBytes) throws IOException {
         super.setFavicon(iconBytes);
         // reload server favicon
