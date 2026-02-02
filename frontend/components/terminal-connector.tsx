@@ -11,6 +11,7 @@ import {
   getLogLevelId,
   type ConsoleLogLevel
 } from "@/lib/ws/terminal";
+import { parseTextToANSI, secSign } from "@/lib/formatting-codes/text";
 
 const MAX_LOG_LINES = getSettings("terminal.max-log-lines");
 
@@ -18,8 +19,8 @@ const MAX_LOG_LINES = getSettings("terminal.max-log-lines");
 const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:;%_\+.~#?&//=]*)/g;
 
 function preprocessLogLine(line: string): string {
-  if(getSettings("terminal.convert-ansi-code")) {
-    line = new AnsiConverter().toHtml(line);
+  if(getSettings("terminal.rich-style")) {
+    line = new AnsiConverter().toHtml(parseTextToANSI(line.replaceAll("\x7f", secSign)));
   }
 
   return line.replace(urlRegex, (url) => {
@@ -99,6 +100,7 @@ export function TerminalConnector({
   const [logs, setLogs] = useState<ConsoleLog[]>([]);
 
   const pushLog = (log: ConsoleLog) => {
+    console.log(log);
     setLogs((current) => {
       if(current.length + 1 > MAX_LOG_LINES) current.shift();
       log.line = purifyUnsafeText(log.line);

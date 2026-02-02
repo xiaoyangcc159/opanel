@@ -32,7 +32,7 @@ export type SettingsStorageType = {
   "terminal.log-time": boolean
   "terminal.thread-name": boolean
   "terminal.source-name": boolean
-  "terminal.convert-ansi-code": boolean
+  "terminal.rich-style": boolean
   "code-of-conduct.auto-saving-interval": number
   "monaco.word-wrap": boolean
   "monaco.font-size": number
@@ -61,7 +61,7 @@ const defaultSettings: SettingsStorageType = {
   "terminal.log-time": true,
   "terminal.thread-name": true,
   "terminal.source-name": true,
-  "terminal.convert-ansi-code": true,
+  "terminal.rich-style": true,
   "code-of-conduct.auto-saving-interval": 2000, // ms
   "monaco.word-wrap": false,
   "monaco.font-size": 13, // px

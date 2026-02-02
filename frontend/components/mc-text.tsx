@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { parseText } from "@/lib/formatting-codes/text";
+import { parseTextToHTML } from "@/lib/formatting-codes/text";
 import { enableObfuscate } from "@/lib/formatting-codes/obfuscate";
 import { cn } from "@/lib/utils";
 import { minecraftAE, minecraftAEOld, unifont } from "@/lib/fonts";
@@ -20,7 +20,7 @@ export function MinecraftText({
   useEffect(() => {
     if(!containerRef.current) return;
     containerRef.current.innerHTML = "";
-    containerRef.current.appendChild(parseText(children, maxLines, maxCharPerLine));
+    containerRef.current.appendChild(parseTextToHTML(children, maxLines, maxCharPerLine));
 
     enableObfuscate(containerRef.current);
   }, [children, maxLines, maxCharPerLine]);
