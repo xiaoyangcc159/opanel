@@ -151,6 +151,9 @@
       }
     }
   }
+  [data-slot="terminal-log"] span a {
+    @apply no-underline hover:underline;
+  }
 }
 
 @layer utilities {

@@ -14,6 +14,19 @@ import {
 
 const MAX_LOG_LINES = getSettings("terminal.max-log-lines");
 
+/** @see https://stackoverflow.com/questions/3809401/what-is-a-good-regular-expression-to-match-a-url */
+const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:;%_\+.~#?&//=]*)/g;
+
+function preprocessLogLine(line: string): string {
+  if(getSettings("terminal.convert-ansi-code")) {
+    line = new AnsiConverter().toHtml(line);
+  }
+
+  return line.replace(urlRegex, (url) => {
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+  });
+}
+
 function Log({
   time,
   level,
@@ -45,6 +58,7 @@ function Log({
 
   return (
     <p
+      data-slot="terminal-log"
       className={cn(
         "leading-[133%] space-x-1 selection:bg-foreground selection:text-background cursor-default",
         getSettings("terminal.word-wrap") ? "text-wrap wrap-break-word whitespace-pre-wrap" : "whitespace-pre",
@@ -63,16 +77,8 @@ function Log({
       )}
       {
         thrownMessage == null
-        ? (
-          getSettings("terminal.convert-ansi-code")
-          ? <span dangerouslySetInnerHTML={{ __html: new AnsiConverter().toHtml(line) }}/>
-          : <span>{line}</span>
-        )
-        : (
-          getSettings("terminal.convert-ansi-code")
-          ? <span dangerouslySetInnerHTML={{ __html: new AnsiConverter().toHtml(line +"\n"+ thrownMessage) }}/>
-          : <span>{line +"\n"+ thrownMessage}</span>
-        )
+        ? <span dangerouslySetInnerHTML={{ __html: preprocessLogLine(line) }}/>
+        : <span dangerouslySetInnerHTML={{ __html: preprocessLogLine(line +"\n"+ thrownMessage) }}/>
       }
     </p>
   );
