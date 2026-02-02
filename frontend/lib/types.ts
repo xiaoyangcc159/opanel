@@ -75,6 +75,14 @@ export interface Plugin {
   loaded: boolean
 }
 
+export interface ScheduledTask {
+  id: string
+  name: string // base64
+  cron: string
+  commands: string[]
+  enabled: boolean
+}
+
 export type EditorRefType = Parameters<OnMount>[0];
 export type EditorOptionsType = React.ComponentProps<typeof Editor>["options"];
 
@@ -194,6 +202,16 @@ export interface BannedIpsResponse {
 export interface PluginsResponse {
   plugins: Plugin[]
   folderPath: string
+}
+
+/** `/api/tasks` */
+export interface TasksResponse {
+  tasks: ScheduledTask[]
+}
+
+/** `/api/tasks/{id}` */
+export interface CreateTaskResponse {
+  taskId: string
 }
 
 /** `https://api.github.com/repos/opanel-mc/opanel/releases` */
