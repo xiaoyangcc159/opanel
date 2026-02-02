@@ -28,6 +28,7 @@ public class FoliaServer extends BaseBukkitServer implements OPanelServer, Bukki
         super(plugin, server);
     }
 
+    @Rewrite
     @Override
     public ServerType getServerType() {
         return ServerType.FOLIA;
