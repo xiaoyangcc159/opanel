@@ -170,10 +170,10 @@ export default function Settings() {
             name={$("settings.terminal.source-name")}
             control={<SettingsSwitch id="terminal.source-name"/>}/>
           <SettingsItem
-            id="terminal.convert-ansi-code"
-            name={$("settings.terminal.convert-ansi-code")}
-            description={$("settings.terminal.convert-ansi-code.description")}
-            control={<SettingsSwitch id="terminal.convert-ansi-code"/>}/>
+            id="terminal.rich-style"
+            name={$("settings.terminal.rich-style")}
+            description={$("settings.terminal.rich-style.description")}
+            control={<SettingsSwitch id="terminal.rich-style"/>}/>
         </Section>
         <Section title={$("settings.code-of-conduct.title")}>
           <SettingsItem
