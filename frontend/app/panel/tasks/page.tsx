@@ -4,7 +4,12 @@ import type { ScheduledTask, TasksResponse } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { ClockFading, Plus } from "lucide-react";
 import { SubPage } from "../sub-page";
-import { FilesEditor, FilesEditorContent, FilesEditorSidebar, FilesEditorSidebarList } from "@/components/ui/files-editor";
+import {
+  FilesEditor,
+  FilesEditorContent,
+  FilesEditorSidebar,
+  FilesEditorSidebarList
+} from "@/components/ui/files-editor";
 import { sendGetRequest, toastError } from "@/lib/api";
 import { TaskItem } from "./task-item";
 import { cn } from "@/lib/utils";
@@ -16,6 +21,7 @@ export default function Tasks() {
   const [tasks, setTasks] = useState<ScheduledTask[] | null>(null);
   const [currentEditing, setCurrentEditing] = useState<string | null>(null);
   const [mode, setMode] = useState<TaskFormMode>("create");
+  const currentEditingTask = tasks?.find(task => task.id === currentEditing) ?? null;
 
   const fetchTaskList = async () => {
     try {
@@ -57,6 +63,13 @@ export default function Tasks() {
                   setCurrentEditing(task.id);
                   setMode("edit");
                 }}
+                onDelete={async () => {
+                  await fetchTaskList();
+                  if(currentEditing === task.id) {
+                    setCurrentEditing(null);
+                    setMode("create");
+                  }
+                }}
                 key={task.id}/>
             ))}
             <div
@@ -71,7 +84,7 @@ export default function Tasks() {
           </FilesEditorSidebarList>
         </FilesEditorSidebar>
         <FilesEditorContent className="min-lg:max-w-[50%]">
-          {(tasks && (currentEditing || mode === "create")) && (
+          {(mode === "create" || currentEditingTask) && (
             <TaskForm
               task={
                 mode === "create"
@@ -82,7 +95,7 @@ export default function Tasks() {
                   commands: [],
                   enabled: true
                 }
-                : tasks.find(task => task.id === currentEditing)!
+                : currentEditingTask!
               }
               mode={mode}
               onCreate={async (id) => {

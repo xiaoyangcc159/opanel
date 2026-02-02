@@ -100,7 +100,6 @@ export function TerminalConnector({
   const [logs, setLogs] = useState<ConsoleLog[]>([]);
 
   const pushLog = (log: ConsoleLog) => {
-    console.log(log);
     setLogs((current) => {
       if(current.length + 1 > MAX_LOG_LINES) current.shift();
       log.line = purifyUnsafeText(log.line);

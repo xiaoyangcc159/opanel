@@ -7,24 +7,25 @@ import { googleSansCode } from "@/lib/fonts";
 import { Button } from "@/components/ui/button";
 import { sendDeleteRequest, sendPatchRequest, toastError } from "@/lib/api";
 import { Switch } from "@/components/ui/switch";
-import { emitter } from "@/lib/emitter";
 import { $ } from "@/lib/i18n";
 
 export function TaskItem({
   task,
   isActive,
-  onClick
+  onClick,
+  onDelete
 }: {
   task: ScheduledTask
   isActive: boolean
   onClick?: () => void
+  onDelete?: () => void
 }) {
   const [enabled, setEnabled] = useState(task.enabled);
 
   const handleDelete = async () => {
     try {
       await sendDeleteRequest(`/api/tasks/${task.id}`);
-      emitter.emit("refresh-data");
+      onDelete && onDelete();
     } catch (e: any) {
       toastError(e, $("tasks.delete.error"), [
         [400, $("common.error.400")],
