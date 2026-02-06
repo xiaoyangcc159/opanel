@@ -112,6 +112,10 @@ export default function Plugins() {
           className="absolute w-full h-full border-4 rounded-sm border-dashed"
           onDrop={(e) => {
             e.preventDefault();
+            if(e.dataTransfer.files.length === 0) {
+              setUploadVisible(false);
+              return;
+            }
             handleUpload(e.dataTransfer.files[0]);
           }}
           onDragOver={(e) => e.preventDefault()}
