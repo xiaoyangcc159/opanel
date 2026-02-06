@@ -66,9 +66,7 @@ export default function Dashboard() {
       title={$("dashboard.title")}
       category={$("sidebar.server")}
       icon={<Gauge />}
-      /*             | window maximized                         | height not enough    | for mobile layout */
-      outerClassName="min-xl:max-h-screen min-xl:overflow-y-auto max-xl-h:max-h-[850px] max-xl:!max-h-none"
-      className="flex-1 min-h-0 grid grid-rows-5 grid-cols-3 max-xl:grid-rows-subgrid max-xl:grid-cols-2 max-lg:flex flex-col gap-2 pb-0 [&>*]:p-4">
+      className="flex-1 min-h-0 max-xl-h:min-h-[600px] grid grid-rows-5 grid-cols-3 max-xl:grid-rows-subgrid max-xl:grid-cols-2 max-lg:flex flex-col gap-2 [&>*]:p-4">
       <InfoContext.Provider value={info}>
         <MonitorContext.Provider value={monitorData}>
           <InfoCard className="row-start-1 col-span-2"/>
