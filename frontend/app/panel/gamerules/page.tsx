@@ -38,6 +38,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/in
 import { $ } from "@/lib/i18n";
 import { Text } from "@/components/i18n-text";
 import { VersionContext } from "@/contexts/api-context";
+import { useKeydown } from "@/hooks/use-keydown";
 
 export default function Gamerules() {
   const versionCtx = useContext(VersionContext);
@@ -94,6 +95,8 @@ export default function Gamerules() {
   useEffect(() => {
     fetchServerGamerules();
   }, []);
+
+  useKeydown("s", { ctrl: true }, () => form.handleSubmit(handleSubmit)());
   
   return (
     <SubPage
@@ -103,8 +106,7 @@ export default function Gamerules() {
       icon={<PencilRuler />}
       outerClassName="max-h-screen overflow-y-hidden"
       pageClassName="min-xl:px-64!"
-      className="flex-1 min-h-0 flex flex-col gap-3"
-      onKeyDown={(e) => (e.ctrlKey && e.key === "s") && form.handleSubmit(handleSubmit)()}>
+      className="flex-1 min-h-0 flex flex-col gap-3">
       <div className="flex justify-between items-center gap-6 max-sm:flex-col-reverse max-sm:items-start">
         <InputGroup className="flex-1">
           <InputGroupAddon>
