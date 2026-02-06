@@ -39,6 +39,10 @@ OPanel 的功能包括：
 
 ![preview-terminal](./images/preview-terminal.png)
 
+![preview-tasks](./images/preview-tasks.png)
+
+![preview-plugins](./images/preview-plugins.png)
+
 ## 用法
 
 请阅读[快速开始](https://opanel.cn/docs/quick-start.html)。

@@ -39,6 +39,10 @@ The features of OPanel include:
 
 ![preview-terminal](./images/preview-terminal.png)
 
+![preview-tasks](./images/preview-tasks.png)
+
+![preview-plugins](./images/preview-plugins.png)
+
 ## Usage
 
 Read the [Quick Start](https://opanel.cn/docs/quick-start.html) to get started.
