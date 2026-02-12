@@ -1,10 +1,11 @@
 package net.opanel.bukkit_helper;
 
 import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.NbtApiException;
 import de.tr7zw.changeme.nbtapi.handler.NBTHandlers;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTCompoundList;
-import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTList;
+import net.opanel.bukkit_helper.utils.BukkitUtils;
 import net.opanel.common.OPanelInventory;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ public abstract class BaseBukkitOfflineInventory implements OPanelInventory {
     protected ReadWriteNBT nbt;
 
     private final String KEY_OF_COUNT = keyOfCount();
+    private final String KEY_OF_NBT = keyOfNBT();
 
     public BaseBukkitOfflineInventory(Path playerDataPath) {
         this.playerDataPath = playerDataPath;
@@ -32,6 +34,7 @@ public abstract class BaseBukkitOfflineInventory implements OPanelInventory {
      * while in MC versions >= 1.20.5, that key is changed to "count".
      */
     protected abstract String keyOfCount();
+    protected abstract String keyOfNBT();
 
     protected void saveNbt() throws IOException {
         NBT.writeFile(playerDataPath.toFile(), nbt);
@@ -59,7 +62,13 @@ public abstract class BaseBukkitOfflineInventory implements OPanelInventory {
 
             String id = itemNbt.getString("id");
             int count = itemNbt.getByte(KEY_OF_COUNT);
-            items.add(new OPanelItemStack(slot, id, count, null));
+            ReadWriteNBT components = itemNbt.getCompound(KEY_OF_NBT);
+            items.add(new OPanelItemStack(
+                slot,
+                id,
+                count,
+                components == null ? null : components.toString()
+            ));
             nextSlot = slot + 1;
         }
 
@@ -73,7 +82,7 @@ public abstract class BaseBukkitOfflineInventory implements OPanelInventory {
     }
 
     @Override
-    public void setItems(List<OPanelItemStack> items) {
+    public void setItems(List<OPanelItemStack> items) throws NbtApiException {
         try {
             ReadWriteNBTCompoundList list = nbt.getCompoundList("Inventory");
             if(list == null) return;
@@ -81,11 +90,7 @@ public abstract class BaseBukkitOfflineInventory implements OPanelInventory {
 
             for(OPanelItemStack item : items) {
                 if(item == null || item.isEmpty()) continue;
-                ReadWriteNBT itemNbt = NBT.createNBTObject();
-                itemNbt.setByte("Slot", (byte) item.slot);
-                itemNbt.setString("id", item.id);
-                itemNbt.setByte(KEY_OF_COUNT, (byte) item.count);
-                list.addCompound(itemNbt);
+                list.addCompound(toNbt(item));
             }
             saveNbt();
         } catch (IOException e) {
@@ -94,18 +99,14 @@ public abstract class BaseBukkitOfflineInventory implements OPanelInventory {
     }
 
     @Override
-    public void setItem(OPanelItemStack item) {
+    public void setItem(OPanelItemStack item) throws NbtApiException {
         try {
             ReadWriteNBTCompoundList list = nbt.getCompoundList("Inventory");
             if(list == null) return;
 
-            // Insert to the last
-            if(item.slot > list.get(list.size() - 1).getByte("Slot")) {
-                ReadWriteNBT newItemNbt = NBT.createNBTObject();
-                newItemNbt.setByte("Slot", (byte) item.slot);
-                newItemNbt.setString("id", item.id);
-                newItemNbt.setByte(KEY_OF_COUNT, (byte) item.count);
-                list.addCompound(newItemNbt);
+            // Insert into empty list or to the last
+            if(list.isEmpty() || item.slot > list.get(list.size() - 1).getByte("Slot")) {
+                list.addCompound(toNbt(item));
                 saveNbt();
                 return;
             }
@@ -116,11 +117,7 @@ public abstract class BaseBukkitOfflineInventory implements OPanelInventory {
 
                 // Insert into an empty slot
                 if(slot > item.slot) {
-                    ReadWriteNBT newItemNbt = NBT.createNBTObject();
-                    newItemNbt.setByte("Slot", (byte) item.slot);
-                    newItemNbt.setString("id", item.id);
-                    newItemNbt.setByte(KEY_OF_COUNT, (byte) item.count);
-                    BukkitUtils.addCompoundToNBTList(list, newItemNbt, i);
+                    BukkitUtils.addCompoundToNBTList(list, toNbt(item), i);
                     break;
                 }
                 // Remove the item
@@ -132,6 +129,9 @@ public abstract class BaseBukkitOfflineInventory implements OPanelInventory {
                 if(slot == item.slot) {
                     itemNbt.setString("id", item.id);
                     itemNbt.setByte(KEY_OF_COUNT, (byte) item.count);
+                    if(item.snbt != null) {
+                        itemNbt.set(KEY_OF_NBT, NBT.parseNBT(item.snbt), NBTHandlers.STORE_READWRITE_TAG);
+                    }
                     break;
                 }
             }
@@ -139,5 +139,16 @@ public abstract class BaseBukkitOfflineInventory implements OPanelInventory {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    protected ReadWriteNBT toNbt(OPanelItemStack item) throws NbtApiException {
+        ReadWriteNBT itemNbt = NBT.createNBTObject();
+        itemNbt.setByte("Slot", (byte) item.slot);
+        itemNbt.setString("id", item.id);
+        itemNbt.setByte(KEY_OF_COUNT, (byte) item.count);
+        if(item.snbt != null) {
+            itemNbt.set(KEY_OF_NBT, NBT.parseNBT(item.snbt), NBTHandlers.STORE_READWRITE_TAG);
+        }
+        return itemNbt;
     }
 }

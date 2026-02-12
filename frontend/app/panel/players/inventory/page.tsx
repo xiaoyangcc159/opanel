@@ -73,11 +73,15 @@ export default function Inventory() {
   };
 
   const removeClickedItem = ({ slot }: ItemStack) => {
-    client?.send("update", { id: AIR, count: 0, slot, nbt: null });
+    client?.send("update", { id: AIR, count: 0, slot, snbt: null });
   };
 
   const halfClickedItem = (clickedItem: ItemStack) => {
     client?.send("update", { ...clickedItem, count: Math.floor(clickedItem.count / 2) });
+  };
+
+  const updateItemNBT = (item: ItemStack, snbt: string) => {
+    client?.send("update", { ...item, snbt });
   };
 
   useEffect(() => {
@@ -135,7 +139,8 @@ export default function Inventory() {
         swapClickedWithHeldItem,
         addClickedWithHeldItem,
         removeClickedItem,
-        halfClickedItem
+        halfClickedItem,
+        updateItemNBT
       }}>
         {inventory && <InventoryContent inventory={inventory}/>}
         <ItemExplorer className="flex-1 w-full"/>
@@ -143,7 +148,7 @@ export default function Inventory() {
           <InventoryItem
             itemStack={currentlyHeldItem}
             held
-            className="fixed bg-transparent!"
+            className="fixed top-0 left-0 bg-transparent!"
             ref={heldItemElemRef}/>
         )}
       </InventoryContext.Provider>

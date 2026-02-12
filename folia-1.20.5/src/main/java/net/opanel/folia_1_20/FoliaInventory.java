@@ -8,4 +8,14 @@ public class FoliaInventory extends BaseBukkitInventory {
     public FoliaInventory(TaskRunner runner, Player player) {
         super(runner, player);
     }
+
+    @Override
+    protected String keyOfCount() {
+        return "count";
+    }
+
+    @Override
+    protected String keyOfNBT() {
+        return "components";
+    }
 }

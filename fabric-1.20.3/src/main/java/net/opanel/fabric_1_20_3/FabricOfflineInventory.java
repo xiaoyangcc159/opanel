@@ -1,9 +1,9 @@
 package net.opanel.fabric_1_20_3;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.nbt.*;
-import net.minecraft.server.MinecraftServer;
 import net.opanel.fabric_helper.BaseFabricOfflineInventory;
-import net.opanel.fabric_helper.FabricUtils;
+import net.opanel.fabric_helper.utils.FabricUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -14,17 +14,8 @@ public class FabricOfflineInventory extends BaseFabricOfflineInventory {
     private NbtCompound nbt;
     private NbtList nbtList;
 
-    /**
-     * In MC versions < 1.20.5, the nbt key that represents the item amount is "Count",
-     * while in MC versions >= 1.20.5, that key is changed to "count".
-     */
-    private final String KEY_OF_COUNT;
-
-    public FabricOfflineInventory(MinecraftServer server, Path playerDataPath) {
+    public FabricOfflineInventory(Path playerDataPath) {
         super(playerDataPath);
-
-        final String version = server.getVersion();
-        KEY_OF_COUNT = version.equals("1.20.5") || version.equals("1.20.6") ? "count" : "Count";
 
         try {
             nbt = NbtIo.readCompressed(playerDataPath, NbtTagSizeTracker.ofUnlimitedBytes());
@@ -60,8 +51,9 @@ public class FabricOfflineInventory extends BaseFabricOfflineInventory {
             }
 
             String id = itemNbt.getString("id");
-            int count = itemNbt.getByte(KEY_OF_COUNT);
-            items.add(new OPanelItemStack(slot, id, count, null));
+            int count = itemNbt.getByte("Count");
+            NbtCompound nbt = itemNbt.getCompound("tag");
+            items.add(new OPanelItemStack(slot, id, count, nbt.isEmpty() ? null : nbt.toString()));
             nextSlot = slot + 1;
         }
 
@@ -75,7 +67,7 @@ public class FabricOfflineInventory extends BaseFabricOfflineInventory {
     }
 
     @Override
-    public void setItems(List<OPanelItemStack> items) {
+    public void setItems(List<OPanelItemStack> items) throws CommandSyntaxException {
         if(nbtList.isEmpty()) return;
 
         try {
@@ -83,11 +75,7 @@ public class FabricOfflineInventory extends BaseFabricOfflineInventory {
 
             for(OPanelItemStack item : items) {
                 if(item == null || item.isEmpty()) continue;
-                NbtCompound itemNbt = new NbtCompound();
-                itemNbt.putByte("Slot", (byte) item.slot);
-                itemNbt.putString("id", item.id);
-                itemNbt.putByte(KEY_OF_COUNT, (byte) item.count);
-                nbtList.add(itemNbt);
+                nbtList.add(toNbt(item));
             }
             saveNbt();
         } catch (IOException e) {
@@ -96,17 +84,13 @@ public class FabricOfflineInventory extends BaseFabricOfflineInventory {
     }
 
     @Override
-    public void setItem(OPanelItemStack item) {
+    public void setItem(OPanelItemStack item) throws CommandSyntaxException {
         try {
             if(nbtList == null) return;
 
-            // Insert to the last
-            if(item.slot > nbtList.getCompound(nbtList.size() - 1).getByte("Slot")) {
-                NbtCompound newItemNbt = new NbtCompound();
-                newItemNbt.putByte("Slot", (byte) item.slot);
-                newItemNbt.putString("id", item.id);
-                newItemNbt.putByte(KEY_OF_COUNT, (byte) item.count);
-                nbtList.add(newItemNbt);
+            // Insert into empty list or to the last
+            if(nbtList.isEmpty() || item.slot > nbtList.getCompound(nbtList.size() - 1).getByte("Slot")) {
+                nbtList.add(toNbt(item));
                 saveNbt();
                 return;
             }
@@ -117,11 +101,7 @@ public class FabricOfflineInventory extends BaseFabricOfflineInventory {
 
                 // Insert into an empty slot
                 if(slot > item.slot) {
-                    NbtCompound newItemNbt = new NbtCompound();
-                    newItemNbt.putByte("Slot", (byte) item.slot);
-                    newItemNbt.putString("id", item.id);
-                    newItemNbt.putByte(KEY_OF_COUNT, (byte) item.count);
-                    FabricUtils.addCompoundToNBTList(nbtList, newItemNbt, i);
+                    FabricUtils.addCompoundToNBTList(nbtList, toNbt(item), i);
                     break;
                 }
                 // Remove the item
@@ -132,7 +112,10 @@ public class FabricOfflineInventory extends BaseFabricOfflineInventory {
                 // Update the slot item
                 if(slot == item.slot) {
                     itemNbt.putString("id", item.id);
-                    itemNbt.putByte(KEY_OF_COUNT, (byte) item.count);
+                    itemNbt.putByte("Count", (byte) item.count);
+                    if(item.snbt != null) {
+                        itemNbt.put("tag", StringNbtReader.parse(item.snbt));
+                    }
                     break;
                 }
             }
@@ -140,5 +123,17 @@ public class FabricOfflineInventory extends BaseFabricOfflineInventory {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected NbtCompound toNbt(OPanelItemStack item) throws CommandSyntaxException {
+        NbtCompound itemNbt = new NbtCompound();
+        itemNbt.putByte("Slot", (byte) item.slot);
+        itemNbt.putString("id", item.id);
+        itemNbt.putByte("Count", (byte) item.count);
+        if(item.snbt != null) {
+            itemNbt.put("tag", StringNbtReader.parse(item.snbt));
+        }
+        return itemNbt;
     }
 }
