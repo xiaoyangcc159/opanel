@@ -8,7 +8,8 @@ import {
   FileText,
   Github,
   HandCoins,
-  Milestone
+  Milestone,
+  ThumbsUp
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -73,7 +74,9 @@ export default function About() {
                   <item.icon size={17}/>
                   <span>{item.name}</span>
                 </TableCell>
-                <TableCell className="text-right [&_a]:underline [&_a]:underline-offset-2">{item.value}</TableCell>
+                <TableCell className="text-right [&_a]:underline [&_a]:underline-offset-2">
+                  {item.value}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -85,9 +88,11 @@ export default function About() {
         <Button
           className="mr-auto cursor-pointer"
           variant="link"
-          onClick={() => window.location.href = "/"}>
-          <ChevronLeft />
-          {$("about.footer.back")}
+          asChild>
+          <Link href="/">
+            <ChevronLeft />
+            {$("about.footer.back")}
+          </Link>
         </Button>
         <Button
           variant="ghost"
@@ -123,6 +128,15 @@ export default function About() {
           asChild>
           <Link href="https://opanel.cn/docs/quick-start.html" target="_blank" rel="noopener noreferrer">
             <BookText />
+          </Link>
+        </Button>
+        <Button
+          variant="outline"
+          className="ml-2"
+          asChild>
+          <Link href="/about/thanks">
+            <ThumbsUp />
+            {$("about.thanks-list")}
           </Link>
         </Button>
       </CardFooter>

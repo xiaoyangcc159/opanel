@@ -55,7 +55,7 @@ export function TimeCard({
           <>
             <div className="flex flex-col gap-1 justify-center items-center">
               <div className="text-2xl font-bold">{millisToTime(uptime)}</div>
-              <span className="text-xs max-xl:text-sm text-muted-foreground">{$("dashboard.time.uptime")}</span>
+              <span className="text-xs text-center max-xl:text-sm text-muted-foreground">{$("dashboard.time.uptime")}</span>
             </div>
             <Tooltip>
               <TooltipTrigger>
