@@ -19,7 +19,12 @@ export function ThemeToggle() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+
+    if(theme === "system") {
+      const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setTheme(isDarkMode ? "dark" : "light");
+    }
+  }, [theme, setTheme]);
 
   if(!mounted) return null;
 
