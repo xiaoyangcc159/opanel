@@ -32,8 +32,16 @@ public class SavesController extends BaseController {
     public Handler getSaves = ctx -> {
         HashMap<String, Object> obj = new HashMap<>();
 
+        int retry = 0;
+        List<OPanelSave> serverSaves = server.getSaves();
+        while(serverSaves.isEmpty() && retry <= 3) {
+            server.saveAll();
+            serverSaves = server.getSaves();
+            retry++;
+        }
+
         List<HashMap<String, Object>> saves = new ArrayList<>();
-        for(OPanelSave save : server.getSaves()) {
+        for(OPanelSave save : serverSaves) {
             HashMap<String, Object> saveInfo = new HashMap<>();
             saveInfo.put("name", save.getName());
             saveInfo.put("displayName", Utils.stringToBase64(save.getDisplayName()));
